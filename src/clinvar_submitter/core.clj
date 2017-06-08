@@ -10,7 +10,7 @@
 (def allele-cx "data/allelecx.jsonld")
 (def test-interpretation "data/test_interp_1.dmwg.json")
 (def interpretation-cx "data/short-context.jsonld")
-
+(def frame "data/frame.jsonld")
 (defn flatten-allele
   []
   (let [allele (json/parse-stream (io/reader test-allele))
@@ -26,6 +26,17 @@
           cx (json/parse-stream cxr)
           opts (JsonLdOptions.)]
       (-> (JsonLdProcessor/flatten i cx opts) JsonUtils/toPrettyString println))))
+
+(defn frame-interpretation
+  []
+  (with-open [ir (io/input-stream test-interpretation)
+              fr (io/input-stream frame)]
+    (let [i (JsonUtils/fromInputStream ir)
+          f (JsonUtils/fromInputStream fr)
+          opts (JsonLdOptions.)]
+      ;;(.setEmbed opts true)
+      (.setExplicit opts true)
+      (-> (JsonLdProcessor/frame i f opts) JsonUtils/toPrettyString println))))
 
 (defn -main
   "I don't do a whole lot ... yet."

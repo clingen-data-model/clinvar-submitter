@@ -1,0 +1,7 @@
+{
+  "@context": {
+    "cg": "http://datamodel.clinicalgenome.org/types/",
+    "gns": "http://schema.genome.network/",
+    "id": "@id"
+  }
+}
