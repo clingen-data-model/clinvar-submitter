@@ -14,17 +14,13 @@
 (def interpretation-cx "data/short-context.jsonld")
 (def frame "data/frame.jsonld")
 
-
-;; TODO, this arrangement seems not to be handling collection types appropriately
-;; need to figure out why
 (defn resolve-id
   "Return the referent of an identifier if found in symbol table
   otherwise return a bare string"
   [t s]
-  (println "resolve-id" s)
   (if (instance? Map s) (if-let [v (get s "id")]
-                                        (resolve-id t v) s))
-  (if-let [ret (get t s)] ret s))
+                          (resolve-id t v) s)
+      (if-let [ret (get t s)] ret s)))
 
 (defn ld-get
   "Get property from a map, if the property is a string matching a key
@@ -32,18 +28,26 @@
   is a map with a single 'id' property, return either the value of the property
   or the value of the referent of that property, if it exists in the symbol table"
   [t loc prop]
-  (let [v (get loc prop)]
-    (cond 
-      (string? v) (resolve-id t v)
-      (instance? Map v) (if-let [vn (get v "id")] (resolve-id t vn) v)
-      (instance? List v) (map #(resolve-id t %) v)
-      :else v)))
+  (if (instance? List loc)
+    (map #(ld-get t % prop) loc)
+    (let [v (get loc prop)]
+      (cond 
+        (string? v) (resolve-id t v)
+        (instance? Map v) (if-let [vn (get v "id")] (resolve-id t vn) v)
+        (instance? List v) (map #(resolve-id t %) v)
+        :else v))))
 
 (defn ld->
   "Take a symbol table, a location, and a set of predicates, 
   return the set of nodes mapping to a given property"
   [t loc & preds]
   (reduce #(ld-get t %1 %2) loc preds))
+
+(defn prop=
+  "Filter ressults where a specific key (or recursive chain of keys}
+  is equal to value"
+  [t m v & ks]
+  (= (ld-> t m ks) v))
 
 (defn convert-jsonld
   "Convert java structures from jsonld library into clojure structures"
@@ -70,7 +74,7 @@
 (defn construct-variant
   "Construct and return one row of variant table, with VariantInterpretation as root"
   [t i]
-  (ld-> t i "cg:A122" "cg:relatedContextualAllele"))
+  (ld-> t i "cg:A122"))
 
 (defn construct-variant-table
   "Construct and return variant table"
