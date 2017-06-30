@@ -51,8 +51,6 @@
   [t loc & preds]
   (first (ld-> t loc preds)))
 
-
-;;TODO handle case when ld-> returns a collection
 (defn prop=
   "Filter ressults where a specific key (or recursive chain of keys}
   is equal to value"
