@@ -28,9 +28,10 @@
   is a map with a single 'id' property, return either the value of the property
   or the value of the referent of that property, if it exists in the symbol table"
   [t loc prop]
-  (if (instance? List loc)
-    (map #(ld-get t % prop) loc)
-    (let [v (get loc prop)]
+  (cond 
+    (fn? prop) (prop loc)
+    (instance? List loc) (map #(ld-get t % prop) loc)
+    :else (let [v (get loc prop)]
       (cond 
         (string? v) (resolve-id t v)
         (instance? Map v) (if-let [vn (get v "id")] (resolve-id t vn) v)
@@ -41,13 +42,25 @@
   "Take a symbol table, a location, and a set of predicates, 
   return the set of nodes mapping to a given property"
   [t loc & preds]
-  (reduce #(ld-get t %1 %2) loc preds))
+  (let [res (reduce #(ld-get t %1 %2) loc preds)]
+    ;(println preds res)
+    res))
 
+(defn ld1->
+  "Take the first result of a ld-> path expression"
+  [t loc & preds]
+  (first (ld-> t loc preds)))
+
+
+;;TODO handle case when ld-> returns a collection
 (defn prop=
   "Filter ressults where a specific key (or recursive chain of keys}
   is equal to value"
-  [t m v & ks]
-  (= (ld-> t m ks) v))
+  [t v & ks]
+  (fn [m] (if (instance? List m)
+            (filter (fn [m1] (let [r (apply ld-> t m1 ks)]
+                               (if (instance? List r) (some #(= % v) r) (= r v))))  m)
+            (when (= v (ld-> t m ks)) m))))
 
 (defn convert-jsonld
   "Convert java structures from jsonld library into clojure structures"
