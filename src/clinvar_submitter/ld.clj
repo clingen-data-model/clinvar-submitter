@@ -1,7 +1,6 @@
 (ns clinvar-submitter.ld
   (:require [cheshire.core :as json]
-            [clojure.java.io :as io]
-            [clojure.walk :as walk])
+            [clojure.java.io :as io])
   (:import [com.github.jsonldjava.core JsonLdProcessor JsonLdOptions]
            [com.github.jsonldjava.utils JsonUtils]
            [java.util Map List]))
@@ -52,18 +51,10 @@
                                (if (instance? List r) (some #(= % v) r) (= r v))))  m)
             (when (= v (ld-> t m ks)) m))))
 
-(defn convert-jsonld
-  "Convert java structures from jsonld library into clojure structures"
-  [m]
-  (walk/postwalk (fn [n] (cond
-                           (instance? Map n) (into {} n)
-                           (instance? List n) (into [] n)
-                           :else n)) m))
-
 (defn construct-symbol-table
   [coll]
   (let [graph (into [] (get coll "@graph"))]
-    (reduce (fn [acc v] (assoc acc (.get v "id") (convert-jsonld v))) {} graph)))
+    (reduce (fn [acc v] (assoc acc (.get v "id") v)) {} graph)))
 
 (defn flatten-interpretation
   [interp-path context-path]
@@ -72,7 +63,7 @@
     (let [i (json/parse-stream ir)
           cx (json/parse-stream cxr)
           opts (JsonLdOptions.)]
-      (-> (JsonLdProcessor/flatten i cx opts) convert-jsonld))))
+      (JsonLdProcessor/flatten i cx opts))))
 
 (defn read-ld
   [interp-path context-path]
