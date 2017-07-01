@@ -60,10 +60,18 @@
                                (if (instance? List r) (some #(= % v) r) (= r v))))  m)
             (when (= v (ld-> t m ks)) m))))
 
+(defn convert-jsonld
+  "Convert java structures from jsonld library into clojure structures"
+  [m]
+  (walk/postwalk (fn [n] (cond
+                           (instance? Map n) (into {} n)
+                           (instance? List n) (into [] n)
+                           :else n)) m))
+
 (defn construct-symbol-table
   [coll]
   (let [graph (into [] (get coll "@graph"))]
-    (reduce (fn [acc v] (assoc acc (.get v "id") v)) {} graph)))
+    (reduce (fn [acc v] (assoc acc (.get v "id") (convert-jsonld v))) {} graph)))
 
 (defn flatten-interpretation
   []
