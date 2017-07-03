@@ -40,7 +40,7 @@
 (defn ld1->
   "Take the first result of a ld-> path expression"
   [t loc & preds]
-  (first (ld-> t loc preds)))
+  (first (apply ld-> t loc preds)))
 
 (defn prop=
   "Filter ressults where a specific key (or recursive chain of keys}
