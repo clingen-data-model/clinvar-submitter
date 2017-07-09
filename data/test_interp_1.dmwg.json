@@ -1,11 +1,11 @@
 {
   "@context": {
-    "cg": "http://datamodel.clinicalgenome.org/types/",
-    "gns": "http://schema.genome.network/",
+      "cg": "http://datamodel.clinicalgenome.org/types/",
+      "gns": "http://schema.genome.network/",
       "id": "@id",
       "type": "@type",
       "@vocab": "http://datamodel.clinicalgenome.org/types/",
-    "consequence": "cg:A001",
+      "consequence": "cg:A001",
     "mechanism": {
       "@id": "cg:A002",
       "@type": "@id"
