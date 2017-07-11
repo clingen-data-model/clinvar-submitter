@@ -10,7 +10,41 @@
     ["" ; local id
      "" ; linking id
      "" ; gene symbol
-     (ld-> t cx-allele "referenceCoordinate" "referenceSequence" "display")]))
+     (ld-> t cx-allele "referenceCoordinate" "referenceSequence" "display") ;refseq
+     "" ; hgvs
+     "" ; chromosome
+     (str (ld-> t cx-allele "referenceCoordinate" "start" "index")) ; start
+     (str (ld-> t cx-allele "referenceCoordinate" "end" "index")) ; stop
+     (ld-> t cx-allele "referenceCoordinate" "refAllele") ; ref
+     (ld-> t cx-allele "allele") ; alt
+     "" ; variant type
+     "" ; outer start
+     "" ; inner start
+     "" ; inner stop
+     "" ; outer stop
+     "" ; variant length
+     "" ; copy number
+     "" ; ref copy number
+     "" ; breakpoint 1
+     "" ; breakpoint 2
+     "" ; Trace or probe data	
+		 "" ; empty
+		 "" ; Variation identifiers	(cgAlleleReg:CA123123123)
+		 "" ; Location	
+		 "" ; Alternate designations 	
+		 "" ; Official allele name	
+		 "" ; URL	
+		 "" ; empty 
+		 "" ; Condition ID type	
+		 "" ; Condition ID value	
+		 "" ; Preferred condition name
+     "" ; Condition category	
+     "" ; Condition uncertainty	
+     "" ; Condition comment	
+     "" ; empty	
+     (ld-> t i "clinicalSignificance" "display") ; Clinical significance	
+     "" ; Date last evaluated
+     ]))
 
 (defn construct-variant-table
   "Construct and return variant table"
