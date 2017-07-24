@@ -215,7 +215,7 @@
     },
     "condition": [
         {
-            "disease": [
+        	"disease": [
                 {
                     "coding": [
                         {
@@ -229,7 +229,9 @@
                     "type": "CodeableConcept"
                 }
             ],
-            "type": "MendelianCondition"
+            "type": "MendelianCondition",
+            "name" : "HCM",
+            "modeOfInheritance" : "autosomal dominant" 
         }
     ],
     "contribution": [
