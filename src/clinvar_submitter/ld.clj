@@ -52,11 +52,14 @@
             (when (= v (ld-> t m ks)) m))))
 
 (defn construct-symbol-table
+  "Construct a map that takes a flattened JSON-LD interpretation as input and associates
+  the IDs in the flattened interpretation with the nodes in the flattened interpretation"
   [coll]
   (let [graph (into [] (get coll "@graph"))]
     (reduce (fn [acc v] (assoc acc (.get v "id") v)) {} graph)))
 
 (defn flatten-interpretation
+  "Use JSONLD-API to read a JSON-LD interpretation using context-path to translate symbols into local properties"
   [interp-path context-path]
   (with-open [ir (io/reader interp-path)
               cxr (io/reader context-path)]
@@ -65,7 +68,8 @@
           opts (JsonLdOptions.)]
       (JsonLdProcessor/flatten i cx opts))))
 
-(defn read-ld
+(defn generate-symbol-table
+  "Flatten JSON-LD document and return a symbol table returning IDs of nodes mapped to the nodes themselves"
   [interp-path context-path]
   (construct-symbol-table (flatten-interpretation interp-path context-path)))
 

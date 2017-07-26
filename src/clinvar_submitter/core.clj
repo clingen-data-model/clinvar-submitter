@@ -66,7 +66,7 @@
 (defn construct-variant-table
   "Construct and return variant table"
   [interp-path context-path]
-  (let [t (ld/read-ld interp-path context-path)
+  (let [t (ld/generate-symbol-table interp-path context-path)
         m (vals t)
         interps ((prop= t "VariantInterpretation" "type") m)
         rows (map #(construct-variant t %) interps)]
