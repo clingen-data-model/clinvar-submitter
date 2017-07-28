@@ -1,5 +1,7 @@
 # clinvar-submitter
 
+FIXME: describe how to build an executable and run from the command line
+
 FIXME: description
 
 ## Installation
