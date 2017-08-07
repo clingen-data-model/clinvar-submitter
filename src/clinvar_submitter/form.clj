@@ -55,22 +55,26 @@
  (defn variant-start
   "Return the variant reference sequence start pos (1-based transform)."
   [t v]
-  ; TODO figure out how to go from 0-based to 1-based
-  (let [start (ld-> t v "referenceCoordinate" "start")]
-    (csv-colval (get start "index"))))
- 
+  ; if ref is not null add 1 to start otherwise as-is
+  (let [ref (ld-> t v "referenceCoordinate" "refAllele")
+        alt (get v "allele")
+        start (ld-> t v "referenceCoordinate" "start")]
+    (csv-colval (if (blank? ref) (get start "index") (+ 1 (get start "index"))))))
+     
  (defn variant-stop
   "Return the variant reference sequence stop pos (1-based transform)."
   [t v]
-  ; TODO figure out how to go from 0-based to 1-based
-  (let [stop (ld-> t v "referenceCoordinate" "end")]
-    (csv-colval (get stop "index"))))
+  ; if ref is blank and alt is not add 1 to stop otherwise as-is
+  (let [ref (ld-> t v "referenceCoordinate" "refAllele")
+        alt (get v "allele")
+        stop (ld-> t v "referenceCoordinate" "end")]
+    (csv-colval (if (and (blank? ref) (not (blank? alt))) (+ 1 (get stop "index")) (get stop "index")))))
  
  (defn variant-ref
   "Return the variant ref allele sequence."
   [t v]
-  (let [refseq (ld-> t v "referenceCoordinate")]
-    (csv-colval (get refseq "refAllele"))))
+  (let [refcoord (ld-> t v "referenceCoordinate")]
+    (csv-colval (get refcoord "refAllele"))))
  
  (defn variant-alt
    "Return the variant alt allele sequence."
