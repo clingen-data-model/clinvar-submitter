@@ -18,7 +18,7 @@
     (is (= (map #(construct-variant t %) interps) (construct-variant-table interp-path context-path))
     (println "Expectedvalue" (map #(construct-variant t %) interps)))))
 
-(deftest test-variant-table
+(deftest test-construct-variant
   (testing "Testing correctness ovariant construction"
     (is (= expectedvalue (construct-variant t i))
     (println "Expectedvalue" expectedvalue))))
