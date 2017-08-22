@@ -1,0 +1,436 @@
+{
+  "@context": {
+    "cg-types": "http://datamodel.clinicalgenome.org/types/",
+    "cg-attributes": "http://datamodel.clinicalgenome.org/attributes/",
+    "base": "http://datamodel.clinicalgenome.org/types/",
+    "gns": "http://schema.genome.network/",
+    "id": "@id",
+    "type": "@type",
+    "Information": {
+      "@id": "cg-types:Information"
+    },
+    "MolecularConsequence": {
+      "@id": "SEPIO:0000229"
+    },
+    "ConditionMechanism": {
+      "@id": "SEPIO:0000228"
+    },
+    "Criterion": {
+      "@id": "SEPIO:0000192"
+    },
+    "CanonicalAllele": {
+      "@id": "SEPIO:0000233"
+    },
+    "ContextualAllele": {
+      "@id": "SEPIO:0000234"
+    },
+    "Gene": {
+      "@id": "SO:0000704"
+    },
+    "CriterionAssessment": {
+      "@id": "SEPIO:0000191"
+    },
+    "Contribution": {
+      "@id": "SEPIO:0000158"
+    },
+    "Agent": {
+      "@id": "PROV:agent"
+    },
+    "Example": {
+      "@id": "cg-types:Example"
+    },
+    "MendelianCondition": {
+      "@id": "SEPIO:0000219"
+    },
+    "Individual": {
+      "@id": "foaf:Person"
+    },
+    "IndividualCondition": {
+      "@id": "cg-types:IndividualCondition"
+    },
+    "FamilyHistory": {
+      "@id": "cg-types:FamilyHistory"
+    },
+    "DeNovoAllele": {
+      "@id": "cg-types:DeNovoAllele"
+    },
+    "FunctionalData": {
+      "@id": "cg-types:FunctionalData"
+    },
+    "CaseControl": {
+      "@id": "cg-types:CaseControl"
+    },
+    "SequenceLocation": {
+      "@id": "cg-types:SequenceLocation"
+    },
+    "AlleleFrequency": {
+      "@id": "SEPIO:0000227"
+    },
+    "RegionAnnotation": {
+      "@id": "cg-types:RegionAnnotation"
+    },
+    "RegionAlleles": {
+      "@id": "cg-types:RegionAlleles"
+    },
+    "ReferenceSequence": {
+      "@id": "cg-types:ReferenceSequence"
+    },
+    "IndividualAllele": {
+      "@id": "cg-types:IndividualAllele"
+    },
+    "AssertionMethod": {
+      "@id": "SEPIO:0000193"
+    },
+    "ScoringAlgorithm": {
+      "@id": "SEPIO:0000224"
+    },
+    "VariantInterpretation": {
+      "@id": "SEPIO:0000190"
+    },
+    "CodeableConcept": {
+      "@id": "cg-types:CodeableConcept"
+    },
+    "CodeSystem": {
+      "@id": "cg-types:CodeSystem"
+    },
+    "Coding": {
+      "@id": "cg-types:Coding"
+    },
+    "BenignMissenseVariationRate": {
+      "@id": "cg-types:BenignMissenseVariationRate"
+    },
+    "Family": {
+      "@id": "PCO:0000020"
+    },
+    "FamilySegregationData": {
+      "@id": "cg-types:FamilySegregationData"
+    },
+    "AggregateSegregationData": {
+      "@id": "cg-types:AggregateSegregationData"
+    },
+    "InSilicoPrediction": {
+      "@id": "cg-types:InSilicoPrediction"
+    },
+    "ConditionEtiology": {
+      "@id": "cg-types:ConditionEtiology"
+    },
+    "ConditionPrevelance": {
+      "@id": "cg-types:ConditionPrevelance"
+    },
+    "ConditionPenetrance": {
+      "@id": "cg-types:ConditionPenetrance"
+    },
+    "Conservation": {
+      "@id": "cg-types:Conservation"
+    },
+    "ValueSet": {
+      "@id": "cg-types:ValueSet"
+    },
+    "ValueSetCoding": {
+      "@id": "cg-types:ValueSetCoding"
+    },
+    "EvidenceLine": {
+      "@id": "SEPIO:0000002"
+    },
+    "consequence": {
+      "@id": "cg-attributes:consequence",
+      "@type": "@id"
+    },
+    "mechanism": {
+      "@id": "cg-attributes:mechanism",
+      "@type": "@id"
+    },
+    "mechanismConfidence": {
+      "@id": "cg-attributes:mechanismConfidence",
+      "@type": "@id"
+    },
+    "code": "cg-attributes:code",
+    "system": "cg-attributes:system",
+    "agent": {
+      "@id": "SEPIO:0000017",
+      "@type": "@id"
+    },
+    "onDate": {
+      "@id": "SEPIO:0000163",
+      "@type": "@id"
+    },
+    "role": {
+      "@id": "BFO:0000055",
+      "@type": "@id"
+    },
+    "contextualAllele": {
+      "@id": "cg-attributes:contextualAllele",
+      "@type": "@id"
+    },
+    "lof": {
+      "@id": "cg-attributes:lof",
+      "@type": "@id"
+    },
+    "gene": {
+      "@id": "RO:0002331",
+      "@type": "@id"
+    },
+    "condition": {
+      "@id": "IAO:0000136",
+      "@type": "@id"
+    },
+    "informationId": {
+      "@id": "cg-attributes:informationId",
+      "@type": "@id"
+    },
+    "searchTags": "cg-attributes:searchTags",
+    "index": "cg-attributes:index",
+    "individual": {
+      "@id": "cg-attributes:individual",
+      "@type": "@id"
+    },
+    "hasCondition": "cg-attributes:hasCondition",
+    "proband": {
+      "@id": "cg-attributes:proband",
+      "@type": "@id"
+    },
+    "familyHasCondition": "cg-attributes:familyHasCondition",
+    "canonicalAllele": {
+      "@id": "cg-attributes:canonicalAllele",
+      "@type": "@id"
+    },
+    "maternityConfirmed": "cg-attributes:maternityConfirmed",
+    "paternityConfirmed": "cg-attributes:paternityConfirmed",
+    "result": "cg-attributes:result",
+    "dataType": {
+      "@id": "cg-attributes:dataType",
+      "@type": "@id"
+    },
+    "ascertainment": {
+      "@id": "cg-attributes:ascertainment",
+      "@type": "@id"
+    },
+    "allele": {
+      "@id": "cg-attributes:allele",
+      "@type": "@id"
+    },
+    "alleleCount": "cg-attributes:alleleCount",
+    "alleleNumber": "cg-attributes:alleleNumber",
+    "transcript": {
+      "@id": "cg-attributes:transcript",
+      "@type": "@id"
+    },
+    "author": "cg-attributes:author",
+    "description": "dc:description",
+    "image": {
+      "@id": "cg-attributes:image",
+      "@type": "@id"
+    },
+    "oddsRatio": "cg-attributes:oddsRatio",
+    "confidenceLevel": "cg-attributes:confidenceLevel",
+    "caseGroupFrequency": {
+      "@id": "cg-attributes:caseGroupFrequency",
+      "@type": "@id"
+    },
+    "controlGroupFrequency": {
+      "@id": "cg-attributes:controlGroupFrequency",
+      "@type": "@id"
+    },
+    "individualCount": "cg-attributes:individualCount",
+    "homozygousAlleleIndividualCount": "cg-attributes:homozygousAlleleIndividualCount",
+    "heterozygousAlleleIndividualCount": "cg-attributes:heterozygousAlleleIndividualCount",
+    "population": {
+      "@id": "cg-attributes:population",
+      "@type": "@id"
+    },
+    "confidenceIntervalLower": "cg-attributes:confidenceIntervalLower",
+    "confidenceIntervalUpper": "cg-attributes:confidenceIntervalUpper",
+    "phenotypePositiveAlleleNegative": "cg-attributes:phenotypePositiveAlleleNegative",
+    "hemizygousAlleleIndividualCount": "cg-attributes:hemizygousAlleleIndividualCount",
+    "referenceSequence": {
+      "@id": "cg-attributes:referenceSequence",
+      "@type": "@id"
+    },
+    "start": "cg-attributes:start",
+    "stop": "cg-attributes:stop",
+    "evidence": {
+      "@id": "SEPIO:0000006",
+      "@type": "@id"
+    },
+    "excludedTypes": {
+      "@id": "cg-attributes:excludedTypes",
+      "@type": "@id"
+    },
+    "includedTypes": {
+      "@id": "cg-attributes:includedTypes",
+      "@type": "@id"
+    },
+    "includedAlleles": {
+      "@id": "cg-attributes:includedAlleles",
+      "@type": "@id"
+    },
+    "excludedAlleles": {
+      "@id": "cg-attributes:excludedAlleles",
+      "@type": "@id"
+    },
+    "alleleFrequency": "cg-attributes:alleleFrequency",
+    "medianCoverage": "cg-attributes:medianCoverage",
+    "region": {
+      "@id": "cg-attributes:region",
+      "@type": "@id"
+    },
+    "display": "cg-attributes:display",
+    "primaryAllele": {
+      "@id": "cg-attributes:primaryAllele",
+      "@type": "@id"
+    },
+    "secondaryAllele": {
+      "@id": "cg-attributes:secondaryAllele",
+      "@type": "@id"
+    },
+    "primaryZygosity": {
+      "@id": "cg-attributes:primaryZygosity",
+      "@type": "@id"
+    },
+    "secondaryZygosity": {
+      "@id": "cg-attributes:secondaryZygosity",
+      "@type": "@id"
+    },
+    "phase": {
+      "@id": "cg-attributes:phase",
+      "@type": "@id"
+    },
+    "text": "cg-attributes:text",
+    "coding": {
+      "@id": "cg-attributes:coding",
+      "@type": "@id"
+    },
+    "alleleInheritance": {
+      "@id": "cg-attributes:alleleInheritance",
+      "@type": "@id"
+    },
+    "value": {
+      "@id": "cg-attributes:value",
+      "@type": "@id"
+    },
+    "family": {
+      "@id": "cg-attributes:family",
+      "@type": "@id"
+    },
+    "phenotypePositiveAllelePositive": "cg-attributes:phenotypePositiveAllelePositive",
+    "phenotypeNegativeAllelePositive": "cg-attributes:phenotypeNegativeAllelePositive",
+    "totalNumberOfSegregations": "cg-attributes:totalNumberOfSegregations",
+    "familySegregationData": {
+      "@id": "cg-attributes:familySegregationData",
+      "@type": "@id"
+    },
+    "columns": "cg-attributes:columns",
+    "affectedValues": "cg-attributes:affectedValues",
+    "genotypeValues": "cg-attributes:genotypeValues",
+    "pedigree": "cg-attributes:pedigree",
+    "quantitativePrediction": "cg-attributes:quantitativePrediction",
+    "predictionType": {
+      "@id": "cg-attributes:predictionType",
+      "@type": "@id"
+    },
+    "algorithm": "cg-attributes:algorithm",
+    "categoricalPrediction": "cg-attributes:categoricalPrediction",
+    "specificity": "cg-attributes:specificity",
+    "minimum": "cg-attributes:minimum",
+    "maximum": "cg-attributes:maximum",
+    "penetrance": {
+      "@id": "cg-attributes:penetrance",
+      "@type": "@id"
+    },
+    "prevelance": "cg-attributes:prevelance",
+    "anyInconsistentSegregations": "cg-attributes:anyInconsistentSegregations",
+    "conserved": "cg-attributes:conserved",
+    "score": "cg-attributes:score",
+    "criterion": {
+      "@id": "SEPIO:0000041",
+      "@type": "@id"
+    },
+    "outcome": {
+      "@id": "SEPIO:0000197",
+      "@type": "@id"
+    },
+    "variant": {
+      "@id": "IAO:0000136",
+      "@type": "@id"
+    },
+    "contribution": {
+      "@id": "SEPIO:0000159",
+      "@type": "@id"
+    },
+    "explanation": "dc:description",
+    "includesCoding": {
+      "@id": "cg-attributes:includesCoding",
+      "@type": "@id"
+    },
+    "clinicalSignificance": {
+      "@id": "SEPIO:0000197",
+      "@type": "@id"
+    },
+    "assertionMethod": {
+      "@id": "SEPIO:0000041",
+      "@type": "@id"
+    },
+    "phenotypeNegativeAlleleNegative": "cg-attributes:phenotypeNegativeAlleleNegative",
+    "source": "dc:source",
+    "name": "rdfs:label",
+    "preferredCtxAllele": {
+      "@id": "cg-attributes:preferredCtxAllele",
+      "@type": "@id"
+    },
+    "identifier": "dc:identifier",
+    "relatedCanonicalAllele": {
+      "@id": "cg-attributes:relatedCanonicalAllele",
+      "@type": "@id"
+    },
+    "alleleName": "cg-attributes:alleleName",
+    "legacyNames": "cg-attributes:legacyNames",
+    "symbol": "ERO:0000574",
+    "phenotype": {
+      "@id": "BFO:0000051",
+      "@type": "@id"
+    },
+    "modeOfInheritance": {
+      "@id": "cg-attributes:modeOfInheritance",
+      "@type": "@id"
+    },
+    "accession": {
+      "@id": "cg-attributes:accession",
+      "@type": "@id"
+    },
+    "label": "rdfs:label",
+    "shortDescription": "rdfs:label?",
+    "defaultStrength": {
+      "@id": "SEPIO:0000196",
+      "@type": "@id"
+    },
+    "url": "ERO:0000480",
+    "disease": {
+      "@id": "BFO:0000051",
+      "@type": "@id"
+    },
+    " ": {
+      "@id": "cg-attributes: ",
+      "@type": "@id"
+    },
+    "totalOfAllelePosConditionPosIndividuals": "cg-attributes:totalOfAllelePosConditionPosIndividuals",
+    "totalOfAlleleNegConditionNegIndividuals": "cg-attributes:totalOfAlleleNegConditionNegIndividuals",
+    "totalOfAllelePosConditionNegIndividuals": "cg-attributes:totalOfAllelePosConditionNegIndividuals",
+    "totalOfAlleleNegConditionPosIndividuals": "cg-attributes:totalOfAlleleNegConditionPosIndividuals",
+    "totalOfUntestedConditionPosIndividuals": "cg-attributes:totalOfUntestedConditionPosIndividuals",
+    "totalOfUntestedConditionNegIndividuals": "cg-attributes:totalOfUntestedConditionNegIndividuals",
+    "totalOfFamiliesWithInconsistentSegregations": "cg-attributes:totalOfFamiliesWithInconsistentSegregations",
+    "version": "pav:version",
+    "scoringAlgorithm": {
+      "@id": "BFO:0000051",
+      "@type": "@id"
+    },
+    "information": {
+      "@id": "SEPIO:0000084",
+      "@type": "@id"
+    },
+    "evidenceStrength": {
+      "@id": "SEPIO:0000132",
+      "@type": "@id"
+    }
+  }
+}

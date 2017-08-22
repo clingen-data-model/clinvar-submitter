@@ -1,5 +1,6 @@
 (ns clinvar-submitter.form
- (:require [clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]]))
+ (:require [clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]]
+           [clojure.string :as str]))
   
  (defn csv-colval
 	 "Outputs a well-formed value for output of the CSV file being generated. 
@@ -46,6 +47,11 @@
   [v]
   (csv-colval (get v "CanonicalAllele")))
  
+  (defn variant-alt-designations
+  "Return variant hgvs representations"
+  [v]
+  (csv-colval (get v "alleleName name")))
+ 
  (defn variant-refseq
   "Return the variant reference sequence."
   [t v]
@@ -53,22 +59,22 @@
     (csv-colval (get refseq "display"))))
  
  (defn variant-start
-  "Return the variant reference sequence start pos (1-based transform)."
+  "Return the variant reference sequence start pos (0-to-1-based transform)."
   [t v]
   ; if ref is not null add 1 to start otherwise as-is
   (let [ref (ld-> t v "referenceCoordinate" "refAllele")
         alt (get v "allele")
         start (ld-> t v "referenceCoordinate" "start")]
-    (csv-colval (if (blank? ref) (get start "index") (+ 1 (get start "index"))))))
+    (csv-colval (if (str/blank? ref) (get start "index") (+ 1 (get start "index"))))))
      
  (defn variant-stop
-  "Return the variant reference sequence stop pos (1-based transform)."
+  "Return the variant reference sequence stop pos (0-to-1-based transform)."
   [t v]
   ; if ref is blank and alt is not add 1 to stop otherwise as-is
   (let [ref (ld-> t v "referenceCoordinate" "refAllele")
         alt (get v "allele")
         stop (ld-> t v "referenceCoordinate" "end")]
-    (csv-colval (if (and (blank? ref) (not (blank? alt))) (+ 1 (get stop "index")) (get stop "index")))))
+    (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (get stop "index")) (get stop "index")))))
  
  (defn variant-ref
   "Return the variant ref allele sequence."
@@ -85,7 +91,8 @@
   "Returns a map of all variant related fields needed for the clinvar 
    'variant' submission form.
      :variantId - canonical allele with ClinGen AR PURL,
-     :refseq - preferred accession build38 ie. NC_000014.9
+     :altDesignations - alternate designations (semi-colon separated)
+     :refseq - preferred accession GRCh38 ie. NC_000014.9
      :start - genomic start pos (transform to 1-based)
      :stop - genomic end pos (transform to 1-based)
      :ref - ref seq
@@ -93,6 +100,7 @@
   [t i]
   (let [v (ld1-> t i "variant" "relatedContextualAllele" (prop= t true "preferred"))]
     {:variantIdentifier (variant-identifier v),
+     :altDesignations (variant-alt-designations v),
      :refseq (variant-refseq t v),
      :start (variant-start t v),
      :stop  (variant-stop t v),
@@ -139,7 +147,7 @@
 
 (defn condition-moi
   [t c]
-  (csv-colval (get c "modeOfInheritance")))
+  (csv-colval (ld-> t c "modeOfInheritance" "display")))
 
 (defn get-condition
   "Processes the condition element to derive the ClinVar sanctioned fields: 
@@ -172,11 +180,38 @@
       :idvalue (condition-idvals t c),
       :moi (condition-moi t c)}))
 
+  (defn evidence-rules
+    "Returns the list of criterion rule names for the evidence provided"
+    [t e]
+    (let [crits (ld-> t e "information" "criterion")]
+      (map #(get % "id") crits)))
+  
+  (defn evidence-summary
+    "Returns a standard formatted summarization of the rules that were met."
+    [t e]
+    (let [crits (ld-> t e "information" "criterion")]
+      (str "The following criteria were met: " (csv-colval (clojure.string/join ", " (map #(get % "id") crits))))))
+  
+  (defn re-extract
+    "Returns a map of matching regex group captures for any vector, list, map which can be flattened."
+    [items re group]
+    (map #(get (re-find re %) group) (remove nil? (flatten items))))
+  
+  (defn evidence-pmid-citations
+    "Returns the list of critieron pmid citations for the evidence provided"
+    [t e]
+    (let [info-sources (ld-> t e "information" "evidence" "information" "source")
+          pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)]
+      (csv-colval (clojure.string/join ", " (map #(str "PMID:" %) pmids)))))
+  
   (defn get-met-evidence
    "Returns a collated map of all 'met' evidence records needed for the 
     clinvar 'variant' submission sheet."
    [t i]
    (let [e (ld-> t i "evidence"  (prop= t "met" "information" "outcome" "code"))]
-     (let [crits (ld-> t e "information" "criterion")]
-       (clojure.string/join ", " (map #(get % "id") crits)))))
+     {:summary (evidence-summary t e),
+      :rules (evidence-rules t e),
+      :pmid-citations (evidence-pmid-citations t e)}))
+     
+
  

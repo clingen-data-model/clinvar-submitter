@@ -10,7 +10,7 @@
   (let [variant (form/get-variant t i)
         condition (form/get-condition t i)
         interp (form/get-interpretation t i)
-        ]
+        evidence (form/get-met-evidence t i)]
     [(get interp :id) ; local id
      "" ; linking id - only needed if providing case data or func evidence tabs 
      "" ; gene symbol - not provided since we are avoiding contextual allele representation. 
@@ -35,7 +35,7 @@
 		 "" ; empty
 		 (get variant :variantIdentifier) ; Variation identifiers	(http://reg.genome.network.org/allele = ABC ABC:CA123123123)
 		 "" ; Location	- N/A
-		 "" ; Alternate designations - N/A 	
+		 (get variant :altDesignations)    ; Alternate designations 	
 		 "" ; Official allele name	- N/A
 		 "" ; URL	- bypassing for now, no set home for a public URL at this time
 		 "" ; empty 
@@ -51,17 +51,11 @@
      "" ; assertion method
      "" ; assertion method citations
      (get condition :moi) ; Mode of Inheritance
-     ;(get evidence :pmid-citations) ; significance citations
+     (get evidence :pmid-citations) ; significance citations
      "" ; significance citations without db ids
-     (form/get-met-evidence t i) ; comment on clinical significance
+     (get evidence :summary) ; comment on clinical significance
      "" ; explanation if clinsig is other or drug
-     "" ; drug response condition
-     "" ; func consequence
-     "" ; comment on func consequence
-     "" ; empty
-     "" ; collection method
-     "" ; TODO add remaining values from Variant Sheet in CLINVAR submission form...
-     ]))
+    ]))
 
 (defn construct-variant-table
   "Construct and return variant table"

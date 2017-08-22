@@ -1,211 +1,5 @@
 {
-  "@context": {
-      "cg": "http://datamodel.clinicalgenome.org/types/",
-      "gns": "http://schema.genome.network/",
-      "id": "@id",
-      "type": "@type",
-      "@vocab": "http://datamodel.clinicalgenome.org/types/",
-      "consequence": "cg:A001",
-    "mechanism": {
-      "@id": "cg:A002",
-      "@type": "@id"
-    },
-    "mechanismConfidence": {
-      "@id": "cg:A003",
-      "@type": "@id"
-    },
-    "code": {
-      "@id": "cg:A004",
-      "@type": "@id"
-    },
-    "system": {
-      "@id": "cg:A005",
-      "@type": "@id"
-    },
-    "agent": {
-      "@id": "cg:A006",
-      "@type": "@id"
-    },
-    "onDate": "cg:A007",
-    "role": "cg:A008",
-    "contextualAllele": "cg:A028",
-    "lof": "cg:A010",
-    "gene": "cg:A143",
-    "condition": "cg:A123",
-    "informationId": "cg:A013",
-    "searchTags": "cg:A014",
-    "index": "cg:A015",
-    "individual": {
-      "@id": "cg:A065",
-      "@type": "@id"
-    },
-    "hasCondition": "cg:A018",
-    "proband": "cg:A019",
-    "familyHasCondition": "cg:A021",
-    "canonicalAllele": {
-      "@id": "cg:A096",
-      "@type": "@id"
-    },
-    "maternityConfirmed": "cg:A024",
-    "paternityConfirmed": "cg:A025",
-    "result": "cg:A026",
-    "dataType": "cg:A027",
-    "ascertainment": "cg:A030",
-    "allele": {
-      "@id": "cg:A111",
-      "@type": "@id"
-    },
-    "alleleCount": "cg:A032",
-    "alleleNumber": "cg:A033",
-    "transcript": "cg:A034",
-    "author": "cg:A035",
-    "description": "cg:A176",
-    "image": "cg:A037",
-    "oddsRatio": "cg:A040",
-    "confidenceLevel": "cg:A041",
-    "caseGroupFrequency": "cg:A042",
-    "controlGroupFrequency": "cg:A043",
-    "individualCount": "cg:A044",
-    "homozygousAlleleIndividualCount": "cg:A045",
-    "heterozygousAlleleIndividualCount": "cg:A046",
-    "population": "cg:A106",
-    "confidenceIntervalLower": "cg:A048",
-    "confidenceIntervalUpper": "cg:A049",
-    "phenotypePositiveAlleleNegative": "cg:A050",
-    "hemizygousAlleleIndividualCount": "cg:A051",
-    "referenceSequence": {
-      "@id": "cg:A052",
-      "@type": "@id"
-    },
-    "start": "cg:A053",
-    "stop": "cg:A054",
-    "evidence": "cg:A061",
-    "excludedTypes": {
-      "@id": "cg:A056",
-      "@type": "@id"
-    },
-    "includedTypes": {
-      "@id": "cg:A057",
-      "@type": "@id"
-    },
-    "includedAlleles": "cg:A058",
-    "excludedAlleles": "cg:A059",
-    "alleleFrequency": "cg:A060",
-    "medianCoverage": "cg:A062",
-    "region": {
-      "@id": "cg:A076",
-      "@type": "@id"
-    },
-    "display": "cg:A064",
-    "primaryAllele": {
-      "@id": "cg:A066",
-      "@type": "@id"
-    },
-    "secondaryAllele": {
-      "@id": "cg:A067",
-      "@type": "@id"
-    },
-    "primaryZygosity": {
-      "@id": "cg:A068",
-      "@type": "@id"
-    },
-    "secondaryZygosity": {
-      "@id": "cg:A069",
-      "@type": "@id"
-    },
-    "phase": {
-      "@id": "cg:A070",
-      "@type": "@id"
-    },
-    "text": "cg:A072",
-    "coding": {
-      "@id": "cg:A073",
-      "@type": "@id"
-    },
-    "alleleInheritance": {
-      "@id": "cg:A074",
-      "@type": "@id"
-    },
-    "value": {
-      "@id": "cg:A080",
-      "@type": "@id"
-    },
-    "family": "cg:A083",
-    "phenotypePositiveAllelePositive": "cg:A084",
-    "phenotypeNegativeAllelePositive": "cg:A085",
-    "totalNumberOfSegregations": "cg:A088",
-    "familySegregationData": "cg:A089",
-    "columns": "cg:A090",
-    "affectedValues": "cg:A091",
-    "genotypeValues": "cg:A092",
-    "pedigree": "cg:A093",
-    "quantitativePrediction": "cg:A095",
-    "predictionType": "cg:A097",
-    "algorithm": "cg:A113",
-    "categoricalPrediction": "cg:A099",
-    "specificity": "cg:A102",
-    "minimum": "cg:A104",
-    "maximum": "cg:A105",
-    "penetrance": "cg:A108",
-    "prevelance": "cg:A109",
-    "anyInconsistentSegregations": "cg:A110",
-    "conserved": "cg:A112",
-    "score": "cg:A114",
-    "criterion": {
-      "@id": "cg:A115",
-      "@type": "@id"
-    },
-    "outcome": {
-      "@id": "cg:A116",
-      "@type": "@id"
-    },
-    "variant": "cg:A122",
-    "contribution": "cg:A180",
-    "explanation": "cg:A177",
-    "includesCoding": {
-      "@id": "cg:A121",
-      "@type": "@id"
-    },
-    "clinicalSignificance": {
-      "@id": "cg:A124",
-      "@type": "@id"
-    },
-    "assertionMethod": {
-      "@id": "cg:A125",
-      "@type": "@id"
-    },
-    "phenotypeNegativeAlleleNegative": "cg:A126",
-    "source": {
-      "@id": "cg:A127",
-      "@type": "@id"
-    },
-    "name": "cg:A157",
-    "preferredCtxAllele": "cg:A135",
-    "identifier": "cg:A136",
-    "relatedCanonicalAllele": "cg:A137",
-    "alleleName": "cg:A138",
-    "legacyNames": "cg:A139",
-    "symbol": "cg:A140",
-    "phenotype": "cg:A141",
-    "modeOfInheritance": "cg:A160",
-    "accession": "cg:A144",
-    "label": "cg:A146",
-    "shortDescription": "cg:A151",
-    "defaultStrength": "cg:A153",
-    "url": "cg:A156",
-    "disease": "cg:A158",
-    "totalOfAllelePosConditionPosIndividuals": "cg:A161",
-    "totalOfAlleleNegConditionNegIndividuals": "cg:A162",
-    "totalOfAllelePosConditionNegIndividuals": "cg:A163",
-    "totalOfAlleleNegConditionPosIndividuals": "cg:A164",
-    "totalOfUntestedConditionPosIndividuals": "cg:A165",
-    "totalOfUntestedConditionNegIndividuals": "cg:A166",
-    "totalOfFamiliesWithInconsistentSegregations": "cg:A167",
-    "version": "cg:A173",
-    "scoringAlgorithm": "cg:A174",
-    "information": "cg:A178",
-    "evidenceStrength": "cg:A179"
-  },
+	"@context": "file:///Users/babbl/Development/clingen/clinvar-submitter/data/interpretation.jsonld",
     "clinicalSignificance": {
         "code": "LA6668-3",
         "display": "Pathogenic",
@@ -229,6 +23,13 @@
                     "type": "CodeableConcept"
                 }
             ],
+            "modeOfInheritance": {
+                "code": "0000006",
+                "display": "Autosomal Dominant",
+                "id": "http://human-phenotype-ontology.github.io/0000006",
+                "system": "http://human-phenotype-ontology.github.io/",
+                "type": "Coding"
+            },
             "type": "MendelianCondition"
         }
     ],
@@ -346,6 +147,31 @@
                                                 "allele": "A",
                                                 "alleleName": [
                                                     {
+                                                        "name": "NC_000014.7:g.22968328G>A",
+                                                        "nameType": "hgvs"
+                                                    }
+                                                ],
+                                                "contextualAlleleType": "genomic",
+                                                "referenceCoordinate": {
+                                                    "end": {
+                                                        "index": 22968328
+                                                    },
+                                                    "refAllele": "G",
+                                                    "referenceSequence": {
+                                                        "display": "NC_000014.7",
+                                                        "reference": "http://reg.genome.network/refseq/RS000014"
+                                                    },
+                                                    "start": {
+                                                        "index": 22968327
+                                                    }
+                                                },
+                                                "type": "ContextualAllele"
+                                            },
+                                            {
+                                                "CanonicalAllele": "http://reg.genome.network/allele/CA010360",
+                                                "allele": "A",
+                                                "alleleName": [
+                                                    {
                                                         "name": "NC_000014.8:g.23898488G>A",
                                                         "nameType": "hgvs"
                                                     },
@@ -366,31 +192,6 @@
                                                     },
                                                     "start": {
                                                         "index": 23898487
-                                                    }
-                                                },
-                                                "type": "ContextualAllele"
-                                            },
-                                            {
-                                                "CanonicalAllele": "http://reg.genome.network/allele/CA010360",
-                                                "allele": "A",
-                                                "alleleName": [
-                                                    {
-                                                        "name": "NC_000014.7:g.22968328G>A",
-                                                        "nameType": "hgvs"
-                                                    }
-                                                ],
-                                                "contextualAlleleType": "genomic",
-                                                "referenceCoordinate": {
-                                                    "end": {
-                                                        "index": 22968328
-                                                    },
-                                                    "refAllele": "G",
-                                                    "referenceSequence": {
-                                                        "display": "NC_000014.7",
-                                                        "reference": "http://reg.genome.network/refseq/RS000014"
-                                                    },
-                                                    "start": {
-                                                        "index": 22968327
                                                     }
                                                 },
                                                 "type": "ContextualAllele"
@@ -427,8 +228,9 @@
                                         ],
                                         "relatedIdentifier": [
                                             {
-                                                "code": 29141,
-                                                "system": "http://wwww.ncibi.nlm.nih.gov/clinvar/",
+                                                "code": 14102,
+                                                "display": "NM_000257.3(MYH7):c.1207C>T (p.Arg403Trp)",
+                                                "system": "http://www.ncbi.nlm.nih.gov/clinvar/variation/",
                                                 "type": "Coding"
                                             },
                                             {
