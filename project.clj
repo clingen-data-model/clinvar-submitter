@@ -1,6 +1,6 @@
 (defproject clinvar-submitter "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "ClinGen ClinVar variant submission generation tool"
+  :url "https://github.com/clingen-data-model/clinvar-submitter"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]

@@ -1,4 +1,5 @@
 {
+    "@context": "file:///Users/babbl/Development/clingen/clinvar-submitter/data/cg-interpretation.jsonld",
     "clinicalSignificance": {
         "code": "LA6668-3",
         "display": "Pathogenic",

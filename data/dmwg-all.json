@@ -1,5 +1,5 @@
 {
-	"@context": "file:///Users/babbl/Development/clingen/clinvar-submitter/data/context-new.jsonld",
+	"@context": "file:///Users/babbl/Development/clingen/clinvar-submitter/data/cg-interpretation.jsonld",
     "VariantInterpretation":[{
     "clinicalSignificance": {
         "code": "LA6668-3",
