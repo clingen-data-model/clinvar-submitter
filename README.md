@@ -36,7 +36,7 @@ Created .../clinvar-submitter/target/uberjar/clinvar-submitter-0.1.0-SNAPSHOT-st
 ```
 Step 2 - run executable
 ```
-$ lein run "data/dmwg1.json" "data/cg-interpretation.jsonld" "myoutput.csv"
+$ java -jar target/uberjar/clinvar-submitter-0.0.0-SNAPSHOT.jar "data/dmwg1.json" "data/cg-interpretation.jsonld" "myoutput.csv"
 ```
 
 
