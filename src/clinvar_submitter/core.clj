@@ -1,7 +1,9 @@
 (ns clinvar-submitter.core
   (:require [clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]]
             [clinvar-submitter.form :as form] 
-            [clojure-csv.core :as csv])
+            [clojure-csv.core :as csv]
+            [clojure.tools.logging.impl :as impl]
+            [clojure.tools.logging :as log])
   (:gen-class))
 
 (defn construct-variant
@@ -70,4 +72,5 @@
   "take input assertion, transformation context, and output filename as input
   and write variant table in csv format"
   [in cx out & args]
+  (log/debug "Context and output Filename: " cx out)
   (spit out (csv/write-csv (construct-variant-table in cx))))
