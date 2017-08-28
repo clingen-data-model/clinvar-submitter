@@ -8,6 +8,7 @@
 
 (defn construct-variant
   "Construct and return one row of variant table, with VariantInterpretation as root"
+  (log/debug "Function: construct-variant - constructing one row of variant table, with VariantInterpretation as root")
   [t i]
   (let [variant (form/get-variant t i)
         condition (form/get-condition t i)
@@ -62,6 +63,7 @@
 (defn construct-variant-table
   "Construct and return variant table"
   [interp-path context-path]
+  (log/debug "Function: construct-variant-table- context and input Filename (construct-variant-table): " interp-path context-path)
   (let [t (ld/generate-symbol-table interp-path context-path)
         m (vals t)
         interps ((prop= t "VariantInterpretation" "type") m)
@@ -72,5 +74,5 @@
   "take input assertion, transformation context, and output filename as input
   and write variant table in csv format"
   [in cx out & args]
-  (log/debug "Context and output Filename: " cx out)
+  (log/debug "Input and output filename in main method: " cx out)
   (spit out (csv/write-csv (construct-variant-table in cx))))
