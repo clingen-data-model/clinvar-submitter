@@ -8,8 +8,8 @@
 
 (defn construct-variant
   "Construct and return one row of variant table, with VariantInterpretation as root"
-  (log/debug "Function: construct-variant - constructing one row of variant table, with VariantInterpretation as root")
   [t i]
+  (log/debug "Function: construct-variant - constructing one row of variant table, with VariantInterpretation as root")
   (let [variant (form/get-variant t i)
         condition (form/get-condition t i)
         interp (form/get-interpretation t i)
