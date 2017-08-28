@@ -1,6 +1,8 @@
 (ns clinvar-submitter.form
  (:require [clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]]
-           [clojure.string :as str]))
+           [clojure.string :as str]
+           [clojure.tools.logging.impl :as impl]
+           [clojure.tools.logging :as log]))
   
  (defn csv-colval
 	 "Outputs a well-formed value for output of the CSV file being generated. 

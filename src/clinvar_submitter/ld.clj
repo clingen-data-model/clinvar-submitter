@@ -1,6 +1,8 @@
 (ns clinvar-submitter.ld
   (:require [cheshire.core :as json]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [clojure.tools.logging.impl :as impl]
+            [clojure.tools.logging :as log])
   (:import [com.github.jsonldjava.core JsonLdProcessor JsonLdOptions]
            [com.github.jsonldjava.utils JsonUtils]
            [java.util Map List]))
