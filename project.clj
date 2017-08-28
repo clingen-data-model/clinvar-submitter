@@ -7,7 +7,12 @@
                  [com.github.jsonld-java/jsonld-java "0.10.0"]
                  [cheshire "5.7.1"]
                  [org.clojure/data.json "0.2.1"]
-                 [clojure-csv/clojure-csv "2.0.1"]]
+                 [clojure-csv/clojure-csv "2.0.1"]
+                 [log4j/log4j "1.2.16" :exclusions [javax.mail/mail
+                                              javax.jms/jms
+                                              com.sun.jdmk/jmxtools
+                                              com.sun.jmx/jmxri]]
+                 [org.clojure/tools.logging "0.2.3"]]
   :main ^:skip-aot clinvar-submitter.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
