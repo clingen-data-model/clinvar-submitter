@@ -18,8 +18,13 @@
     (is (= (map #(construct-variant t %) interps) (construct-variant-table interp-path context-path))
     (println "Expectedvalue" (map #(construct-variant t %) interps)))))
 
+; TODO Nafisa - can you initialize the 'expectedvalue' above using a 
+; static string or object which is either hardcoded or comes from a
+; test file that represents the final expected output.  As this stands
+; it will always be true since both the expectedvalue and the test below
+; use the same info to generate the compared values.
 (deftest test-construct-variant
-  (testing "Testing correctness ovariant construction"
+  (testing "Testing correctness of variant construction"
     (is (= expectedvalue (construct-variant t i))
     (println "Expectedvalue" expectedvalue))))
 
