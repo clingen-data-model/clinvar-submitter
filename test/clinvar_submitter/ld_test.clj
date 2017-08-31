@@ -7,7 +7,9 @@
             [com.github.jsonldjava.utils JsonUtils]
             [java.util Map List]))
 
-(def t (generate-symbol-table "data/dmwg2.json" "data/context-new.jsonld"))
+(def interp-path "data/dmwg2.json")
+(def context-path "data/cg-interpretation.jsonld")
+(def t (generate-symbol-table interp-path context-path))
 (def node  {"id" "_:b404","type" "Conservation","allele" "http://reg.genome.network/allele/CA012832","algorithm" "phastconsp7way","score" "1","contribution" {"id" "_:b405"}})
 (def m (vals t))
 (def interps ((prop= t "VariantInterpretation" "type") m))
@@ -17,7 +19,7 @@
 
 (deftest generate-symbol-table-test
 (testing "Test if symbol table is generated from jason input files"  
-(is (= t (generate-symbol-table "data/dmwg2.json" "data/context-new.jsonld")))
+(is (= t (generate-symbol-table "data/dmwg2.json" "data/cg-interpretation.jsonld")))
 (println "SYMBOL TABLE")
 (json/pprint (take 5 t))))
 
