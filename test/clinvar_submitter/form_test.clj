@@ -24,6 +24,14 @@
 (def summary "The following criteria were met: PM2, PP3, PP2, PP1, PS4") 
 (def rules ["PM2" "PP3" "PP2" "PP1" "PS4"]) 
 (def pmid-citations "PMID:15358028, PMID:15858117, PMID:21511876, PMID:23396983, PMID:24510615")
+(def v (ld/ld1-> t i "variant" "relatedContextualAllele" (ld/prop= t true "preferred"))) 
+(def variantIdentifier "http://reg.genome.network/allele/CA012832") 
+(def altDesignations "") 
+(def refseq "NC_000014.9")
+(def start "23424148") 
+(def stop "23424148") 
+(def ref "T")
+(def alt "C")
 
 
 (deftest test-get-interpretation
@@ -48,6 +56,18 @@
   (is (= rules (form/evidence-rules t e)))
   (is (= pmid-citations (form/evidence-pmid-citations t e)))
   (print :summary summary "\n":rules rules "\n":pmid-citations pmid-citations"\n")
+  (print "---------------------------------------------------------\n")))
+
+(deftest test-get-variant
+  (testing "If variants are retrieved correctly"
+  (is (= variantIdentifier (form/variant-identifier v)))
+  (is (= altDesignations (form/variant-alt-designations v)))
+  (is (= refseq (form/variant-refseq t v)))
+  (is (= start (form/variant-start t v)))
+  (is (= stop (form/variant-stop t v)))
+  (is (= ref (form/variant-ref t v)))
+  (is (= alt (form/variant-alt v)))
+  (print :variantIdentifier variantIdentifier "\n":altDesignations altDesignations "\n":refseq refseq"\n")
   (print "---------------------------------------------------------\n")))
   
 (run-tests)
