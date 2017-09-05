@@ -61,7 +61,7 @@
      (get evidence :summary) ; comment on clinical significance
      "" ; explanation if clinsig is other or drug
     ])
-   (catch Exception e (println (str "Exception construct-variant: " (.getMessage e))))))
+   (catch Exception e (log/debug (str "Exception construct-variant: " e)))))
 
 (defn construct-variant-table
   "Construct and return variant table"
@@ -73,8 +73,8 @@
         interps ((prop= t "VariantInterpretation" "type") m)
         rows (map #(construct-variant t %) interps)]
     rows)
-  (catch Exception e (println (str "Exception in construct-variant-table: " (.getMessage e)))
-  (log/debug (str "Exception in construct-variant-table: " (.getMessage e))))))
+  (catch Exception e (println (str "Exception in construct-variant-table: " e))
+  (log/debug (str "Exception in construct-variant-table: " e)))))
   
 (defn -main
   "take input assertion, transformation context, and output filename as input
@@ -83,6 +83,6 @@
   (log/debug "Input,output and c filename in main method: " in out cx)
   (try
   (spit out (csv/write-csv (construct-variant-table in cx)))
-  (catch Exception e (println (str "Exception in main: " (.getMessage e)))
-  (log/debug (str "Exception in main: " (.getMessage e))))))
+  (catch Exception e (println (str "Exception in main: " e))
+  (log/debug (str "Exception in main: " e)))))
   

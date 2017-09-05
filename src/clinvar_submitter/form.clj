@@ -8,7 +8,7 @@
 	 "Outputs a well-formed value for output of the CSV file being generated. 
 	   nil should be empty strings, non-strings should be stringified, etc..."
 	 [v]
-	 (if (nil? v) "" (if (number? v) (str v) v)))
+	 (if (nil? v) "ERROR" (if (number? v) (str v) v)))
  
  ; *** Interpretation related transformations
  (defn interp-id
@@ -21,7 +21,8 @@
   (defn interp-significance
   "Return the interpretation clinical significance."
   [t i]
-  (let [significance (ld-> t i "clinicalSignificance")]
+  (if (nil? (ld-> t i "clinicalSignificance")) (log/debug (str "Exception in interp-significance: clinicalSignificance not found")))
+    (let [significance (ld-> t i "clinicalSignificance")]
     (csv-colval (get significance "display"))))
   
   (defn interp-eval-date
@@ -176,6 +177,7 @@
    warning will be reported 'Condition is missing for a clinically significant
    interpretation.'"
   [t i]
+  (if (nil? (ld-> t i "condition")) (log/debug (str "Exception in interp-significance: condition not found")))
   (let [c (ld-> t i "condition")]
      {:name (condition-name t c),
       :idtype (condition-idtype t c),

@@ -73,7 +73,8 @@
 (defn generate-symbol-table
   "Flatten JSON-LD document and return a symbol table returning IDs of nodes mapped to the nodes themselves"
   [interp-path context-path]
-  (construct-symbol-table (flatten-interpretation interp-path context-path)))
-
+  (try
+  (construct-symbol-table (flatten-interpretation interp-path context-path))
+  (catch Exception e (log/debug (str "Exception in generate-symbol-table: " (.getMessage e))))))
 
 
