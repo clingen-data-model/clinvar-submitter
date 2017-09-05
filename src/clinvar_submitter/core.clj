@@ -4,12 +4,14 @@
             [clojure-csv.core :as csv]
             [clojure.tools.logging.impl :as impl]
             [clojure.tools.logging :as log])
+  (:import [java.lang.Exception])
   (:gen-class))
 
 (defn construct-variant
   "Construct and return one row of variant table, with VariantInterpretation as root"
   [t i]
   (log/debug "Function: construct-variant - constructing one row of variant table, with VariantInterpretation as root")
+  (try
   (let [variant (form/get-variant t i)
         condition (form/get-condition t i)
         interp (form/get-interpretation t i)
@@ -58,21 +60,29 @@
      "" ; significance citations without db ids
      (get evidence :summary) ; comment on clinical significance
      "" ; explanation if clinsig is other or drug
-    ]))
+    ])
+   (catch Exception e (println (str "Exception construct-variant: " (.getMessage e))))))
 
 (defn construct-variant-table
   "Construct and return variant table"
   [interp-path context-path]
   (log/debug "Function: construct-variant-table- context and input Filename (construct-variant-table): " interp-path context-path)
+  (try
   (let [t (ld/generate-symbol-table interp-path context-path)
         m (vals t)
         interps ((prop= t "VariantInterpretation" "type") m)
         rows (map #(construct-variant t %) interps)]
-    rows))
-
+    rows)
+  (catch Exception e (println (str "Exception in construct-variant-table: " (.getMessage e)))
+  (log/debug (str "Exception in construct-variant-table: " (.getMessage e))))))
+  
 (defn -main
   "take input assertion, transformation context, and output filename as input
   and write variant table in csv format"
   [in cx out & args]
-  (log/debug "Input and output filename in main method: " cx out)
-  (spit out (csv/write-csv (construct-variant-table in cx))))
+  (log/debug "Input,output and c filename in main method: " in out cx)
+  (try
+  (spit out (csv/write-csv (construct-variant-table in cx)))
+  (catch Exception e (println (str "Exception in main: " (.getMessage e)))
+  (log/debug (str "Exception in main: " (.getMessage e))))))
+  
