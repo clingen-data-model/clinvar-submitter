@@ -28,6 +28,7 @@
   (defn interp-eval-date
   "Return the interpretation evaluation date."
   [t i]
+  (if(nil? (ld-> t i "contribution")) (log/debug (str "Exception in interp-eval-date: contribution not found")))
   (let [contribution (ld-> t i "contribution")]
     (if (nil? (get contribution "onDate")) "" 
       (.format 
@@ -102,6 +103,7 @@
      :alt - alternate seq"
   [t i]
   (let [v (ld1-> t i "variant" "relatedContextualAllele" (prop= t true "preferred"))]
+  (if (nil? v ) (log/debug (str "Exception in get-variant: relatedContextualAllele not found")))
     {:variantIdentifier (variant-identifier v),
      :altDesignations (variant-alt-designations v),
      :refseq (variant-refseq t v),
@@ -131,26 +133,33 @@
   May log warnings if available content does not conform to
   clinvar specifcations."
   [t c]
+  (if (not (nil? c)) 
   (let [name (get c "name")]
-    (csv-colval (if (nil? name) "" name))))
+    (csv-colval (if (nil? name) "" name)))
+  (log/debug (str "Exception in function condition-name: condition name not found"))))
 
 (defn condition-idtype
   ;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
   [t c]
+  (if (not (nil? c)) 
   (let [disease-coding (ld-> t c "disease" "coding")]
     (let [disease-code (get disease-coding "code")]
-      (csv-colval (get (re-find #"(.*)\_(.*)" disease-code) 1)))))
+      (csv-colval (if (nil? disease-code) "" (get (re-find #"(.*)\_(.*)" disease-code) 1)))))
+  (log/debug (str "Exception in function condition-idtype: condition idt type not found"))))
 
 (defn condition-idvals
    ;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
   [t c]
+  (if (not (nil? c)) 
   (let [disease-coding (ld-> t c "disease" "coding")]
     (let [disease-code (get disease-coding "code")]
-      (csv-colval (get (re-find #"(.*)\_(.*)" disease-code) 2)))))
+      (csv-colval (if (nil? disease-code) "" (get (re-find #"(.*)\_(.*)" disease-code) 2)))))
+  (log/debug (str "Exception in function condition-idvals: condition id not found"))))
 
 (defn condition-moi
   [t c]
-  (csv-colval (ld-> t c "modeOfInheritance" "display")))
+  (if (not (nil? c)) (csv-colval (if (nil? (ld-> t c "modeOfInheritance" "display")) "" (ld-> t c "modeOfInheritance" "display")))
+  (log/debug (str "Exception in function condition-moi: condition moi not found"))))
 
 (defn get-condition
   "Processes the condition element to derive the ClinVar sanctioned fields: 
@@ -177,12 +186,12 @@
    warning will be reported 'Condition is missing for a clinically significant
    interpretation.'"
   [t i]
-  (if (nil? (ld-> t i "condition")) (log/debug (str "Exception in interp-significance: condition not found")))
   (let [c (ld-> t i "condition")]
-     {:name (condition-name t c),
-      :idtype (condition-idtype t c),
-      :idvalue (condition-idvals t c),
-      :moi (condition-moi t c)}))
+     (if (nil? c) (log/debug (str "Exception in function get-condition: condition not found")))
+     {:name (if (nil? c) "" (condition-name t c)),
+      :idtype (if (nil? c) "" (condition-idtype t c)),
+      :idvalue (if (nil? c) "" (condition-idvals t c)),
+      :moi (if (nil? c) "" (condition-moi t c))}))
 
   (defn evidence-rules
     "Returns the list of criterion rule names for the evidence provided"
