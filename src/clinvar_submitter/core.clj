@@ -3,7 +3,8 @@
             [clinvar-submitter.form :as form] 
             [clojure-csv.core :as csv]
             [clojure.tools.logging.impl :as impl]
-            [clojure.tools.logging :as log])
+            [clojure.tools.logging :as log]
+            [clojure.tools.cli :refer [parse-opts]])
   (:import [java.lang.Exception])
   (:gen-class))
 
@@ -75,14 +76,28 @@
     rows)
   (catch Exception e (println (str "Exception in construct-variant-table: " e))
   (log/debug (str "Exception in construct-variant-table: " e)))))
-  
-(defn -main
+
+(def cli-options
+  [["-in" "--input Input" "Input json file" :parse-fn #(.String %)]
+   ["-cx" "--context Context" "Context json file" :parse-fn #(.String %)]
+   ["-out" "--output Output" "Output csv file" :parse-fn #(.String %)]
+   ["-h" "--help"]])
+
+(defn exit [status msg]
+  (println msg))
+
+(defn help [options]
+  (->> ["clivar-submitter takes three arguments, input json, context jsonld and output csv file\n"
+        "Options:\n" options]))
+
+(defn -main [& args]
   "take input assertion, transformation context, and output filename as input
   and write variant table in csv format"
-  [in cx out & args]
-  (log/debug "Input,output and c filename in main method: " in out cx)
+  (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
+  (if (not= (count arguments) 3) (exit 0 (help summary))
+  (let [in (arguments 0) cx (arguments 1) out (arguments 2)]
+  (log/debug "Input,output and context filename in main method: " in cx out
   (try
   (spit out (csv/write-csv (construct-variant-table in cx)))
-  (catch Exception e (println (str "Exception in main: " e))
-  (log/debug (str "Exception in main: " e)))))
+  (catch Exception e (log/debug (str "Exception in main: " e)))))))))
   
