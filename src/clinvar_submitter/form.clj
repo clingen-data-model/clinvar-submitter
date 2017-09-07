@@ -8,7 +8,10 @@
 	 "Outputs a well-formed value for output of the CSV file being generated. 
 	   nil should be empty strings, non-strings should be stringified, etc..."
 	 [v fn]
-	 (if (nil? v) fn (if (number? v) (str v) v)))
+   (cond 
+     (nil? v) fn 
+	   (number? v) (str v) 
+     (seq? v) (apply str v) :else v))
  
  ; *** Interpretation related transformations
  (defn interp-id
@@ -17,7 +20,6 @@
    [i]
    (let [full-id (get i "id")]
    (let [id (get (re-find #"\/([a-z0-9\-]+)\/$" full-id) 1)]
-     (println "id" id)
      (if (nil? id) (log/debug (str "ERROR-interp-id: id not found")))
      (csv-colval id "ERROR-interp-id"))))
  
@@ -218,7 +220,7 @@
     [t e]
     (let [info-sources (ld-> t e "information" "evidence" "information" "source")
           pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)]
-      (csv-colval (clojure.string/join ", " (map #(str "PMID:" %) pmids)) "")))
+      (csv-colval (clojure.string/join ", " (map #(apply str "PMID:" %) pmids)) "")))
   
   (defn get-met-evidence
    "Returns a collated map of all 'met' evidence records needed for the 
