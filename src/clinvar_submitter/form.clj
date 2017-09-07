@@ -7,23 +7,26 @@
  (defn csv-colval
 	 "Outputs a well-formed value for output of the CSV file being generated. 
 	   nil should be empty strings, non-strings should be stringified, etc..."
-	 [v]
-	 (if (nil? v) "ERROR" (if (number? v) (str v) v)))
+	 [v fn]
+	 (if (nil? v) fn (if (number? v) (str v) v)))
  
  ; *** Interpretation related transformations
  (defn interp-id
    "Return the id portion of the @id url by taking the last part 
-    of the url for VariantInterpretation"
+    of the url for VariantInterpretation. If id is null return error message"
    [i]
    (let [full-id (get i "id")]
-     (csv-colval (get (re-find #"\/([a-z0-9\-]+)\/$" full-id) 1))))
+   (let [id (get (re-find #"\/([a-z0-9\-]+)\/$" full-id) 1)]
+     (println "id" id)
+     (if (nil? id) (log/debug (str "ERROR-interp-id: id not found")))
+     (csv-colval id "ERROR-interp-id"))))
  
   (defn interp-significance
   "Return the interpretation clinical significance."
   [t i]
-  (if (nil? (ld-> t i "clinicalSignificance")) (log/debug (str "Exception in interp-significance: clinicalSignificance not found")))
     (let [significance (ld-> t i "clinicalSignificance")]
-    (csv-colval (get significance "display"))))
+    (if (nil? significance) (log/debug (str "ERROR-interp-significance: clinicalSignificance not found")))
+    (csv-colval (get significance "display") "ERROR-interp-significance")))
   
   (defn interp-eval-date
   "Return the interpretation evaluation date."
@@ -49,18 +52,18 @@
  (defn variant-identifier
   "Return variant identifier, typically the ClinGen AlleleReg id."
   [v]
-  (csv-colval (get v "CanonicalAllele")))
+  (csv-colval (get v "CanonicalAllele") "ERROR-variant-identifier"))
  
   (defn variant-alt-designations
   "Return variant hgvs representations"
   [v]
-  (csv-colval (get v "alleleName name")))
+  (csv-colval (get v "alleleName name") "ERROR-variant-alt-designations"))
  
  (defn variant-refseq
   "Return the variant reference sequence."
-  [t v]
+  [t v] 
   (let [refseq (ld-> t v "referenceCoordinate" "referenceSequence")]
-    (csv-colval (get refseq "display"))))
+    (csv-colval (get refseq "display") "ERROR-variant-refseq")))
  
  (defn variant-start
   "Return the variant reference sequence start pos (0-to-1-based transform)."
@@ -69,7 +72,7 @@
   (let [ref (ld-> t v "referenceCoordinate" "refAllele")
         alt (get v "allele")
         start (ld-> t v "referenceCoordinate" "start")]
-    (csv-colval (if (str/blank? ref) (get start "index") (+ 1 (get start "index"))))))
+    (csv-colval (if (str/blank? ref) (get start "index") (+ 1 (get start "index"))) "")))
      
  (defn variant-stop
   "Return the variant reference sequence stop pos (0-to-1-based transform)."
@@ -78,18 +81,18 @@
   (let [ref (ld-> t v "referenceCoordinate" "refAllele")
         alt (get v "allele")
         stop (ld-> t v "referenceCoordinate" "end")]
-    (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (get stop "index")) (get stop "index")))))
+    (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (get stop "index")) (get stop "index")) "ERROR-variant-stop")))
  
  (defn variant-ref
   "Return the variant ref allele sequence."
   [t v]
-  (let [refcoord (ld-> t v "referenceCoordinate")]
-    (csv-colval (get refcoord "refAllele"))))
+  (let [refcoord (ld-> t v "referenceCoordinate")] 
+    (csv-colval (get refcoord "refAllele") "ERROR-variant-ref")))
  
  (defn variant-alt
    "Return the variant alt allele sequence."
    [v]
-   (csv-colval (get v "allele")))
+   (csv-colval (get v "allele") "ERROR-variant-alt"))
  
  (defn get-variant
   "Returns a map of all variant related fields needed for the clinvar 
@@ -135,7 +138,7 @@
   [t c]
   (if (not (nil? c)) 
   (let [name (get c "name")]
-    (csv-colval (if (nil? name) "" name)))
+    (csv-colval (if (nil? name) "" name) "ERROR-condition-name"))
   (log/debug (str "Exception in function condition-name: condition name not found"))))
 
 (defn condition-idtype
@@ -144,7 +147,7 @@
   (if (not (nil? c)) 
   (let [disease-coding (ld-> t c "disease" "coding")]
     (let [disease-code (get disease-coding "code")]
-      (csv-colval (if (nil? disease-code) "" (get (re-find #"(.*)\_(.*)" disease-code) 1)))))
+      (csv-colval (if (nil? disease-code) "" (get (re-find #"(.*)\_(.*)" disease-code) 1)) "ERROR-condition-idtype")))
   (log/debug (str "Exception in function condition-idtype: condition idt type not found"))))
 
 (defn condition-idvals
@@ -153,12 +156,12 @@
   (if (not (nil? c)) 
   (let [disease-coding (ld-> t c "disease" "coding")]
     (let [disease-code (get disease-coding "code")]
-      (csv-colval (if (nil? disease-code) "" (get (re-find #"(.*)\_(.*)" disease-code) 2)))))
+      (csv-colval (if (nil? disease-code) "" (get (re-find #"(.*)\_(.*)" disease-code) 2)) "ERROR-condition-idvals")))
   (log/debug (str "Exception in function condition-idvals: condition id not found"))))
 
 (defn condition-moi
   [t c]
-  (if (not (nil? c)) (csv-colval (if (nil? (ld-> t c "modeOfInheritance" "display")) "" (ld-> t c "modeOfInheritance" "display")))
+  (if (not (nil? c)) (csv-colval (if (nil? (ld-> t c "modeOfInheritance" "display")) "" (ld-> t c "modeOfInheritance" "display")) "ERROR-condition-moi")
   (log/debug (str "Exception in function condition-moi: condition moi not found"))))
 
 (defn get-condition
@@ -203,7 +206,7 @@
     "Returns a standard formatted summarization of the rules that were met."
     [t e]
     (let [crits (ld-> t e "information" "criterion")]
-      (str "The following criteria were met: " (csv-colval (clojure.string/join ", " (map #(get % "id") crits))))))
+      (str "The following criteria were met: " (csv-colval (clojure.string/join ", " (map #(get % "id") crits)) ""))))
   
   (defn re-extract
     "Returns a map of matching regex group captures for any vector, list, map which can be flattened."
@@ -215,7 +218,7 @@
     [t e]
     (let [info-sources (ld-> t e "information" "evidence" "information" "source")
           pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)]
-      (csv-colval (clojure.string/join ", " (map #(str "PMID:" %) pmids)))))
+      (csv-colval (clojure.string/join ", " (map #(str "PMID:" %) pmids)) "")))
   
   (defn get-met-evidence
    "Returns a collated map of all 'met' evidence records needed for the 
