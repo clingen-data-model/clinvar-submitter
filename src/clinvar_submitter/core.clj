@@ -1,12 +1,47 @@
 (ns clinvar-submitter.core
   (:require [clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]]
-            [clinvar-submitter.form :as form] 
+            [clinvar-submitter.form :as form]
+            [clojure.string :as str]
             [clojure-csv.core :as csv]
             [clojure.tools.logging.impl :as impl]
             [clojure.tools.logging :as log]
             [clojure.tools.cli :refer [parse-opts]])
   (:import [java.lang.Exception])
   (:gen-class))
+
+(def cli-options
+  [;; output file defaults to clinvar-variant.csv and will not overwrite 
+   ;; unless -f force-overwrite option is specified
+   ["-o" "--output FILENAME" "CSV output filename"
+    :default "clinvar-variant.csv"]
+   ["-c" "--jsonld-context URI" "JSON-LD context file URI"
+    :default "http://http://datamodel.clinicalgenome.org/interpretation/context/jsonld"]
+   ["-i" "--input FILENAME" "JSON filename"
+    :default "dmwg.json"]
+   ["-b" "--build BUILD" "Genome build alignment, GRCh37 or GRCh38"
+    :default "GRCh37"]
+   ["-h" "--help"]])
+
+(defn usage [options-summary]  (->> ["The clinvar-submitter program converts one or more ClinGen variant "        " interpretation json files into a CSV formatted list which can be "        " pasted into the ClinVar Submission spreadsheet (variant sheet). "        " Basic validation checking provides warnings and errors at a record "        " and field level."        ""        "Usage: clinvar-submitter [options] input"        ""        "Options:"        options-summary        ""        "Input:"        "  <filename>    The filename of a json file to be converted"        "  <directory>   A directory containing one or more json files to be converted"        ""        "Please refer to http://datamodel.clinicalgenome.org/interpretation "        " for additional details on the variant interpretation json model."]       (str/join \newline)))
+(defn error-msg [errors]  (str "The following errors occurred while parsing your command:\n\n"       (str/join \newline errors)))
+(defn validate-args
+  "Validate command line arguments. Either return a map indicating the program
+  should exit (with a error message, and optional ok status), or a map
+  indicating the action the program should take and the options provided."
+  [args]  
+  (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
+    (cond
+      (:help options) ; help => exit OK with usage summary
+      {:exit-message (usage summary) :ok? true}
+      errors ; errors => exit with description of errors
+      {:exit-message (error-msg errors)}
+      ;; custom validation on arguments
+      (= 1 (count arguments))      {:input (first arguments) :options options}
+      :else ; failed custom validation => exit with usage summary      
+      {:exit-message (usage summary)})))
+
+(defn exit [status msg]
+ (println msg))
 
 (defn construct-variant
   "Construct and return one row of variant table, with VariantInterpretation as root"
@@ -77,27 +112,16 @@
   (catch Exception e (println (str "Exception in construct-variant-table: " e))
   (log/debug (str "Exception in construct-variant-table: " e)))))
 
-(def cli-options
-  [["-in" "--input Input" "Input json file" :parse-fn #(.String %)]
-   ["-cx" "--context Context" "Context json file" :parse-fn #(.String %)]
-   ["-out" "--output Output" "Output csv file" :parse-fn #(.String %)]
-   ["-h" "--help"]])
-
-(defn exit [status msg]
-  (println msg))
-
-(defn help [options]
-  (->> ["clivar-submitter takes three arguments, input json, context jsonld and output csv file\n"
-        "Options:\n" options]))
-
-(defn -main [& args]
-  "take input assertion, transformation context, and output filename as input
-  and write variant table in csv format"
-  (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
-  (if (not= (count arguments) 3) (exit 0 (help summary))
-  (let [in (arguments 0) cx (arguments 1) out (arguments 2)]
-  (log/debug "Input,output and context filename in main method: " in cx out
+(defn -main 
+  "take input assertion, transformation context, and output filename as input and write variant table in csv format"
+  [& args]
+  (let [{:keys [input options exit-message ok?]} (validate-args args)]
+  (log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
+  (if exit-message
+      (exit (if ok? 0 1) exit-message)
   (try
-  (spit out (csv/write-csv (construct-variant-table in cx)))
-  (catch Exception e (log/debug (str "Exception in main: " e)))))))))
+   (spit (get options :output) (csv/write-csv (construct-variant-table input (get options :jsonld-context))))
+   (catch Exception e (log/debug (str "Exception in main: " e)))
+  ))))                                       
+ 
   
