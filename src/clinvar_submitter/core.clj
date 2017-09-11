@@ -97,7 +97,7 @@
      (get evidence :summary) ; comment on clinical significance
      "" ; explanation if clinsig is other or drug
     ])
-   (catch Exception e (log/debug (str "Exception construct-variant: " e)))))
+   (catch Exception e (log/error (str "Exception construct-variant: " e)))))
 
 (defn construct-variant-table
   "Construct and return variant table"
@@ -110,7 +110,7 @@
         rows (map #(construct-variant t %) interps)]
     rows)
   (catch Exception e (println (str "Exception in construct-variant-table: " e))
-  (log/debug (str "Exception in construct-variant-table: " e)))))
+  (log/error (str "Exception in construct-variant-table: " e)))))
 
 (defn -main 
   "take input assertion, transformation context, and output filename as input and write variant table in csv format"
@@ -121,7 +121,7 @@
       (exit (if ok? 0 1) exit-message)
   (try
    (spit (get options :output) (csv/write-csv (construct-variant-table input (get options :jsonld-context))))
-   (catch Exception e (log/debug (str "Exception in main: " e)))
+   (catch Exception e (log/error (str "Exception in main: " e)))
   ))))                                       
  
   
