@@ -23,7 +23,9 @@
    ["-h" "--help"]])
 
 (defn usage [options-summary]  (->> ["The clinvar-submitter program converts one or more ClinGen variant "        " interpretation json files into a CSV formatted list which can be "        " pasted into the ClinVar Submission spreadsheet (variant sheet). "        " Basic validation checking provides warnings and errors at a record "        " and field level."        ""        "Usage: clinvar-submitter [options] input"        ""        "Options:"        options-summary        ""        "Input:"        "  <filename>    The filename of a json file to be converted"        "  <directory>   A directory containing one or more json files to be converted"        ""        "Please refer to http://datamodel.clinicalgenome.org/interpretation "        " for additional details on the variant interpretation json model."]       (str/join \newline)))
+
 (defn error-msg [errors]  (str "The following errors occurred while parsing your command:\n\n"       (str/join \newline errors)))
+
 (defn validate-args
   "Validate command line arguments. Either return a map indicating the program
   should exit (with a error message, and optional ok status), or a map

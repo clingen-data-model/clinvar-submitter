@@ -3,15 +3,15 @@
            [clojure.string :as str]
            [clojure.tools.logging.impl :as impl]
            [clojure.tools.logging :as log]))
-  
- (defn csv-colval
-	 "Outputs a well-formed value for output of the CSV file being generated. 
+
+(defn csv-colval
+	"Outputs a well-formed value for output of the CSV file being generated. 
 	   nil should be empty strings, non-strings should be stringified, etc..."
-	 [v fn]
-   (cond 
-     (nil? v) fn 
-	   (number? v) (str v) 
-     (seq? v) (apply str v) :else v))
+	[v fn]
+  (cond 
+    (nil? v) fn 
+	  (number? v) (str v) 
+    (seq? v) (apply str v) :else v))
  
  ;TODO Can Nafisa and/or Tristan figure out how we can 
  ; sort the evidence by acmg rule precedence 
@@ -36,7 +36,7 @@
    [i]
    (let [full-id (get i "id")]
    (let [id (get (re-find #"\/([a-z0-9\-]+)\/$" full-id) 1)]
-     (if (nil? id) (log/error (str "ERROR-interp-id: id not found")))
+     (if (nil? id) (log/info (str "ERROR-interp-id: id not found")))
      (csv-colval id "ERROR-interp-id"))))
  
   (defn interp-significance
@@ -90,7 +90,7 @@
   (let [ref (ld-> t v "referenceCoordinate" "refAllele")
         alt (get v "allele")
         start (ld-> t v "referenceCoordinate" "start")]
-    (csv-colval (if (str/blank? ref) (get start "index") (+ 1 (get start "index"))) "")))
+    (csv-colval (if (str/blank? ref) (get start "index") (+ 1 (get start "index"))) "ERROR-variant-start")))
      
  (defn variant-stop
   "Return the variant reference sequence stop pos (0-to-1-based transform)."
@@ -244,7 +244,7 @@
     (let [crits (ld-> t e "information" "criterion")]
       (map #(get % "id") crits))) 
   
-  (defn evidence-summary    "Returns a standard formatted summarization of the rules that were met."    [t e]    (str "The following criteria were met: " (csv-colval (clojure.string/join ", " (criteria-assessments t e)))))
+  (defn evidence-summary    "Returns a standard formatted summarization of the rules that were met."    [t e]    (str "The following criteria were met: " (csv-colval (clojure.string/join ", " (criteria-assessments t e)) "ERROR-evidence-summary")))
   
   (defn re-extract
     "Returns a map of matching regex group captures for any vector, list, map which can be flattened."
@@ -256,7 +256,7 @@
     [t e]
     (let [info-sources (ld-> t e "information" "evidence" "information" "source")
           pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)]
-      (csv-colval (clojure.string/join ", " (map #(apply str "PMID:" %) pmids)) "")))
+      (csv-colval (clojure.string/join ", " (map #(apply str "PMID:" %) pmids)) "ERROR-evidence-pmid-citations")))
   
   (defn get-met-evidence
    "Returns a collated map of all 'met' evidence records needed for the 
