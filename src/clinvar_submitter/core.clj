@@ -9,6 +9,7 @@
   (:import [java.lang.Exception])
   (:gen-class))
 
+;cli-options
 (def cli-options
   [;; output file defaults to clinvar-variant.csv and will not overwrite 
    ;; unless -f force-overwrite option is specified
