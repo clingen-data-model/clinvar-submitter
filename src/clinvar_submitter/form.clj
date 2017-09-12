@@ -13,6 +13,22 @@
 	   (number? v) (str v) 
      (seq? v) (apply str v) :else v))
  
+ ;TODO Can Nafisa and/or Tristan figure out how we can 
+ ; sort the evidence by acmg rule precedence 
+ ; in the method evidence-rule-strength.
+ ; This method will sort the rules in a precedence defined by the static list (reversed)
+ ; putting any non-matching values at the end in natural order. element match is case-insensitive.
+ (defn by-acmg-rule-id
+    "Sort ACMG rules using an indexed list to define the order."
+    [a b]
+    (let [ar (str/upper-case (get a "id"))
+          br (str/upper-case (get b "id"))
+          rule-list (vector "BP7" "BP6" "BP5" "BP4" "BP3" "BP2" "BP1" "BS4" "BS3" "BS2" "BS1" "BA1" "PP5" "PP4" "PP3" "PP2" "PP1" "PM6" "PM5" "PM4" "PM3" "PM2" "PM1" "PS4" "PS3" "PS2" "PS1" "PVS1")]
+      (let [ai (.indexOf rule-list ar)
+            bi (.indexOf rule-list br)]
+        (let [c (compare bi ai)]
+          (if (= c 0) (compare a b) c)))))
+ 
  ; *** Interpretation related transformations
  (defn interp-id
    "Return the id portion of the @id url by taking the last part 
@@ -198,17 +214,37 @@
       :idvalue (if (nil? c) "" (condition-idvals t c)),
       :moi (if (nil? c) "" (condition-moi t c))}))
 
+  (defn evidence-rule-strength
+    "Returns the translated strength based on the clingen/acmg recommended 
+     values; PS1, PS1_Moderate, BM2, BM2_Strong, etc..
+     NOTE: if the rule's default strength is not the selected strength then 
+     create the strength by joining the rule and selected strength with an underscore."
+    [t e]
+    (let [crit (ld-> t e "information" "criterion")
+          act-strength-coding (ld-> t e "evidenceStrength" "coding")
+          def-strength-coding (ld-> t e "information" "criterion" "defaultStrength" "coding")]
+        (let [rule-label (get crit "id")
+              def-strength (get def-strength-coding "display")
+              act-strength (get act-strength-coding "display")]
+          (let [def-direction (get (str/split def-strength #" ") 0)
+                def-weight (get (str/split def-strength #" ") 1)
+                act-direction (get (str/split act-strength #" ") 0)
+                act-weight (get (str/split act-strength #" ") 1)]
+            (if (= def-strength act-strength) rule-label (if (= def-direction act-direction) (str rule-label "_" act-weight) #"error"))))))
+
+  (defn criteria-assessments
+    "Returns the criterion assessments map translated to the standard
+     acmg terminology for all evidence lines passed in."
+    [t e]
+    (map #(evidence-rule-strength t %) e))
+  
   (defn evidence-rules
     "Returns the list of criterion rule names for the evidence provided"
     [t e]
     (let [crits (ld-> t e "information" "criterion")]
-      (map #(get % "id") crits)))
+      (map #(get % "id") crits))) 
   
-  (defn evidence-summary
-    "Returns a standard formatted summarization of the rules that were met."
-    [t e]
-    (let [crits (ld-> t e "information" "criterion")]
-      (str "The following criteria were met: " (csv-colval (clojure.string/join ", " (map #(get % "id") crits)) ""))))
+  (defn evidence-summary    "Returns a standard formatted summarization of the rules that were met."    [t e]    (str "The following criteria were met: " (csv-colval (clojure.string/join ", " (criteria-assessments t e)))))
   
   (defn re-extract
     "Returns a map of matching regex group captures for any vector, list, map which can be flattened."
@@ -229,7 +265,7 @@
    (let [e (ld-> t i "evidence"  (prop= t "met" "information" "outcome" "code"))]
      {:summary (evidence-summary t e),
       :rules (evidence-rules t e),
+      :assessments (criteria-assessments t e),
       :pmid-citations (evidence-pmid-citations t e)}))
-     
-
- 
+  
+  
