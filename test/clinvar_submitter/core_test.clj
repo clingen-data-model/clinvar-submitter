@@ -5,7 +5,7 @@
             [clinvar-submitter.form :as form]))
 
 (def interp-path "data/dmwg2.json")
-(def context-path "data/context-new.jsonld")
+(def context-path "data/cg-interpretation.jsonld")
 (def t (ld/generate-symbol-table interp-path context-path))
 (def m (vals t))
 (def interps ((ld/prop= t "VariantInterpretation" "type") m))
