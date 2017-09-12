@@ -49,7 +49,7 @@
   (defn interp-eval-date
   "Return the interpretation evaluation date."
   [t i]
-  (if(nil? (ld-> t i "contribution")) (log/error (str "Exception in interp-eval-date: contribution not found")))
+  (if(nil? (ld-> t i "contribution")) (log/error (str "ERROR-interp-eval-date: contribution not found")))
   (let [contribution (ld-> t i "contribution")]
     (if (nil? (get contribution "onDate")) "" 
       (.format 
@@ -157,7 +157,7 @@
   (if (not (nil? c)) 
   (let [name (get c "name")]
     (csv-colval (if (nil? name) "" name) "ERROR-condition-name"))
-  (log/error (str "Exception in function condition-name: condition name not found"))))
+  (log/error (str "ERROR-condition-name: condition name not found"))))
 
 (defn condition-idtype
   ;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
@@ -166,7 +166,7 @@
   (let [disease-coding (ld-> t c "disease" "coding")]
     (let [disease-code (get disease-coding "code")]
       (csv-colval (if (nil? disease-code) "" (get (re-find #"(.*)\_(.*)" disease-code) 1)) "ERROR-condition-idtype")))
-  (log/error (str "Exception in function condition-idtype: condition idt type not found"))))
+  (log/error (str "ERROR-condition-idtype: condition idt type not found"))))
 
 (defn condition-idvals
    ;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
