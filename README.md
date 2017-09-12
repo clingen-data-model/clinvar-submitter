@@ -9,7 +9,8 @@ This project consists of
 4) The project.clj file for defining the Clojure project and build options.
 5) Example input interpretation data files and a copy of the interpretation jsonld context file they use.
 6) A copy of the ClinVar Submission Template spreadsheet on which this version of the application is aligned.
-7) Unit tests
+7) Two log files. First one contains information for user and the second log is for developers for debuging purpose.
+8) Unit tests
 
 This project is managed using [Leiningen](https://leiningen.org/), a tool and style that focuses on project automation and declarative configuration.  See the [tutorial](https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md) for more information.
 
@@ -17,14 +18,21 @@ This project can be downloaded and run using the `lein run` command-line tool or
 
 I. Command-Line - To run a conversion using the command-line ...
 ```
-$ lein run <json input file> <jsonld context file> <csv output file>
+$ lein run <option> <csv output file> <option> <jsonld context file> <json input file> 
+Options:
+"-o" "--output FILENAME" "CSV output filename"
+"-c" "--jsonld-context URI" "JSON-LD context file URI"
 ```
 for example... 
 ```
-$ lein run "data/dmwg1.json" "data/cg-interpretation.jsonld" "myoutput.csv"
+$ lein run "-o" "myoutput.csv" "-c" "data/cg-interpretation.jsonld" "data/dmwg1.json" 
 ```
+II. Error Handling
 
-II. Executable - To build an executable and run it to convert a file...
+To handle general exceptions, standard clojure exception handling methods are used using try catch block.
+But in some cases since we don’t want to jump out of our function with an exception, for example when an element of a json file does not exists,this app is returning either an error message, or a value. If there is an error, value is nil and error is a string error message. If no error occurred, the error message is nil.
+
+III. Executable - To build an executable and run it to convert a file...
 Step 1 - build executable
 ```
 $ lein uberjar
