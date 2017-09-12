@@ -33,6 +33,7 @@ unless -f force-overwrite option is specified
 for example... 
 ```
 $ lein run "-o" -"f" "myoutput.csv" "-c" "data/cg-interpretation.jsonld" "data/dmwg1.json" 
+```
 
 II. Error Handling
 
@@ -41,6 +42,7 @@ But in some cases since we don’t want to jump out of our function with an exce
 
 III. Executable - To build an executable and run it to convert a file...
 Step 1 - build executable
+
 ```
 $ lein uberjar
 Compiling clinvar-submitter.core
