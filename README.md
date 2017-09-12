@@ -17,11 +17,14 @@ This project can be downloaded and run using the `lein run` command-line tool or
 
 I. Command-Line - To run a conversion using the command-line ...
 ```
-$ lein run <json input file> <jsonld context file> <csv output file>
+$ lein run <option> <csv output file> <option> <jsonld context file> <json input file> 
+Options:
+"-o" "--output FILENAME" "CSV output filename"
+"-c" "--jsonld-context URI" "JSON-LD context file URI"
 ```
 for example... 
 ```
-$ lein run "data/dmwg1.json" "data/cg-interpretation.jsonld" "myoutput.csv"
+$ lein run "-o" "myoutput.csv" "-c" "data/cg-interpretation.jsonld" "data/dmwg1.json" 
 ```
 
 II. Executable - To build an executable and run it to convert a file...
