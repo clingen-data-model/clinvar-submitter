@@ -9,7 +9,8 @@ This project consists of
 4) The project.clj file for defining the Clojure project and build options.
 5) Example input interpretation data files and a copy of the interpretation jsonld context file they use.
 6) A copy of the ClinVar Submission Template spreadsheet on which this version of the application is aligned.
-7) Unit tests
+7) Two log files. First one contains information for user and the second log is for developers for debuging purpose.
+8) Unit tests
 
 This project is managed using [Leiningen](https://leiningen.org/), a tool and style that focuses on project automation and declarative configuration.  See the [tutorial](https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md) for more information.
 
