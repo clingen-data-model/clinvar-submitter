@@ -27,8 +27,12 @@ for example...
 ```
 $ lein run "-o" "myoutput.csv" "-c" "data/cg-interpretation.jsonld" "data/dmwg1.json" 
 ```
+II. Error Handling
 
-II. Executable - To build an executable and run it to convert a file...
+To handle general exceptions, standard clojure exception handling methods are used using try catch block.
+But in some cases since we don’t want to jump out of our function with an exception, for example when an element of a json file does not exists,this app is returning either an error message, or a value. If there is an error, value is nil and error is a string error message. If no error occurred, the error message is nil.
+
+III. Executable - To build an executable and run it to convert a file...
 Step 1 - build executable
 ```
 $ lein uberjar
