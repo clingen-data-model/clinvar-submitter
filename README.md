@@ -27,6 +27,13 @@ for example...
 ```
 $ lein run "-o" "myoutput.csv" "-c" "data/cg-interpretation.jsonld" "data/dmwg1.json" 
 ```
+output file defaults to user provided name .csv and will not overwrite.
+unless -f force-overwrite option is specified
+
+for example... 
+```
+$ lein run "-o" -"f" "myoutput.csv" "-c" "data/cg-interpretation.jsonld" "data/dmwg1.json" 
+
 II. Error Handling
 
 To handle general exceptions, standard clojure exception handling methods are used using try catch block.
