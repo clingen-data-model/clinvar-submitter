@@ -1,5 +1,7 @@
 # clinvar-submitter
-Clojure (java) application for parsing a DMWG Interpretation JSON-LD file and transforming it into a ClinVar Variant submission record.
+Clojure (java) application for parsing a DMWG Interpretation JSON-LD file and transforming it into a ClinVar Variant submission record. 
+
+See release notes at the bottom of this page.
 
 This project consists of
 
@@ -57,4 +59,16 @@ $ java -jar target/uberjar/clinvar-submitter-0.0.0-SNAPSHOT.jar "data/dmwg1.json
 ```
 
 
-after running either of the above example you should have a file called myoutput.csv which contains a csv formatted record which can be copied and pasted into a copy of the ClinVarSubmissionTemplate.xlsx file (also available in the data folder).  
+after running either of the above example you should have a file called myoutput.csv which contains a csv formatted record which can be copied and pasted into a copy of the ClinVarSubmissionTemplate.xlsx file (also available in the data folder). 
+
+--- RELEASE NOTES ---
+
+Not supported in this release
+1.	Phenotypes in Condition.
+2.	Specifying Build (verify with Chris B. whether build info will be added to message)
+3.	Does not fill in condition-name unless explicitly specified in condition.name field, not from disease-coding.display
+4.	Does not handle multiple codings in condition.disease.
+5.	No validation of terms used for criteria rules or strength. 
+6.	Assumes a two-term space separated value for strength.
+7.	No sorting of summarized met strength codes.
+8.  No support for multiple file or directory input.
