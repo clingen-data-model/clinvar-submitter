@@ -44,13 +44,13 @@ Variant – Errors|Warnings|Success (<variant desc>)
 	
 Condition – Errors|Warnings|Success (<condition name>[<inheritance>])
 *E-301: Condition disease code or name not provided.
-*W-351: Mode of Inheritance display value not provided for code <XYZ:123>.
+*E-302: Mode of Inheritance display value not provided.
 
 Interpretation – Errors|Warnings|Success (<significance>)
 *E-401: Interpretation id not provided.
 *E-402: Interpretation significance not provided.
 *E-403: Interpretation evaluation date not provided.
-*E-404: Interpretation evaluation date format not valid (<eval-date>).
+*E-404: Interpretation evaluation date format not valid (<eval-date-value>).
 
 Evidence – Errors|Warnings|Success (<x> Met criteria)
 *E-501: <x> met criteria rules and/or strength codes are invalid or missing. 
@@ -73,6 +73,7 @@ Not supported in this release
 5.	No validation of terms used for criteria rules or strength. 
 6.	Assumes a two-term space separated value for strength.
 7.	No sorting of summarized met strength codes.
+8.  No support for multiple file or directory input.
 
 
 ------------------EXAMPLE RUN REPORT BELOW----------------

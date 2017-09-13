@@ -133,22 +133,7 @@
      :ref (variant-ref t v),
      :alt (variant-alt v)}))
  
-    ; *** Condition related transformations
- 
-    ; TODO build out formal condition-XXX methods with clinvar rules and logging.
-;((defn condition-name
-;  "Returns the condition name based on the clinvar submission rules.
-;   The disease (dis) and phenotype (phen) maps are passed in as well in order
-;   to determine whether any warnings should be reported. 
-;   Additionally, the significance (sig) of the interp is passed in to
-;   determine if the [Not Specified] name should be defaulted for B, LB, VUS."
-;  [c dis phen sig]
-;  (let [cn (if (nil? c) nil (get c "name"))]
-;    ; test to see if no name and no diseases or phenotypes were provided. if so, report warning.
-;    (if (and (every? nil? '(c cn dis phen)) (some (partial = (lower cn)) ["not specified" "not provided"] (lower cn) )) 
-;      (log "WARNING - No condition name, disease or phenotype has been specified for a Path or Likely Path interpretation.")
-;      ())))
- 
+ ; *** Condition related transformations 
  (defn condition-name
   "Returns clinvar condition name based on available content. 
   May log warnings if available content does not conform to
