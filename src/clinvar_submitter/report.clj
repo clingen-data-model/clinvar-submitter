@@ -17,7 +17,7 @@
        (str/join)))
 
 (defn write-report [in cx out frc reportfile]
-  (spit reportfile (report-header in cx out frc reportfile) :append true))
+  (spit reportfile (report-header in cx out frc reportfile) :append false))
 
 (defn append-to-report [reportfile errormsg]
   (println reportfile errormsg)
