@@ -47,13 +47,16 @@
     (csv-colval (get significance "display") "ERROR-interp-significance")))
   
   (defn interp-eval-date
-  "Return the interpretation evaluation date."
+  "Return the interpretation evaluation date.  
+   The date should be wrapped in double quotes and preceded by an equal sign (=)
+   in order to prevent Excel from converting it to a date internally.
+   ClinVar requires that the yyyy-MM-dd format is maintained in their submission."
   [t i]
   (if(nil? (ld-> t i "contribution")) (log/error (str "ERROR-interp-eval-date: contribution not found")))
   (let [contribution (ld-> t i "contribution")]
     (if (nil? (get contribution "onDate")) "" 
       (.format 
-        (java.text.SimpleDateFormat. "yyyy-MM-dd") 
+        (java.text.SimpleDateFormat. "'=\"'yyyy-MM-dd'\"'") 
         (.parse
           (java.text.SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX")
           (get contribution "onDate"))))))

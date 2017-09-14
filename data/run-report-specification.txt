@@ -16,16 +16,18 @@ ClinVar-Submitter Run Report
 
 Date/Time: 	MM/dd/yyy hh:mm a/p
 Directory: 	<directoryname>
-File(s): 		<filename1 >
-		<filename2 >
-		…
-		<filenameN >
-JSON-LD Context (-c): 	<context-uri-or-filename>
-Output File (-o): 	<csv-filename>
-Run Report File (-r): 	<run-report-filename>
+File(s): 	<filename1 >
+			<filename2 >
+			…
+			<filenameN >
+Method Name (-m):		<assertion-method-name>
+Method Citation (-c): 	<url|filename|PMID:pmid>
+JSON-LD Context (-x): 	<context-filename (def:http://datamodel.clinicalgenome.org/interpretation/json/context)>
+Output File (-o): 		<csv-filename (def:clinvar-submitter-variant.csv)>
+Run Report File (-r): 	<run-report-filename (def:clinvar-submitter-run-report.txt>
 Force overwrite (-f): 	<Yes|No>
 
-NOTE: The variant coordinates are based on the preferred genomic representation from the ClinGen Allele Registry.
+NOTE: All variant coordinates are based on build GRCh38 coordinates from the ClinGen Allele Registry.
 
 ====================== 
 Filename: 	<filename1>
@@ -54,29 +56,40 @@ Interpretation – Errors|Warnings|Success (<significance>)
 
 Evidence – Errors|Warnings|Success (<x> Met criteria)
 *E-501: <x> met criteria rules and/or strength codes are invalid or missing. 
-<list met criteria evidence.information.id values?>
-for example…
-evidence.information.id = /evaluations/75000a01-d5ca-4d2e-b17e-1c93f933c9b9/
-evidence.information.id = /evaluations/832d23d6-e0dd-4aa6-ab6f-64c699196a37/
 *W-551: No PMID citations found.
 
 [REPEAT FOR EACH RECORD INCREMENTING THE RECORD#]
 
 See below for an example file...
 
+--- v1.0 Remaining Work ---
+- Finalize/Test Run Report with all Exceptions
+- Command line arguments all work as expected
+-- need to capture constant values for: AssertionMethod and AssertionMethodCitation from user and input as args
+-- 
+- Document SOP for ClinGen users to request/receive clinvar submissions (request, email instructs, etc.)
+-- add notes in email response to user that include the following sentiments:
+--- All genomic coordinates are mapped to genome build 38
+--- Please provide feedback from your experience so that we can improve the future drafting of clinvar submissions
+--- you will need to review columns AW, AX, & AK (collection method, allele origin & affected status) are required but not available from interpretation message. Please fill in before submitting.
+- Directory of json files as input  (if possible, but not mandatory)
+- Test run and sign off by ClinGen user representatives.
+
 --- RELEASE NOTES ---
 Not supported in this release
+0.  No mapping to ClinVar supported disease codes.
 1.	Phenotypes in Condition.
-2.	Specifying Build (verify with Chris B. whether build info will be added to message)
+2.	Always specifies variant genomic coordinates mapped to Build GRCh38.
 3.	Does not fill in condition-name unless explicitly specified in condition.name field, not from disease-coding.display
 4.	Does not handle multiple codings in condition.disease.
 5.	No validation of terms used for criteria rules or strength. 
 6.	Assumes a two-term space separated value for strength.
 7.	No sorting of summarized met strength codes.
 8.  No support for multiple file or directory input.
+9.  Some fallout from ClinVar id to Allele Registry due to synchronization timing. (and some exceptional situations - see A/R release notes)
 
 
-------------------EXAMPLE RUN REPORT BELOW----------------
+--- EXAMPLE RUN REPORT clinvar-submitter-run-report.txt BELOW ---
 ClinVar-Submitter Run Report
 
 Date/Time: 				9/11/2017 13:20
@@ -85,17 +98,33 @@ File(s):				badfile.json
 						dmwg1.json
 						dmwg2.json
 						dmwg3.json
-JSON-LD Context (-c): 	http://datamodel.clinicalgenome.org/interpretation/json/context
-Output File (-o): 		clinvar-submitter-out.csv
-Run Report File (-r): 	clinvar-submitter-run.rpt
+Method Name (-m):		ACMG Guidelines, 2015
+Method Citation (-c): 	PMID:25741868
+JSON-LD Context (-x): 	http://datamodel.clinicalgenome.org/interpretation/json/context
+Output File (-o): 		clinvar-submitter-variant.csv
+Run Report File (-r): 	clinvar-submitter-run-report.txt
 Force overwrite (-f): 	no
 
-NOTE: The variant coordinates are based on the preferred genomic representation from the ClinGen Allele Registry.
+NOTE: All variant coordinates are based on build GRCh38 coordinates from the ClinGen Allele Registry.
+
+--- newly proposed layout of report body 
+
+		|	-------- Input ----------------------------------	|	------- Output -----------------------
+Result#	|	File Name		Record	Variant (alt desig)			|	Cell	Status	Code	Description	
+**101**	|	badfile.json	-		-							|	A6		Error	E-201	Unable to process file badfile.json.
+**102**	|	dmwg1.json		1		-							|	Y7		Warning	W-251	Preferred variant alternate designation not provided.
+**103**	|	dmwg1.json		2		NM_000257.3(MYH7):c.1207C>T	|	AK8		Error	E-403	Interpretation evaluation date not provided	
+**104**	|	dmwg1.json		2		NM_000257.3(MYH7):c.1207C>T	|	AQ8		Error	E-501	2 met criteria rules and/or strength codes are invalid or missing.	
+**105**	|	dmwg2.json		1		NM_000257.3(MYH7):c.2681A>G	|	*9		Success	
+**106**	|	dmwg3.json		1		NM_000257.3(MYH7):c.788T>C	|	AE10	Error	E-301	Condition disease code or name not provided.	
+
+
+--- original layout of report body below
 
 ====================== 
 Filename: 	badfile.json
 Record#: 	1
-*E-201: Unknown format! Unable to process file badfile.json.
+*E-201: Unable to process file badfile.json.
 
 ====================== 
 Filename: 	dmwg1.json
@@ -113,7 +142,8 @@ Variant – Success (NC_000014.9:g.23429279delG)
 Condition – Success (DOID_11984)
 Interpretation –Errors (Likely Pathogenic)
 *E-403: Interpretation evaluation date not provided.
-Evidence –Success (5 Met criteria)
+Evidence –Errors (5 Met criteria)
+*E-501: 2 met criteria rules and/or strength codes are invalid or missing.
 
 ====================== 
 Filename: 	dmwg2.json
@@ -126,7 +156,7 @@ Evidence –Success (6 Met criteria)
 ====================== 
 Filename: 	dmwg3.json
 Record#: 	5
-Variant – Success (NC_000014.9:g.23429279delG)
+Variant – Success (NC_000014.9:g.23429279G>C)
 Condition – Success ()
 *E-301: Condition disease code or name not provided.
 Interpretation –Success (Likely Pathogenic)
