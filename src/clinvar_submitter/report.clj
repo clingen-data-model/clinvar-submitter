@@ -6,22 +6,24 @@
 
 (defn report-header [in cx out frc r]
   (->> ["\nClinVar-Submitter Run Report"
-       "Date/Time: "(new java.util.Date)
-       "File(s): " in
-       "JSON-LD Context (-c): " cx 
-       "Output File (-o): " out
-       "Force overwrite (-f): " frc
-       "Run Report File (-r): " r 	"<run-report-filename (def:clinvar-submitter-run-report.txt>"
-       "NOTE: The variant coordinates are based on the preferred genomic representation from the ClinGen Allele Registry.\n\n"]      
-       (str/join \newline)))
+       "\nDate/Time: "(new java.util.Date)
+       "\nFile(s): " in
+       "\nJSON-LD Context (-c): " cx 
+       "\nOutput File (-o): " out
+       "\nForce overwrite (-f): " frc
+       "\nRun Report File (-r): " r 	"<run-report-filename (def:clinvar-submitter-run-report.txt>"
+       "\n\nNOTE: The variant coordinates are based on the preferred genomic representation from the ClinGen Allele Registry.\n\n"
+       "\n*******************************************************************\n"
+       "\n\nFile Name: " in "\n"]      
+       (str/join)))
 
 (def table-header {:Result# "101" :Input "File Name | Record | Variant (alt desig)" :Output "Cell | Status | Code | Description"})
 
 (defn write-report [in cx out frc reportfile]
-  (spit reportfile (report-header in cx out frc reportfile) :append false)
+  (spit reportfile (report-header in cx out frc reportfile) :append false))
   ;writing table header. TODO - reformat  
-  (with-open [report (clojure.java.io/writer  reportfile :append true)]
-  (pprint/pprint table-header report)))
+  ;(with-open [report (clojure.java.io/writer  reportfile :append true)]
+  ;(pprint/pprint table-header report)))
   
 (defn append-to-report [reportfile errormsg]
   (spit reportfile errormsg :append true))

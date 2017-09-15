@@ -1,4 +1,24 @@
-(ns clinvar-submitter.core  (:require [clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]]            [clinvar-submitter.form :as form]            [clinvar-submitter.report :as report]            [clojure.string :as str]            [clojure-csv.core :as csv]            [clojure.java.io :as io]            [clojure.tools.logging.impl :as impl]            [clojure.tools.logging :as log]            [clojure.tools.cli :refer [parse-opts]])  (:import [java.lang.Exception])  (:gen-class))(def cli-options
+
+
+
+
+
+
+(ns clinvar-submitter.core
+  (:require [clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]]
+            [clinvar-submitter.form :as form]
+            [clinvar-submitter.report :as report]
+            [clojure.string :as str]
+            [clojure-csv.core :as csv]
+            [clojure.java.io :as io]
+
+            [clojure.tools.logging.impl :as impl]
+            [clojure.tools.logging :as log]
+            [clojure.tools.cli :refer [parse-opts]])
+  (:import [java.lang.Exception])
+  (:gen-class))
+
+(def cli-options
   [;; output file defaults to clinvar-variant.csv and will not overwrite 
    ;; unless -f force-overwrite option is specified
    ["-o" "--output FILENAME" "CSV output filename"
@@ -13,9 +33,30 @@
    ["-r" "--report FILENAME" "Run-report filename" :default "clinvar-submitter-run-report.txt"]
    ["-h" "--help"]])
 
-(defn usage [options-summary]  (->> ["The clinvar-submitter program converts one or more ClinGen variant "     " interpretation json files into a CSV formatted list which can be "             " pasted into the ClinVar Submission spreadsheet (variant sheet). "             " Basic validation checking provides warnings and errors at a record "             " and field level."             ""             "Usage: clinvar-submitter [options] input"             ""             "Options:"             options-summary                  ""             "Input:"        "  <filename>    The filename of a json file to be converted"             "  <directory>   A directory containing one or more json files to be converted"             ""             "Please refer to http://datamodel.clinicalgenome.org/interpretation "             " for additional details on the variant interpretation json model."]            (str/join \newline)))
+(defn usage [options-summary]  
+(->> ["The clinvar-submitter program converts one or more ClinGen variant "
+     " interpretation json files into a CSV formatted list which can be "        
+     " pasted into the ClinVar Submission spreadsheet (variant sheet). "        
+     " Basic validation checking provides warnings and errors at a record "        
+     " and field level."        
+     ""        
+     "Usage: clinvar-submitter [options] input"
+        
+     "" 
+       
+     "Options:"        
+     options-summary        
+     
+     ""        
+     "Input:"        "  <filename>    The filename of a json file to be converted"        
+     "  <directory>   A directory containing one or more json files to be converted"        
+     ""        
+     "Please refer to http://datamodel.clinicalgenome.org/interpretation "        
+     " for additional details on the variant interpretation json model."]       
+     (str/join \newline)))
 
-(defn error-msg [errors]  (str "The following errors occurred while parsing your command:\n\n"          (str/join \newline errors)))
+(defn error-msg [errors]  (str "The following errors occurred while parsing your command:\n\n"       
+   (str/join \newline errors)))
 
 (defn validate-args
   "Validate command line arguments. Either return a map indicating the program
@@ -114,10 +155,10 @@
   (if exit-message
       (exit (if ok? 0 1) exit-message)
   (try
-   (if (or (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report)))) 
+   (if (and (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report)))) 
      (if (get options :force)
        (spit (get options :output) (csv/write-csv (construct-variant-table input (get options :jsonld-context) (get options :report))))
        (println "ERROR 101 ‚Äì output or report file exists! (use ‚Äìf Force overwrite to overwrite these files)."))
    (spit (get options :output) (csv/write-csv (construct-variant-table input (get options :jsonld-context) (get options :report)))))
    (catch Exception e (log/error (str "Exception in main: " e)))
-  ))))                           
+  ))))                           
