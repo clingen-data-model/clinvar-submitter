@@ -17,13 +17,15 @@
        "\n\nFile Name: " in "\n"]      
        (str/join)))
 
-(def table-header {:Result# "101" :Input "File Name | Record | Variant (alt desig)" :Output "Cell | Status | Code | Description"})
+(def table-header [{:#  "Result# " :Input "File Name | Record | Variant (alt desig)" :Output "Cell | Status | Code | Description"}])
 
 (defn write-report [in cx out frc reportfile]
+  (pprint/print-table table-header)
+  ;(println (concat [report-header in cx out frc reportfile] table-header))
   (spit reportfile (report-header in cx out frc reportfile) :append false))
-  ;writing table header. TODO - reformat  
-  ;(with-open [report (clojure.java.io/writer  reportfile :append true)]
-  ;(pprint/pprint table-header report)))
-  
+  ;(spit reportfile table-header :append true))
+
 (defn append-to-report [reportfile errormsg]
   (spit reportfile errormsg :append true))
+
+

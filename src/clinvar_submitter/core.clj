@@ -1,9 +1,3 @@
-
-
-
-
-
-
 (ns clinvar-submitter.core
   (:require [clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]]
             [clinvar-submitter.form :as form]
@@ -158,7 +152,7 @@
    (if (and (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report)))) 
      (if (get options :force)
        (spit (get options :output) (csv/write-csv (construct-variant-table input (get options :jsonld-context) (get options :report))))
-       (println "ERROR 101 ‚Äì output or report file exists! (use ‚Äìf Force overwrite to overwrite these files)."))
+       (println "ERROR 101 ‚output or report file exists! (use ‚-f Force overwrite to overwrite these files)."))
    (spit (get options :output) (csv/write-csv (construct-variant-table input (get options :jsonld-context) (get options :report)))))
    (catch Exception e (log/error (str "Exception in main: " e)))
   ))))                           

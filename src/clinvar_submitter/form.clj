@@ -31,7 +31,7 @@
         (let [c (compare bi ai)]
           (if (= c 0) (compare a b) c))))) 
 
-;*** Interpretation related transformations ***
+
 (defn interp-id
    "Return the id portion of the @id url by taking the last part 
     of the url for VariantInterpretation. If id is null return error message"
@@ -66,68 +66,58 @@
        (catch Exception e (report/append-to-report r "\n\n*E-404: Interpretation evaluation date format not valid") (get contribution "onDate") "*E-404")))))
 
   (defn get-interpretation
-   "Returns a map of all interpretation related fields needed for the 
+    "Returns a map of all interpretation related fields needed for the 
     clinvar 'variant' submission sheet."
-   [t i r]
-   {:id (interp-id i r),
-    :significance (interp-significance t i r),
-    :eval-date (interp-eval-date t i r)})
-
-;*** Variant related transformations ***
-
+    [t i r]
+    {:id (interp-id i r),
+     :significance (interp-significance t i r),
+     :eval-date (interp-eval-date t i r)})
+ 
+ 
  (defn variant-identifier
-   "Return variant identifier, typically the ClinGen AlleleReg id."
-   [v r]
-   (if (nil? v) (report/append-to-report r "\n\n*E-202: Variant identifier not provided."))
-   (csv-colval (get v "CanonicalAllele") "*E-202"))
-
-
+  "Return variant identifier, typically the ClinGen AlleleReg id."
+  [v]
+  (csv-colval (get v "CanonicalAllele") "ERROR-variant-identifier"))
+ 
   (defn variant-alt-designations
   "Return variant hgvs representations"
-  [v r]
-  (if (nil? v) (report/append-to-report r "\n\n*W-251: Preferred variant alternate designation not provided"))
-  (csv-colval (get v "alleleName name") "*W-251"))
+  [v]
+  (csv-colval (get v "alleleName name") "ERROR-variant-alt-designations"))
  
  (defn variant-refseq
   "Return the variant reference sequence."
-  [t v r] 
+  [t v] 
   (let [refseq (ld-> t v "referenceCoordinate" "referenceSequence")]
-  (if (nil? refseq) (report/append-to-report r "\n\n*E-204: Preferred variant reference sequence not provided.")
-    (report/append-to-report r {"Variant: " (get refseq "display")}))
-    (csv-colval (get refseq "display") "*E-204")))
-
-(defn variant-start
+    (csv-colval (get refseq "display") "ERROR-variant-refseq")))
+ 
+ (defn variant-start
   "Return the variant reference sequence start pos (0-to-1-based transform)."
-  [t v r]
-   ;if ref is not null add 1 to start otherwise as-is
+  [t v]
+  ; if ref is not null add 1 to start otherwise as-is
   (let [ref (ld-> t v "referenceCoordinate" "refAllele")
         alt (get v "allele")
         start (ld-> t v "referenceCoordinate" "start")]
-    (if (nil? start) (report/append-to-report r "\n\n*E-205: Preferred variant start coordinate not provided."))
-    (csv-colval (if (str/blank? ref) (get start "index") (+ 1 (get start "index"))) "*E-205")))
-
-(defn variant-stop
+    (csv-colval (if (str/blank? ref) (get start "index") (+ 1 (get start "index"))) "ERROR-variant-start")))
+     
+ (defn variant-stop
   "Return the variant reference sequence stop pos (0-to-1-based transform)."
-  [t v r]
-   ;if ref is blank and alt is not add 1 to stop otherwise as-is
+  [t v]
+  ; if ref is blank and alt is not add 1 to stop otherwise as-is
   (let [ref (ld-> t v "referenceCoordinate" "refAllele")
         alt (get v "allele")
         stop (ld-> t v "referenceCoordinate" "end")]
-    (if (nil? stop) (report/append-to-report r "\n\n*E-206: Preferred variant stop coordinate not provided."))
-    (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (get stop "index")) (get stop "index")) "*E-206")))
+    (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (get stop "index")) (get stop "index")) "ERROR-variant-stop")))
  
  (defn variant-ref
   "Return the variant ref allele sequence."
-  [t v r]
+  [t v]
   (let [refcoord (ld-> t v "referenceCoordinate")] 
-    (if (nil? v) (report/append-to-report r "\n\n*E-207: Preferred variant reference allele not provided."))
-    (csv-colval (get refcoord "refAllele") "*E-207")))
+    (csv-colval (get refcoord "refAllele") "ERROR-variant-ref")))
  
  (defn variant-alt
    "Return the variant alt allele sequence."
-   [v r]
-   (if (nil? v) (report/append-to-report r "\n\n*E-208: Preferred variant alternate allele not provided."))
-   (csv-colval (get v "allele") "*E-208"))
+   [v]
+   (csv-colval (get v "allele") "ERROR-variant-alt"))
  
  (defn get-variant
   "Returns a map of all variant related fields needed for the clinvar 
@@ -142,50 +132,47 @@
   [t i r]
   (let [v (ld1-> t i "variant" "relatedContextualAllele" (prop= t true "preferred"))]
   (if (nil? v ) (log/error (str "Exception in get-variant: relatedContextualAllele not found")))
-    {:variantIdentifier (variant-identifier v r),
-     :altDesignations (variant-alt-designations v r),
-     :refseq (variant-refseq t v r),
-     :start (variant-start t v r),
-     :stop  (variant-stop t v r),
-     :ref (variant-ref t v r),
-     :alt (variant-alt v r)}))
-
-;*** Condition related transformations 
-
+    {:variantIdentifier (variant-identifier v),
+     :altDesignations (variant-alt-designations v),
+     :refseq (variant-refseq t v),
+     :start (variant-start t v),
+     :stop  (variant-stop t v),
+     :ref (variant-ref t v),
+     :alt (variant-alt v)}))
+ 
+ ; *** Condition related transformations 
  (defn condition-name
   "Returns clinvar condition name based on available content. 
   May log warnings if available content does not conform to
   clinvar specifcations."
-  [t c r]
+  [t c]
   (if (not (nil? c)) 
   (let [name (get c "name")]
-    (csv-colval (if (nil? name) "" name) "*E-301"))
-  (report/append-to-report r "\n\n*E-301: Condition disease code or name not provided.")))
+    (csv-colval (if (nil? name) "" name) "ERROR-condition-name"))
+  (log/error (str "ERROR-condition-name: condition name not found"))))
 
 (defn condition-idtype
   ;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
-  [t c r]
+  [t c]
   (if (not (nil? c)) 
   (let [disease-coding (ld-> t c "disease" "coding")]
     (let [disease-code (get disease-coding "code")]
-      (csv-colval (if (nil? disease-code) "" (get (re-find #"(.*)\_(.*)" disease-code) 1)) "*E-301")))
-  (report/append-to-report r "\n\n*E-301: Condition disease code or name not provided.")))
-
+      (csv-colval (if (nil? disease-code) "" (get (re-find #"(.*)\_(.*)" disease-code) 1)) "ERROR-condition-idtype")))
+  (log/error (str "ERROR-condition-idtype: condition idt type not found"))))
 
 (defn condition-idvals
-;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
-[t c r]
-(if (not (nil? c)) 
-(let [disease-coding (ld-> t c "disease" "coding")]
-(let [disease-code (get disease-coding "code")]
-(csv-colval (if (nil? disease-code) "" (get (re-find #"(.*)\_(.*)" disease-code) 2)) "*E-301")))
-(report/append-to-report r "\n\n*E-301: Condition disease code or name not provided.")))
-
+   ;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
+  [t c]
+  (if (not (nil? c)) 
+  (let [disease-coding (ld-> t c "disease" "coding")]
+    (let [disease-code (get disease-coding "code")]
+      (csv-colval (if (nil? disease-code) "" (get (re-find #"(.*)\_(.*)" disease-code) 2)) "ERROR-condition-idvals")))
+  (log/error (str "Exception in function condition-idvals: condition id not found"))))
 
 (defn condition-moi
-  [t c r]
-  (if (not (nil? c)) (csv-colval (if (nil? (ld-> t c "modeOfInheritance" "display")) "" (ld-> t c "modeOfInheritance" "display")) "*E-302")
-  (report/append-to-report r "\n\n*E-302: Mode of Inheritance display value not provided.")))
+  [t c]
+  (if (not (nil? c)) (csv-colval (if (nil? (ld-> t c "modeOfInheritance" "display")) "" (ld-> t c "modeOfInheritance" "display")) "ERROR-condition-moi")
+  (log/error (str "Exception in function condition-moi: condition moi not found"))))
 
 (defn get-condition
   "Processes the condition element to derive the ClinVar sanctioned fields: 
@@ -212,10 +199,10 @@
   [t i r]
   (let [c (ld-> t i "condition")]
      (if (nil? c) (log/debug (str "Exception in function get-condition: condition not found")))
-     {:name (if (nil? c) "" (condition-name t c r)),
-      :idtype (if (nil? c) "" (condition-idtype t c r)),
-      :idvalue (if (nil? c) "" (condition-idvals t c r)),
-      :moi (if (nil? c) "" (condition-moi t c r))}))
+     {:name (if (nil? c) "" (condition-name t c)),
+      :idtype (if (nil? c) "" (condition-idtype t c)),
+      :idvalue (if (nil? c) "" (condition-idvals t c)),
+      :moi (if (nil? c) "" (condition-moi t c))}))
 
   (defn evidence-rule-strength
     "Returns the translated strength based on the clingen/acmg recommended 
@@ -247,7 +234,10 @@
     (let [crits (ld-> t e "information" "criterion")]
       (map #(get % "id") crits))) 
   
-  (defn evidence-summary    "Returns a standard formatted summarization of the rules that were met."    [t e]    (str "The following criteria were met: " (csv-colval (clojure.string/join ", " (criteria-assessments t e)) "ERROR-evidence-summary")))
+  (defn evidence-summary    
+    "Returns a standard formatted summarization of the rules that were met."    
+    [t e]    
+    (str "The following criteria were met: " (csv-colval (clojure.string/join ", " (criteria-assessments t e)) "ERROR-evidence-summary")))
   
   (defn re-extract
     "Returns a map of matching regex group captures for any vector, list, map which can be flattened."
@@ -256,11 +246,10 @@
   
   (defn evidence-pmid-citations
     "Returns the list of critieron pmid citations for the evidence provided"
-    [t e r]
+    [t e]
     (let [info-sources (ld-> t e "information" "evidence" "information" "source")
           pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)]
-      (csv-colval (clojure.string/join ", " (map #(apply str "PMID:" %) pmids)) "*W-551"))
-      (report/append-to-report r "\n*W-551: No PMID citations found"))
+      (csv-colval (clojure.string/join ", " (map #(apply str "PMID:" %) pmids)) "")))
   
   (defn get-met-evidence
    "Returns a collated map of all 'met' evidence records needed for the 
@@ -270,6 +259,6 @@
      {:summary (evidence-summary t e),
       :rules (evidence-rules t e),
       :assessments (criteria-assessments t e),
-      :pmid-citations (evidence-pmid-citations t e r)}))
+      :pmid-citations (evidence-pmid-citations t e)}))
  
   
