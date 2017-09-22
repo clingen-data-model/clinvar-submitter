@@ -1,11 +1,10 @@
 (ns clinvar-submitter.core
   (:require [clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]]
             [clinvar-submitter.form :as form]
-            [clinvar-submitter.report :as report]
             [clojure.string :as str]
-            [clojure-csv.core :as csv]
+            [clinvar-submitter.report :as report]
             [clojure.java.io :as io]
-
+            [clojure-csv.core :as csv]
             [clojure.tools.logging.impl :as impl]
             [clojure.tools.logging :as log]
             [clojure.tools.cli :refer [parse-opts]])
@@ -27,30 +26,29 @@
    ["-r" "--report FILENAME" "Run-report filename" :default "clinvar-submitter-run-report.txt"]
    ["-h" "--help"]])
 
-(defn usage [options-summary]  
-(->> ["The clinvar-submitter program converts one or more ClinGen variant "
-     " interpretation json files into a CSV formatted list which can be "        
-     " pasted into the ClinVar Submission spreadsheet (variant sheet). "        
-     " Basic validation checking provides warnings and errors at a record "        
-     " and field level."        
-     ""        
-     "Usage: clinvar-submitter [options] input"
-        
-     "" 
-       
-     "Options:"        
-     options-summary        
-     
-     ""        
-     "Input:"        "  <filename>    The filename of a json file to be converted"        
-     "  <directory>   A directory containing one or more json files to be converted"        
-     ""        
-     "Please refer to http://datamodel.clinicalgenome.org/interpretation "        
-     " for additional details on the variant interpretation json model."]       
-     (str/join \newline)))
+(defn usage [options-summary]
+  (->> ["The clinvar-submitter program converts one or more ClinGen variant "
+        " interpretation json files into a CSV formatted list which can be "
+        " pasted into the ClinVar Submission spreadsheet (variant sheet). "
+        " Basic validation checking provides warnings and errors at a record "
+        " and field level."
+        ""
+        "Usage: clinvar-submitter [options] input"
+        ""
+        "Options:"
+        options-summary
+        ""
+        "Input:"
+        "  <filename>    The filename of a json file to be converted"
+        "  <directory>   A directory containing one or more json files to be converted"
+        ""
+        "Please refer to http://datamodel.clinicalgenome.org/interpretation "
+        " for additional details on the variant interpretation json model."]
+       (str/join \newline)))
 
-(defn error-msg [errors]  (str "The following errors occurred while parsing your command:\n\n"       
-   (str/join \newline errors)))
+(defn error-msg [errors]
+  (str "The following errors occurred while parsing your command:\n\n"
+       (str/join \newline errors)))
 
 (defn validate-args
   "Validate command line arguments. Either return a map indicating the program
@@ -64,7 +62,8 @@
       errors ; errors => exit with description of errors
       {:exit-message (error-msg errors)}
       ;; custom validation on arguments
-      (= 1 (count arguments))      {:input (first arguments) :options options}
+      (= 1 (count arguments))
+      {:input (first arguments) :options options}
       :else ; failed custom validation => exit with usage summary      
       {:exit-message (usage summary)})))
 
@@ -73,13 +72,13 @@
 
 (defn construct-variant
   "Construct and return one row of variant table, with VariantInterpretation as root"
-  [t i l]
+  [t i]
   (log/debug "Function: construct-variant - constructing one row of variant table, with VariantInterpretation as root")
-  (try
-  (let [variant (form/get-variant t i l)
-        condition (form/get-condition t i l)
-        interp (form/get-interpretation t i l)
-        evidence (form/get-met-evidence t i l)]
+  (try 
+  (let [variant (form/get-variant t i)
+        condition (form/get-condition t i)
+        interp (form/get-interpretation t i)
+        evidence (form/get-met-evidence t i)]       
     [(get interp :id) ; local id
      "" ; linking id - only needed if providing case data or func evidence tabs 
      "" ; gene symbol - not provided since we are avoiding contextual allele representation. 
@@ -129,13 +128,13 @@
 
 (defn construct-variant-table
   "Construct and return variant table"
-  [interp-path context-path report-path]
-  (log/debug "Function: construct-variant-table- context and input Filename (construct-variant-table): " interp-path context-path report-path)
+  [interp-path context-path]
+  (log/debug "Function: construct-variant-table- context and input Filename (construct-variant-table): " interp-path context-path)
   (try
   (let [t (ld/generate-symbol-table interp-path context-path)
         m (vals t)
         interps ((prop= t "VariantInterpretation" "type") m)
-        rows (map #(construct-variant t % report-path) interps )]
+        rows (map #(construct-variant t %) interps)]
     rows)
   (catch Exception e (println (str "Exception in construct-variant-table: " e))
   (log/error (str "Exception in construct-variant-table: " e)))))
@@ -144,15 +143,18 @@
   "take input assertion, transformation context, and output filename as input and write variant table in csv format"
   [& args]
   (let [{:keys [input options exit-message ok?]} (validate-args args)]
-  (report/write-report input (get options :jsonld-context) (get options :output) (get options :force) (get options :report))
-  (log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))  
+  (log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
+  (report/write-report input (get options :jsonld-context) (get options :output) (get options :force) (get options :report))  
+  (let [records (construct-variant-table input (get options :jsonld-context))]
   (if exit-message
       (exit (if ok? 0 1) exit-message)
-  (try
-   (if (and (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report)))) 
-     (if (get options :force)
-       (spit (get options :output) (csv/write-csv (construct-variant-table input (get options :jsonld-context) (get options :report))))
-       (println "ERROR 101 ‚output or report file exists! (use ‚-f Force overwrite to overwrite these files)."))
-   (spit (get options :output) (csv/write-csv (construct-variant-table input (get options :jsonld-context) (get options :report)))))
-   (catch Exception e (log/error (str "Exception in main: " e)))
-  ))))                           
+  (try      (if (and (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report))))     
+      (if (get options :force)           
+        (spit (get options :output) (csv/write-csv records))
+        ((println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files).")
+         (log/error "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files).")))               (spit (get options :output) (csv/write-csv records)))
+      (report/append-to-report (get options :report) input (get options :output) records)
+  (catch Exception e (log/error (str "Exception in main: " e)))
+  )))))                                     
+ 
+  
