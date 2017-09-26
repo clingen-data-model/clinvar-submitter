@@ -43,32 +43,73 @@
   (some #(= errorcode %) errorvector))
 )
 
-
 (defn error-description [errorcode]
   (println "is equale " (identical? "*E-401" errorcode))
-  (if (identical? "*E-401" errorcode)
+  (cond
+  (identical? "*E-401" errorcode)
   {
    :desc "Interpretation id not provided."
+  }
+  (identical? "*E-202" errorcode)
+  {
+   :desc "Variant identifier not provided."
+  }
+  (identical? "*E-203" errorcode)
+  {
+   :desc "No preferred variant information provided" 
+  }
+  (identical? "*E-204" errorcode)
+  {
+   :desc "Preferred variant reference sequence not provided"
+  }
+  (identical? "*E-205" errorcode)
+  {
+   :desc "Preferred variant start coordinate not provided." 
+  }
+  (identical? "*E-206" errorcode)
+  {
+   :desc "Preferred variant end coordinate not provided."
+  }
+  (identical? "*E-207" errorcode)
+  {
+   :desc "Preferred variant reference allele not provided."
+  }
+  (identical? "*E-208" errorcode)
+  {
+   :desc "Preferred variant alternate allele not provided."
+  }
+  (identical? "*W-251" errorcode)
+  {
+   :desc "Preferred variant alternate designation not provided."
+  }
+  (identical? "*E-301" errorcode)
+  {
+   :desc "Condition disease code or name not provided."
+  }
+  (identical? "*E-302" errorcode)
+  {
+   :desc "Mode of Inheritance display value not provided."
+  }
+  (identical? "*E-402" errorcode)
+  {
+   :desc "Interpretation significance not provided."
+  }
+  (identical? "*E-403" errorcode)
+  {
+   :desc "Interpretation evaluation date not provided."
+  }
+  (identical? "*E-404" errorcode)
+  {
+   :desc "Interpretation evaluation date format not valid (<eval-date-value>)."
+  }
+  (identical? "*E-501" errorcode)
+  {
+   :desc "<x> met criteria rules and/or strength codes are invalid or missing." 
+  }
+  (identical? "*W-551" errorcode)
+  {
+   :desc "No PMID citations found."
   }))
-
-;{
-;    :E-202 "Variant identifier not provided."
-;		:E-203 "No preferred variant information provided" 
-;		:E-204 "Preferred variant reference sequence not provided"
-;		:E-205 "Preferred variant start coordinate not provided." 
-;		:E-206 "Preferred variant end coordinate not provided."
-;		:E-207 "Preferred variant reference allele not provided."
-;		:E-208 "Preferred variant alternate allele not provided."
-;		:W-251 "Preferred variant alternate designation not provided."
-;		:E-301 "Condition disease code or name not provided."
-;		:E-302 "Mode of Inheritance display value not provided."
-;		:E-401 "Interpretation id not provided."
-;		:E-402 "Interpretation significance not provided."
-;		:E-403 "Interpretation evaluation date not provided."
-;		:E-404 "Interpretation evaluation date format not valid (<eval-date-value>)."
-;		:E-501 "<x> met criteria rules and/or strength codes are invalid or missing." 
-;		:W-551 "No PMID citations found."
-;})
 
 (defn get-error [errorcode n]
   (let [desc (error-description errorcode)]
@@ -88,8 +129,8 @@
        (for [i (range (count items))]
        (if-not(nil? (get items i))
          (if(isError (get items i))      
-          (str (get items i)))))]
-       (let [newList (some #(when-not (empty? %) %) errorlist)]
+          (get items i))))]
+       (let [newList (some #(when-not (empty? %) %) errorlist)]      
        newList)))
 
 (defn append-to-report [reportfile in out records]  
@@ -98,6 +139,7 @@
     (let [row (nth records n)]
       ;get errorcode from each row
       (let [errorcode (get-errorcode row)]
+        (println errorcode)
         ;if there is error in any row add error information in the report
         (if-not(nil? errorcode)
           (let [error (get-error errorcode n)] 
