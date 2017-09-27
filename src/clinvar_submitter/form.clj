@@ -3,7 +3,8 @@
            [clojure.string :as str]
            [clojure-csv.core :as csv]
            [clojure.tools.logging.impl :as impl]
-           [clojure.tools.logging :as log]))
+           [clojure.tools.logging :as log])
+ (:import [java.util Map List]))
   
  (defn csv-colval
 	 "Outputs a well-formed value for output of the CSV file being generated. 
@@ -213,17 +214,24 @@
     [t e]
     (try
     (let [crit (ld-> t e "information" "criterion")
-          act-strength-coding (ld-> t e "evidenceStrength" "coding")
-          def-strength-coding (ld-> t e "information" "criterion" "defaultStrength" "coding")
-          def-strength-display (ld-> t e "information" "criterion" "defaultStrength" "coding" "display")]
-        (let [rule-label (get crit "id")
-              def-strength (first def-strength-display)
-              act-strength (get act-strength-coding "display")]
+         act-strength-coding (ld-> t e "evidenceStrength" "coding")
+         def-strength-coding (ld-> t e "information" "criterion" "defaultStrength" "coding")
+         def-strength-display (ld-> t e "information" "criterion" "defaultStrength" "coding" "display")]
+        (let [def-strength-displaylist
+          (cond 
+          (instance? List def-strength-display)
+           def-strength-display
+          :else 
+          (list def-strength-display))]
+          (let [rule-label (get crit "id")
+                def-strength (first def-strength-displaylist)
+                act-strength (get act-strength-coding  "display")]
+          (println def-strength)
           (let [def-direction (get (str/split def-strength #" ") 0)
                 def-weight (get (str/split def-strength #" ") 1)
                 act-direction (get (str/split act-strength #" ") 0)
                 act-weight (get (str/split act-strength #" ") 1)]
-            (if (= def-strength act-strength) rule-label (if (= def-direction act-direction) (str rule-label "_" act-weight) #"error")))))
+          (if (= def-strength act-strength) rule-label (if (= def-direction act-direction) (str rule-label "_" act-weight) #"error"))))))
     (catch Exception e (log/error (str "Exception in evidence-rule-strength: " e)))))
 
   (defn criteria-assessments
