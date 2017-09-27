@@ -38,13 +38,11 @@
      (seq? v) (apply str v) :else v))
 
 (defn isError [errorcode]
-  ;(println "errorcode in isError " errorcode)
   (let [errorvector ["*E-202" "*E-203" "*E-204" "*E-205" "*E-206" "*E-207" "*E-208" "*W-251" "*E-301" "*E-302" "*E-401" "*E-402" "*E-403" "E-404" "E-501" "W-551"]]
   (some #(= errorcode %) errorvector))
 )
 
 (defn error-description [errorcode]
-  (println "is equale " (identical? "*E-401" errorcode))
   (cond
   (identical? "*E-401" errorcode)
   {
@@ -130,19 +128,20 @@
        (if-not(nil? (get items i))
          (if(isError (get items i))      
           (get items i))))]
-       (let [newList (some #(when-not (empty? %) %) errorlist)]      
+       (let [newList (filter some? errorlist)]      
        newList)))
 
 (defn append-to-report [reportfile in out records]  
-  (doseq [n (range (count records))]
+  (for [n (range (count records))]
     ;get each row from record set
     (let [row (nth records n)]
+      ;(println row)
       ;get errorcode from each row
       (let [errorcode (get-errorcode row)]
-        (println errorcode)
-        ;if there is error in any row add error information in the report
-        (if-not(nil? errorcode)
-          (let [error (get-error errorcode n)] 
+        ;if there is error in any row add error information in the report 
+        (if-not(empty? errorcode)
+          (for [i (range (count errorcode))]
+          (let [error (get-error (nth errorcode i) i)] 
           (let [outputdata-e (format "%s%10s%s%18s%s%20s%s%8s%s%5s%s%5s%s%10s%s%16s%s"
                                   "|" (+ n 101)
                                   "|" in
@@ -152,7 +151,7 @@
                                   "|" (get error :status)
                                   "|" (get error :code)
                                   "|" (get error :desc) "|\n")]       
-           (spit reportfile outputdata-e  :append true)))       
+           (spit reportfile outputdata-e  :append true))))      
            (let [outputdata-s (format "%s%10s%s%18s%s%20s%s%8s%s%5s%s%5s%s%10s%s%16s%s"    
                                    "|" (+ n 101)
                                    "|" in
@@ -163,7 +162,7 @@
                                    "|" "--"
                                    "|" "--" "|\n")]       
              (spit reportfile outputdata-s :append true)))
-          ))))
+))))
     
 (defn write-report [in cx out frc reportfile]
   (with-open [report (clojure.java.io/writer reportfile :append false)]    (.write report (report-header in cx out frc reportfile)))
