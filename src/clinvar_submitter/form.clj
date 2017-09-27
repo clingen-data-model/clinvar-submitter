@@ -36,20 +36,22 @@
     of the url for VariantInterpretation"
    [i]
    (let [full-id (get i "id")]
-     (let [id (get (re-find #"\/([a-z0-9\-]+)\/$" full-id) 1)]     (if (nil? id) "*E-401"
+     (let [id (get (re-find #"\/([a-z0-9\-]+)\/$" full-id) 1)]
+     (if (nil? id) "*E-401"
      (csv-colval id)))))
  
   (defn interp-significance
   "Return the interpretation clinical significance."
   [t i]
   (let [significance (ld-> t i "clinicalSignificance")]
-    (csv-colval (get significance "display"))))
+    (if (nil? significance) "*E-402"
+    (csv-colval (get significance "display")))))
   
   (defn interp-eval-date
   "Return the interpretation evaluation date."
   [t i]
   (let [contribution (ld-> t i "contribution")]
-    (if (nil? (get contribution "onDate")) "" 
+    (if (nil? (get contribution "onDate")) "E-403" 
       (.format 
         (java.text.SimpleDateFormat. "yyyy-MM-dd") 
         (.parse
@@ -212,9 +214,10 @@
     (try
     (let [crit (ld-> t e "information" "criterion")
           act-strength-coding (ld-> t e "evidenceStrength" "coding")
-          def-strength-coding (ld-> t e "information" "criterion" "defaultStrength" "coding")]
+          def-strength-coding (ld-> t e "information" "criterion" "defaultStrength" "coding")
+          def-strength-display (ld-> t e "information" "criterion" "defaultStrength" "coding" "display")]
         (let [rule-label (get crit "id")
-              def-strength (get def-strength-coding "display")
+              def-strength (first def-strength-display)
               act-strength (get act-strength-coding "display")]
           (let [def-direction (get (str/split def-strength #" ") 0)
                 def-weight (get (str/split def-strength #" ") 1)
