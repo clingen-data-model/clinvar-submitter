@@ -71,18 +71,21 @@
  (defn variant-identifier
   "Return variant identifier, typically the ClinGen AlleleReg id."
   [v]
-  (csv-colval (get v "CanonicalAllele")))
+  (if (nil? (get v "CanonicalAllele")) "*E-202"
+  (csv-colval (get v "CanonicalAllele"))))
  
   (defn variant-alt-designations
   "Return variant hgvs representations"
   [v]
-  (csv-colval (get v "alleleName name")))
+  (if (nil? (get v "alleleName name")) "*E-203"
+  (csv-colval (get v "alleleName name"))))
  
  (defn variant-refseq
   "Return the variant reference sequence."
   [t v]
   (let [refseq (ld-> t v "referenceCoordinate" "referenceSequence")]
-    (csv-colval (get refseq "display"))))
+    (if (nil? (get refseq "display")) "*E-204"
+    (csv-colval (get refseq "display")))))
  
  (defn variant-start
   "Return the variant reference sequence start pos (0-to-1-based transform)."
@@ -91,7 +94,8 @@
   (let [ref (ld-> t v "referenceCoordinate" "refAllele")
         alt (get v "allele")
         start (ld-> t v "referenceCoordinate" "start")]
-    (csv-colval (if (str/blank? ref) (get start "index") (+ 1 (get start "index"))))))
+    (if (nil? (get start "index")) "*E-205"
+    (csv-colval (if (str/blank? ref) (get start "index") (+ 1 (get start "index")))))))
      
  (defn variant-stop
   "Return the variant reference sequence stop pos (0-to-1-based transform)."
@@ -100,18 +104,21 @@
   (let [ref (ld-> t v "referenceCoordinate" "refAllele")
         alt (get v "allele")
         stop (ld-> t v "referenceCoordinate" "end")]
-    (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (get stop "index")) (get stop "index")))))
+    (if (nil? (get stop "index")) "*E-206"
+    (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (get stop "index")) (get stop "index"))))))
  
  (defn variant-ref
   "Return the variant ref allele sequence."
   [t v]
   (let [refcoord (ld-> t v "referenceCoordinate")]
-    (csv-colval (get refcoord "refAllele"))))
+    (if (nil? (get refcoord "refAllele")) "*E-207"
+    (csv-colval (get refcoord "refAllele")))))
  
  (defn variant-alt
    "Return the variant alt allele sequence."
    [v]
-   (csv-colval (get v "allele")))
+   (if (nil? (get v "allele")) "*E-208"
+   (csv-colval (get v "allele"))))
  
  (defn get-variant
   "Returns a map of all variant related fields needed for the clinvar 
