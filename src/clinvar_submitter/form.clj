@@ -6,14 +6,14 @@
            [clojure.tools.logging :as log])
  (:import [java.util Map List]))
   
- (defn csv-colval
-	 "Outputs a well-formed value for output of the CSV file being generated. 
+(defn csv-colval
+	"Outputs a well-formed value for output of the CSV file being generated. 
 	   nil should be empty strings, non-strings should be stringified, etc..."
-	 [v]
-   (cond 
-     (nil? v) "" 
-	   (number? v) (str v) 
-     (seq? v) (apply str v) :else v))
+	[v]
+  (cond 
+    (nil? v) "" 
+	  (number? v) (str v) 
+    (seq? v) (apply str v) :else v))
  
  ;TODO Can Nafisa and/or Tristan figure out how we can 
  ; sort the evidence by acmg rule precedence 
@@ -38,21 +38,21 @@
    [i]
    (let [full-id (get i "id")]
      (let [id (get (re-find #"\/([a-z0-9\-]+)\/$" full-id) 1)]
-     (if (nil? id) "*E-401"
+     (if (nil? id) (str "*E-401" ":" (rand-int 200))
      (csv-colval id)))))
  
   (defn interp-significance
   "Return the interpretation clinical significance."
   [t i]
   (let [significance (ld-> t i "clinicalSignificance")]
-    (if (nil? significance) "*E-402"
+    (if (nil? significance) (str "*E-402" ":" (rand-int 200))
     (csv-colval (get significance "display")))))
   
   (defn interp-eval-date
   "Return the interpretation evaluation date."
   [t i]
   (let [contribution (ld-> t i "contribution")]
-    (if (nil? (get contribution "onDate")) "E-403" 
+    (if (nil? (get contribution "onDate")) (str "*E-403" ":" (rand-int 200))
       (.format 
         (java.text.SimpleDateFormat. "yyyy-MM-dd") 
         (.parse
@@ -71,20 +71,20 @@
  (defn variant-identifier
   "Return variant identifier, typically the ClinGen AlleleReg id."
   [v]
-  (if (nil? (get v "CanonicalAllele")) "*E-202"
+  (if (nil? (get v "CanonicalAllele")) (str "*E-202" ":" (rand-int 200))
   (csv-colval (get v "CanonicalAllele"))))
  
   (defn variant-alt-designations
   "Return variant hgvs representations"
   [v]
-  (if (nil? (get v "alleleName name")) "*E-203"
+  (if (nil? (get v "alleleName name")) (str "*E-203" ":" (rand-int 200))
   (csv-colval (get v "alleleName name"))))
  
  (defn variant-refseq
   "Return the variant reference sequence."
   [t v]
   (let [refseq (ld-> t v "referenceCoordinate" "referenceSequence")]
-    (if (nil? (get refseq "display")) "*E-204"
+    (if (nil? (get refseq "display")) (str "*E-204" ":" (rand-int 200))
     (csv-colval (get refseq "display")))))
  
  (defn variant-start
@@ -94,7 +94,7 @@
   (let [ref (ld-> t v "referenceCoordinate" "refAllele")
         alt (get v "allele")
         start (ld-> t v "referenceCoordinate" "start")]
-    (if (nil? (get start "index")) "*E-205"
+    (if (nil? (get start "index")) (str "*E-205" ":" (rand-int 200))
     (csv-colval (if (str/blank? ref) (get start "index") (+ 1 (get start "index")))))))
      
  (defn variant-stop
@@ -104,20 +104,20 @@
   (let [ref (ld-> t v "referenceCoordinate" "refAllele")
         alt (get v "allele")
         stop (ld-> t v "referenceCoordinate" "end")]
-    (if (nil? (get stop "index")) "*E-206"
+    (if (nil? (get stop "index")) (str "*E-206" ":" (rand-int 200))
     (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (get stop "index")) (get stop "index"))))))
  
  (defn variant-ref
   "Return the variant ref allele sequence."
   [t v]
   (let [refcoord (ld-> t v "referenceCoordinate")]
-    (if (nil? (get refcoord "refAllele")) "*E-207"
+    (if (nil? (get refcoord "refAllele")) (str "*E-207" "." (rand-int 200))
     (csv-colval (get refcoord "refAllele")))))
  
  (defn variant-alt
    "Return the variant alt allele sequence."
    [v]
-   (if (nil? (get v "allele")) "*E-208"
+   (if (nil? (get v "allele")) (str "*E-205" ":" (rand-int 200))
    (csv-colval (get v "allele"))))
  
  (defn get-variant

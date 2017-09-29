@@ -17,13 +17,15 @@
    ["-o" "--output FILENAME" "CSV output filename"
     :default "clinvar-variant.csv"]
    ["-f" "--force" :default false]
-   ["-c" "--jsonld-context URI" "JSON-LD context file URI"
+   ["-x" "--jsonld-context URI" "JSON-LD context file URI"
     :default "http://http://datamodel.clinicalgenome.org/interpretation/context/jsonld"]
    ["-i" "--input FILENAME" "JSON filename"
     :default "dmwg.json"]
    ["-b" "--build BUILD" "Genome build alignment, GRCh37 or GRCh38"
     :default "GRCh37"]
    ["-r" "--report FILENAME" "Run-report filename" :default "clinvar-submitter-run-report.txt"]
+   ["-m" "--method METHODNAME" "Assertion-method-name" :default "ACMG Guidelines, 2015"]
+   ["-c" "--methodc METHODCITATION" "Method Citation" :default "PMID:25741868"]
    ["-h" "--help"]])
 
 (defn usage [options-summary]
@@ -151,10 +153,8 @@
   (try      (if (and (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report))))     
       (if (get options :force)           
         (spit (get options :output) (csv/write-csv records))
-        ((println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files).")
-         (log/error "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files).")))               (spit (get options :output) (csv/write-csv records)))
+        (println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)."))                      (spit (get options :output) (csv/write-csv records)))
       (report/append-to-report (get options :report) input (get options :output) records)
-  (catch Exception e (log/error (str "Exception in main: " e)))
-  )))))                                     
+  (catch Exception e (log/error (str "Exception in main: " e))))))))                                     
  
   
