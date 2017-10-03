@@ -36,14 +36,13 @@ for example...
 ```
 $ lein run "-o" -"f" "myoutput.csv" "-x" "data/cg-interpretation.jsonld" "data/dmwg1.json" 
 ```
-
-Additional Options
-
+Additional Options:
+```
 "-b" "--build BUILD" "Genome build alignment, GRCh37 or GRCh38"
 "-r" "--report FILENAME" "Run-report filename"
 "-m" "--method METHODNAME" "Assertion-method-name" :default "ACMG Guidelines, 2015"
 "-c" "--methodc METHODCITATION" "Method Citation" :default "PMID:25741868"
-
+```
 II. Error Handling
 
 To handle general exceptions, standard clojure exception handling methods are used using try catch block.
