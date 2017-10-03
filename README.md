@@ -23,7 +23,7 @@ I. Command-Line - To run a conversion using the command-line ...
 $ lein run <option> <csv output file> <option> <jsonld context file> <json input file> 
 Options:
 "-o" "--output FILENAME" "CSV output filename"
-"-c" "--jsonld-context URI" "JSON-LD context file URI"
+"-x" "--jsonld-context URI" "JSON-LD context file URI"
 ```
 for example... 
 ```
@@ -36,6 +36,13 @@ for example...
 ```
 $ lein run "-o" -"f" "myoutput.csv" "-x" "data/cg-interpretation.jsonld" "data/dmwg1.json" 
 ```
+
+Additional Options
+
+"-b" "--build BUILD" "Genome build alignment, GRCh37 or GRCh38"
+"-r" "--report FILENAME" "Run-report filename"
+"-m" "--method METHODNAME" "Assertion-method-name" :default "ACMG Guidelines, 2015"
+"-c" "--methodc METHODCITATION" "Method Citation" :default "PMID:25741868"
 
 II. Error Handling
 
