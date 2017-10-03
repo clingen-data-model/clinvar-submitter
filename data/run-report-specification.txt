@@ -107,61 +107,13 @@ Force overwrite (-f): 	no
 
 NOTE: All variant coordinates are based on build GRCh38 coordinates from the ClinGen Allele Registry.
 
---- newly proposed layout of report body 
-
 		|	-------- Input ----------------------------------	|	------- Output -----------------------
 Result#	|	File Name		Record	Variant (alt desig)			|	Cell	Status	Code	Description	
 **101**	|	badfile.json	-		-							|	A6		Error	E-201	Unable to process file badfile.json.
 **102**	|	dmwg1.json		1		-							|	Y7		Warning	W-251	Preferred variant alternate designation not provided.
 **103**	|	dmwg1.json		2		NM_000257.3(MYH7):c.1207C>T	|	AK8		Error	E-403	Interpretation evaluation date not provided	
 **104**	|	dmwg1.json		2		NM_000257.3(MYH7):c.1207C>T	|	AQ8		Error	E-501	2 met criteria rules and/or strength codes are invalid or missing.	
-**105**	|	dmwg2.json		1		NM_000257.3(MYH7):c.2681A>G	|	*9		Success	
+**105**	|	dmwg2.json		1		NM_000257.3(MYH7):c.2681A>G	|	9		Success			
 **106**	|	dmwg3.json		1		NM_000257.3(MYH7):c.788T>C	|	AE10	Error	E-301	Condition disease code or name not provided.	
-
-
---- original layout of report body below
-
-====================== 
-Filename: 	badfile.json
-Record#: 	1
-*E-201: Unable to process file badfile.json.
-
-====================== 
-Filename: 	dmwg1.json
-Record#: 	2
-Variant – Warnings (NC_000014.9:g.23429279G>A)
-*W-251: Preferred variant alternate designation not provided.
-Condition – Success (DOID_11984)
-Interpretation –Success (Pathogenic)
-Evidence –Success (10 Met criteria)
-
-====================== 
-Filename: 	dmwg1.json
-Record#: 	3
-Variant – Success (NC_000014.9:g.23429279delG)
-Condition – Success (DOID_11984)
-Interpretation –Errors (Likely Pathogenic)
-*E-403: Interpretation evaluation date not provided.
-Evidence –Errors (5 Met criteria)
-*E-501: 2 met criteria rules and/or strength codes are invalid or missing.
-
-====================== 
-Filename: 	dmwg2.json
-Record#: 	4
-Variant – Success (NC_000014.9:g.23431426A>G)
-Condition – Success (DOID_11984)
-Interpretation –Success (Likely Pathogenic)
-Evidence –Success (6 Met criteria)
-
-====================== 
-Filename: 	dmwg3.json
-Record#: 	5
-Variant – Success (NC_000014.9:g.23429279G>C)
-Condition – Success ()
-*E-301: Condition disease code or name not provided.
-Interpretation –Success (Likely Pathogenic)
-Evidence –Success (1 Met criteria)
-
-
 
 
