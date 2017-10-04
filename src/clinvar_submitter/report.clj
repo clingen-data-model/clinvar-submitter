@@ -45,7 +45,6 @@
 
 
 (defn error-description [errorcode]
-  (println "in fn error-description " errorcode)
   (cond
   (= "*E-401" errorcode)
   {
@@ -137,7 +136,6 @@
   (for [n (range (count records))]
     ;get each row from record set
     (let [row (nth records n)]
-      ;(println row)
       ;get errorcode from each row     
       (let [errorcode (get-errorcode row)]
         ;if there is error in any row add error information in the report 

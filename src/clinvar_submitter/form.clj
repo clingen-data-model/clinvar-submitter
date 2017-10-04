@@ -233,7 +233,6 @@
           (let [rule-label (get crit "id")
                 def-strength (first def-strength-displaylist)
                 act-strength (get act-strength-coding  "display")]
-          (println def-strength)
           (let [def-direction (get (str/split def-strength #" ") 0)
                 def-weight (get (str/split def-strength #" ") 1)
                 act-direction (get (str/split act-strength #" ") 0)

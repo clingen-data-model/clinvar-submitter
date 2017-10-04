@@ -150,11 +150,14 @@
   (let [records (construct-variant-table input (get options :jsonld-context))]
   (if exit-message
       (exit (if ok? 0 1) exit-message)
+  ;if output or report file exists then check if there is a force option. If there is no force option the throw an error with message     
+  ;"ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)." Otherwise create output and report file
   (try      (if (and (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report))))     
       (if (get options :force)           
-        (spit (get options :output) (csv/write-csv records))
-        (println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)."))                      (spit (get options :output) (csv/write-csv records)))
-      (report/append-to-report (get options :report) input (get options :output) records)
+        [(spit (get options :output) (csv/write-csv records))
+        (report/append-to-report (get options :report) input (get options :output) records)]
+        (println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)."))                      [(spit (get options :output) (csv/write-csv records))
+        (report/append-to-report (get options :report) input (get options :output) records)])     
   (catch Exception e (log/error (str "Exception in main: " e))))))))                                     
  
   
