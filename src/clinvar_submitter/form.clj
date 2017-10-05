@@ -267,7 +267,7 @@
     [t e]
     (let [info-sources (ld-> t e "information" "evidence" "information" "source")
           pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)]
-      (if (nil? pmids) "*W-551"
+      (if (nil? pmids) (str "**W-551" ":" (rand-int 200))
       (csv-colval (clojure.string/join ", " (map #(str "PMID:" %) pmids))))))
   
   (defn get-met-evidence

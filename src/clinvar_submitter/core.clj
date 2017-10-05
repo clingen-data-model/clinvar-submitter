@@ -58,7 +58,6 @@
   should exit (with a error message, and optional ok status), or a map
   indicating the action the program should take and the options provided."
   [args]  
-  (println args)
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
     (cond
       (:help options) ; help => exit OK with usage summary
@@ -76,7 +75,7 @@
 
 (defn construct-variant
   "Construct and return one row of variant table, with VariantInterpretation as root"
-  [t i]
+  [t i assertion-method method-citation]
   (log/debug "Function: construct-variant - constructing one row of variant table, with VariantInterpretation as root")
   (try 
   (let [variant (form/get-variant t i)
@@ -120,8 +119,8 @@
      "" ; empty	
      (get interp :significance) ; Clinical significance	
      (get interp :eval-date) ; Date last evaluated
-     "" ; assertion method
-     "" ; assertion method citations
+     (str assertion-method) ; assertion method
+     (str method-citation) ; assertion method citations
      (get condition :moi) ; Mode of Inheritance
      (get evidence :pmid-citations) ; significance citations
      "" ; significance citations without db ids
@@ -132,13 +131,13 @@
 
 (defn construct-variant-table
   "Construct and return variant table"
-  [interp-path context-path]
+  [interp-path context-path assertion-method method-citation]
   (log/debug "Function: construct-variant-table- context and input Filename (construct-variant-table): " interp-path context-path)
   (try
   (let [t (ld/generate-symbol-table interp-path context-path)
         m (vals t)
         interps ((prop= t "VariantInterpretation" "type") m)
-        rows (map #(construct-variant t %) interps)]
+        rows (map #(construct-variant t % assertion-method method-citation) interps)]
     rows)
   (catch Exception e (println (str "Exception in construct-variant-table: " e))
   (log/error (str "Exception in construct-variant-table: " e)))))
@@ -153,7 +152,7 @@
       (exit (if ok? 0 1) exit-message)
   
   (if-not(or (nil? (get options :output)) (nil? (get options :jsonld-context)))
-    (let [records (construct-variant-table input (get options :jsonld-context))]
+    (let [records (construct-variant-table input (get options :jsonld-context) (get options :method) (get options :methodc))]
     (log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
     ;(report/write-report input (get options :jsonld-context) (get options :output) (get options :force) (get options :report))  
     (try    ;if output or report file exists then check if there is a force option. If there is no force option the throw an error with message     
