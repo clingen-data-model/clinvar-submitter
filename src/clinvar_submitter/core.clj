@@ -14,11 +14,11 @@
 (def cli-options
   [;; output file defaults to clinvar-variant.csv and will not overwrite 
    ;; unless -f force-overwrite option is specified
-   ["-o" "--output FILENAME" "CSV output filename"
-    :default "clinvar-variant.csv"]
+   ["-o" "--output FILENAME" "CSV output filename"]
+    ;:default "clinvar-variant.csv" :mandatory true]
    ["-f" "--force" :default false]
-   ["-x" "--jsonld-context URI" "JSON-LD context file URI"
-    :default "http://http://datamodel.clinicalgenome.org/interpretation/context/jsonld"]
+   ["-x" "--jsonld-context URI" "JSON-LD context file URI"]
+    ;:default "http://http://datamodel.clinicalgenome.org/interpretation/context/jsonld" :mandatory true]
    ["-i" "--input FILENAME" "JSON filename"
     :default "dmwg.json"]
    ["-b" "--build BUILD" "Genome build alignment, GRCh37 or GRCh38"
@@ -52,11 +52,13 @@
   (str "The following errors occurred while parsing your command:\n\n"
        (str/join \newline errors)))
 
+
 (defn validate-args
   "Validate command line arguments. Either return a map indicating the program
   should exit (with a error message, and optional ok status), or a map
   indicating the action the program should take and the options provided."
   [args]  
+  (println args)
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
     (cond
       (:help options) ; help => exit OK with usage summary
@@ -145,19 +147,25 @@
   "take input assertion, transformation context, and output filename as input and write variant table in csv format"
   [& args]
   (let [{:keys [input options exit-message ok?]} (validate-args args)]
-  (log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
-  (report/write-report input (get options :jsonld-context) (get options :output) (get options :force) (get options :report))  
-  (let [records (construct-variant-table input (get options :jsonld-context))]
+  ;(if (nil? (get options :jsonld-context)) (println "(use‚ -x to enter context file name)."))
+  ;(if (nil? (get options :output)) (println "(use‚ -o to enter output file name)."))
   (if exit-message
       (exit (if ok? 0 1) exit-message)
-  ;if output or report file exists then check if there is a force option. If there is no force option the throw an error with message     
-  ;"ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)." Otherwise create output and report file
-  (try      (if (and (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report))))     
-      (if (get options :force)           
-        [(spit (get options :output) (csv/write-csv records))
-        (report/append-to-report (get options :report) input (get options :output) records)]
-        (println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)."))                      [(spit (get options :output) (csv/write-csv records))
-        (report/append-to-report (get options :report) input (get options :output) records)])     
-  (catch Exception e (log/error (str "Exception in main: " e))))))))                                     
+  
+  (if-not(or (nil? (get options :output)) (nil? (get options :jsonld-context)))
+    (let [records (construct-variant-table input (get options :jsonld-context))]
+    (log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
+    (report/write-report input (get options :jsonld-context) (get options :output) (get options :force) (get options :report))  
+    (try    ;if output or report file exists then check if there is a force option. If there is no force option the throw an error with message     
+      ;"ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)." Otherwise create output and report file     
+      (if(and (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report))))     
+        (if (get options :force)           
+          [(spit (get options :output) (csv/write-csv records))
+          (report/append-to-report (get options :report) input (get options :output) records)]
+          (println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)."))                      [(spit (get options :output) (csv/write-csv records))
+          (report/append-to-report (get options :report) input (get options :output) records)])     
+    (catch Exception e (log/error (str "Exception in main: " e)))))
+    (usage cli-options)   
+  ))))                                     
  
   
