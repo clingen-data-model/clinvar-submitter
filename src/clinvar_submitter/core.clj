@@ -52,6 +52,12 @@
   (str "The following errors occurred while parsing your command:\n\n"
        (str/join \newline errors)))
 
+(def required-opts #{:output :jsonld-context})
+
+(defn missing-required?
+  "Returns true if opts is missing any of the required-opts"
+  [opts]
+  (not-every? opts required-opts))
 
 (defn validate-args
   "Validate command line arguments. Either return a map indicating the program
@@ -60,7 +66,8 @@
   [args]  
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
     (cond
-      (:help options) ; help => exit OK with usage summary
+      (or (:help options)
+          (missing-required? options)) ; help => exit OK with usage summary
       {:exit-message (usage summary) :ok? true}
       errors ; errors => exit with description of errors
       {:exit-message (error-msg errors)}
@@ -163,8 +170,7 @@
           (report/append-to-report (get options :report) input (get options :output) (get options :jsonld-context) (get options :force) records)]
           (println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)."))                      [(spit (get options :output) (csv/write-csv records))
           (report/append-to-report (get options :report) input (get options :output) (get options :jsonld-context) (get options :force) records)])     
-    (catch Exception e (log/error (str "Exception in main: " e)))))
-    (usage cli-options)   
+    (catch Exception e (log/error (str "Exception in main: " e)))))  
   ))))                                     
  
   
