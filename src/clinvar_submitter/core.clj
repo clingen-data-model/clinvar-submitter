@@ -155,15 +155,15 @@
   (if-not(or (nil? (get options :output)) (nil? (get options :jsonld-context)))
     (let [records (construct-variant-table input (get options :jsonld-context))]
     (log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
-    (report/write-report input (get options :jsonld-context) (get options :output) (get options :force) (get options :report))  
+    ;(report/write-report input (get options :jsonld-context) (get options :output) (get options :force) (get options :report))  
     (try    ;if output or report file exists then check if there is a force option. If there is no force option the throw an error with message     
       ;"ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)." Otherwise create output and report file     
       (if(and (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report))))     
         (if (get options :force)           
           [(spit (get options :output) (csv/write-csv records))
-          (report/append-to-report (get options :report) input (get options :output) records)]
+          (report/append-to-report (get options :report) input (get options :output) (get options :jsonld-context) (get options :force) records)]
           (println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)."))                      [(spit (get options :output) (csv/write-csv records))
-          (report/append-to-report (get options :report) input (get options :output) records)])     
+          (report/append-to-report (get options :report) input (get options :output) (get options :jsonld-context) (get options :force) records)])     
     (catch Exception e (log/error (str "Exception in main: " e)))))
     (usage cli-options)   
   ))))                                     

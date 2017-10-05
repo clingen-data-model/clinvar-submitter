@@ -11,7 +11,7 @@
        "\nDate/Time: "(new java.util.Date)
        "\nFile(s): " in
        "\nMethod Name (-m): ACMG Guidelines, 2017"
-       "\nMethod Citation (-mc): 	PMID:25741868"
+       "\nMethod Citation (-c): 	PMID:25741868"
        "\nJSON-LD Context (-x): " cx 
        "\nOutput File (-o): " out
        "\nForce overwrite (-f): " frc
@@ -132,7 +132,13 @@
        (let [newList (filter some? errorlist)]      
        newList)))
 
-(defn append-to-report [reportfile in out records]  
+(defn write-report [in cx out frc reportfile]
+  (with-open [report (clojure.java.io/writer reportfile :append false)]
+    (.write report (report-header in cx out frc reportfile)))
+  )
+
+(defn append-to-report [reportfile in out cx frc records]  
+  (write-report in cx out frc reportfile)
   (for [n (range (count records))]
     ;get each row from record set
     (let [row (nth records n)]
@@ -167,8 +173,6 @@
              (spit reportfile outputdata-s :append true)))
 ))))
     
-(defn write-report [in cx out frc reportfile]
-  (with-open [report (clojure.java.io/writer reportfile :append false)]    (.write report (report-header in cx out frc reportfile)))
-  )
+
     
 
