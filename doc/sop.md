@@ -14,18 +14,19 @@ Please review the run report for any issue with your provided input. If the are 
 
 --- EXAMPLE RUN REPORT clinvar-submitter-run-report.txt ---  
 
-ClinVar-Submitter Run Report .. 
-Date/Time: 				9/11/2017 13:20  ..
-Directory: 				~/Documents/clinvar-submitter/2017-09-11 .. 
+ClinVar-Submitter Run Report.. 
+Date/Time: 				9/11/2017 13:20..
+Directory: 				~/Documents/clinvar-submitter/2017-09-11.. 
 File(s):				badfile.json  
 					    dmwg1.json  
 						dmwg2.json  
-						dmwg3.json  
-
+						dmwg3.json .. 
 
 Method Name (-m):		ACMG Guidelines, 2015 ..  
 Method Citation (-c): 	PMID:25741868 ..  
+
 JSON-LD Context (-x): 	http://datamodel.clinicalgenome.org/interpretation/json/context .. 
+
 Output File (-o): 		clinvar-submitter-variant.csv ..
 Run Report File (-r): 	clinvar-submitter-run-report.txt ..
 Force overwrite (-f): 	no ..
