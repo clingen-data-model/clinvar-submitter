@@ -17,7 +17,7 @@ Please review the run report for any issue with your provided input. If the are 
 ClinVar-Submitter Run Report   
 **Date/Time:** 				9/11/2017 13:20  
 **Directory:** 				~/Documents/clinvar-submitter/2017-09-11   
-**File(s):**				
+**File(s):**                           
 					* badfile.json  
 					* dmwg1.json  
 					* dmwg2.json  
