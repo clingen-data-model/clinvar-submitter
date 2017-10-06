@@ -1,4 +1,3 @@
-# clinvar-submitter
 ### Instruction to request/receive clinvar submissions for clingen users:
 
 #### Request Process: 
@@ -11,7 +10,7 @@ After we receive your request someone will process it and will send you the foll
 
 Please review the run report for any issue with your provided input. If the are issues please fix and re-send your request.
 
-Sample run report 
+#### Sample run report 
 
 --- EXAMPLE RUN REPORT clinvar-submitter-run-report.txt ---
 
