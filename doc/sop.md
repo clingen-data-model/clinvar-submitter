@@ -29,7 +29,7 @@ Output File (-o): 		clinvar-submitter-variant.csv
 Run Report File (-r): 	clinvar-submitter-run-report.txt
 Force overwrite (-f): 	no
 
-```
+
 |           |Input                                              |Output                                                                   |
 |-------	|--------------------------------------------       |-------------------------------------------------------------------------|
 |Result#    |File Name      |Record|Variant (alt desig)         |Cell    |Status |Code  |Description                                      |
@@ -40,12 +40,8 @@ Force overwrite (-f): 	no
 |**104**	|dmwg1.json		|2	   |NM_000257.3(MYH7):c.1207C>T |	AQ8	 |Error	 |E-501	|Invalid met criteria rules and/or strength codes |
 |**105**	|dmwg2.json		|1	   |NM_000257.3(MYH7):c.2681A>G |	9	 |Success|		|	                                              |
 |**106**	|dmwg3.json		|1	   |NM_000257.3(MYH7):c.788T>C	|	AE10 |Error	 |E-301	|Condition disease code or name not provided.	  |
-```
 
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+
 
 NOTE: 
 
