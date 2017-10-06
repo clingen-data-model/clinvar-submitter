@@ -19,11 +19,9 @@ After we receive your request someone will process it and will send you the foll
 
 Please review the run report for any issue with your provided input. If the are issues please fix and re-send your request.
 
-**Sample run report** 
-
---- EXAMPLE RUN REPORT clinvar-submitter-run-report.txt ---  
-
-ClinVar-Submitter Run Report   
+**ClinVar-Submitter sample run report** 
+clinvar-submitter-run-report.txt
+  
 **Date/Time:** 				9/11/2017 13:20  
 **Directory:** 				~/Documents/clinvar-submitter/2017-09-11   
 **File(s):**                           
@@ -31,10 +29,8 @@ ClinVar-Submitter Run Report
 * dmwg1.json  
 * dmwg2.json  
 * dmwg3.json  
-
 **Method Name (-m):**		        ACMG Guidelines, 2015 ..  
 **Method Citation (-c):** 	        PMID:25741868 ..  
-
 **JSON-LD Context (-x):**	        http://datamodel.clinicalgenome.org/interpretation/json/context  
 **Output File (-o):** 		        clinvar-submitter-variant.csv  
 **Run Report File (-r):** 	        clinvar-submitter-run-report.txt  
