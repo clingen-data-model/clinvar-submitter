@@ -1,16 +1,18 @@
 # clinvar-submitter
-Instruction to request/receive clinvar submissions for clinzen users:
+### Instruction to request/receive clinvar submissions for cling##en users:
 
-Request Process: 
+###### Request Process: 
 Please email your request including input interpretation data files to someone@partners.org. 
 
-Response:
+###### Response:
 After we receive your request someone will process it and will send you the following:
 1. Output .csv file
 2. Run Report
+
 Please review the run report for any issue with your provided input. If the are issues please fix and re-send your request.
 
 Sample run report 
+
 --- EXAMPLE RUN REPORT clinvar-submitter-run-report.txt ---
 
 ClinVar-Submitter Run Report
@@ -29,7 +31,7 @@ Run Report File (-r): 	clinvar-submitter-run-report.txt
 Force overwrite (-f): 	no
 
 ```
-		|	:-------- Input ----------------------------------:	|	:------- Output ---------------------------------------------------------------------------:
+	|	:-------- Input ----------------------------------:	                |	:------- Output ---------------------------------------------------------------------------:
 Result#	|	File Name		Record	Variant (alt desig)			|	Cell	Status	Code	Description	
 **101**	|	badfile.json	-		-							|	A6		Error	E-201	Unable to process file badfile.json.
 **102**	|	dmwg1.json		1		-							|	Y7		Warning	W-251	Preferred variant alternate designation not provided.
