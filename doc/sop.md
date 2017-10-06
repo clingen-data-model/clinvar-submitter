@@ -30,7 +30,7 @@ Run Report File (-r): 	clinvar-submitter-run-report.txt
 Force overwrite (-f): 	no
 
 
-|           |Input                                              |Output                                                                   |
+|           |Input          |      |                            |Output  |       |      |                                                 |
 |-------	|--------------------------------------------       |-------------------------------------------------------------------------|
 |Result#    |File Name      |Record|Variant (alt desig)         |Cell    |Status |Code  |Description                                      |
 |-------	|-------		|---   |-------------------		    |-----	 |----	 |------|-------------	                                  |
