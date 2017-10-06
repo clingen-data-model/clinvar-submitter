@@ -1,7 +1,7 @@
 <!--
 <style>
-  .markdown-body table td {
-    font-size: 8px !important;
+  .markdown-body table {
+    font-size: 12px !important;
 }
 </style>
 -->
