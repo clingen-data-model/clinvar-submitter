@@ -30,8 +30,8 @@ Run Report File (-r): 	clinvar-submitter-run-report.txt
 Force overwrite (-f): 	no
 
 
-|           |Input          |      |                            |Output  |       |      |                                                 |
-|-------	|--------------------------------------------       |-------------------------------------------------------------------------|
+
+
 |Result#    |File Name      |Record|Variant (alt desig)         |Cell    |Status |Code  |Description                                      |
 |-------	|-------		|---   |-------------------		    |-----	 |----	 |------|-------------	                                  |
 |**101**	|badfile.json	|-	   |-							|	A6	 |Error	 |E-201	|Unable to process file badfile.json.             |
