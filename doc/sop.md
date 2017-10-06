@@ -41,7 +41,13 @@ Force overwrite (-f): 	no
 |**105**	|dmwg2.json		|1		|NM_000257.3(MYH7):c.2681A>G |	9		|Success|		|	                                              |
 |**106**	|dmwg3.json		|1		|NM_000257.3(MYH7):c.788T>C	 |	AE10	|Error	|E-301	|Condition disease code or name not provided.	  |
 ```
+```
+| Result        | Input         | Output          |
+| ------------- | ------------- |-----------------|
+| Content Cell  | Content Cell  | Content Cell    |
+| Content Cell  | Content Cell  | Content Cell    |
 
+```
 
 NOTE: 
 
