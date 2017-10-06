@@ -1,5 +1,10 @@
 <!--
 <sub>...</sub> is used to make font size small
+<style>
+  .markdown-body table td {
+    font-size: 10px !important;
+}
+</style>
 -->
 
 ## Instruction to request/receive clinvar submissions for clingen users:
