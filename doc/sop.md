@@ -2,7 +2,7 @@
 <sub>...</sub> is used to make font size small
 <style>
   .markdown-body table td {
-    font-size: 10px !important;
+    font-size: 8px !important;
 }
 </style>
 -->
