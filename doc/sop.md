@@ -18,10 +18,10 @@ ClinVar-Submitter Run Report
 **Date/Time:** 				9/11/2017 13:20  
 **Directory:** 				~/Documents/clinvar-submitter/2017-09-11   
 **File(s):**                           
-					* badfile.json  
-					* dmwg1.json  
-					* dmwg2.json  
-					* dmwg3.json  
+* badfile.json  
+* dmwg1.json  
+* dmwg2.json  
+* dmwg3.json  
 
 **Method Name (-m):**		        ACMG Guidelines, 2015 ..  
 **Method Citation (-c):** 	        PMID:25741868 ..  
