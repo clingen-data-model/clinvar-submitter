@@ -52,10 +52,8 @@ Force overwrite (-f): 	no
 
 
 
-NOTE: 
+#### NOTES: 
 
---- All variant coordinates are based on build GRCh38 coordinates from the ClinGen Allele Registry.
-
---- Please provide feedback from your experience so that we can improve the future drafting of clinvar submissions
-
---- you will need to review columns AW, AX, & AK (collection method, allele origin & affected status) are required but not available from interpretation message. Please fill in before submitting.
+- All variant coordinates are based on build GRCh38 coordinates from the ClinGen Allele Registry.
+- Please provide feedback from your experience so that we can improve the future drafting of clinvar submissions
+- you will need to review columns AW, AX, & AK (collection method, allele origin & affected status) are required but not available from interpretation message. Please fill in before submitting.
