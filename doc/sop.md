@@ -1,3 +1,7 @@
+<!--
+<sub>...</sub> is used to make font size small
+-->
+
 ## Instruction to request/receive clinvar submissions for clingen users:
 
 **Request Process:** 
