@@ -17,7 +17,7 @@ After we receive your request someone will process it and will send you the foll
 - Output .csv file
 - Run Report
 
-Please review the run report for any issue with your provided input. If the are issues please fix and re-send your request.
+Please review the run report for any issue with your provided input. If there are issues in the input file please fix and re-send your request.
 
 **ClinVar-Submitter sample run report** 
 clinvar-submitter-run-report.txt
