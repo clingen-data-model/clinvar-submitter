@@ -25,7 +25,6 @@ ClinVar-Submitter Run Report
 
 **Method Name (-m):**		        ACMG Guidelines, 2015 ..  
 **Method Citation (-c):** 	        PMID:25741868 ..  
-
 **JSON-LD Context (-x):**	        http://datamodel.clinicalgenome.org/interpretation/json/context  
 **Output File (-o):** 		        clinvar-submitter-variant.csv  
 **Run Report File (-r):** 	        clinvar-submitter-run-report.txt  

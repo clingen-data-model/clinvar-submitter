@@ -2,12 +2,14 @@
   (:require [clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]]
             [clinvar-submitter.form :as form]
             [clojure.string :as str]
+            [scjsv.core :as v]
             [clinvar-submitter.report :as report]
             [clojure.java.io :as io]
             [clojure-csv.core :as csv]
             [clojure.tools.logging.impl :as impl]
             [clojure.tools.logging :as log]
             [clojure.tools.cli :refer [parse-opts]])
+  
   (:import [java.lang.Exception])
   (:gen-class))
 
@@ -149,19 +151,28 @@
   (catch Exception e (println (str "Exception in construct-variant-table: " e))
   (log/error (str "Exception in construct-variant-table: " e)))))
 
+(def schema
+  (slurp "/Users/nafisakhandaker/git/clingen/clinvar-submitter/data/variantInterpretation.json")
+ )
+
+
+
+(def validate (v/validator schema))
+
 (defn -main 
   "take input assertion, transformation context, and output filename as input and write variant table in csv format"
   [& args]
-  (let [{:keys [input options exit-message ok?]} (validate-args args)]
+  (let [{:keys [input options exit-message ok?]} (validate-args args)] 
   ;(if (nil? (get options :jsonld-context)) (println "(use‚ -x to enter context file name)."))
   ;(if (nil? (get options :output)) (println "(use‚ -o to enter output file name)."))
+  (log/debug "VALIDATING JSON.......   ")
   (if exit-message
       (exit (if ok? 0 1) exit-message)
-  
   (if-not(or (nil? (get options :output)) (nil? (get options :jsonld-context)))
     (let [records (construct-variant-table input (get options :jsonld-context) (get options :method) (get options :methodc))]
-    (log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
-    ;(report/write-report input (get options :jsonld-context) (get options :output) (get options :force) (get options :report))  
+    (println "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
+    ;(report/write-report input (get options :jsonld-context) (get options :output) (get options :force) (get options :report)) 
+    (if (nil? (validate (slurp input))) (log/debug "Json input is valid"))
     (try    ;if output or report file exists then check if there is a force option. If there is no force option the throw an error with message     
       ;"ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)." Otherwise create output and report file     
       (if(and (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report))))     
@@ -171,6 +182,6 @@
           (println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)."))                      [(spit (get options :output) (csv/write-csv records))
           (report/append-to-report (get options :report) input (get options :output) (get options :jsonld-context) (get options :force) records)])     
     (catch Exception e (log/error (str "Exception in main: " e)))))  
-  ))))                                     
+  ))))                                  
  
   
