@@ -155,8 +155,6 @@
   (slurp "/Users/nafisakhandaker/git/clingen/clinvar-submitter/data/variantInterpretation.json")
  )
 
-
-
 (def validate (v/validator schema))
 
 (defn -main 
@@ -170,7 +168,7 @@
       (exit (if ok? 0 1) exit-message)
   (if-not(or (nil? (get options :output)) (nil? (get options :jsonld-context)))
     (let [records (construct-variant-table input (get options :jsonld-context) (get options :method) (get options :methodc))]
-    (println "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
+    (log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
     ;(report/write-report input (get options :jsonld-context) (get options :output) (get options :force) (get options :report)) 
     (if (nil? (validate (slurp input))) (log/debug "Json input is valid"))
     (try    ;if output or report file exists then check if there is a force option. If there is no force option the throw an error with message     

@@ -44,20 +44,20 @@
   (defn interp-significance
   "Return the interpretation clinical significance."
   [t i]
-  (let [significance (ld-> t i "clinicalSignificance")]
+  (let [significance (ld-> t i "outcome")]
     (if (nil? significance) (str "*E-402" ":" (rand-int 200))
-    (csv-colval (get significance "display")))))
+    (csv-colval (get significance "label")))))
   
   (defn interp-eval-date
   "Return the interpretation evaluation date."
   [t i]
   (let [contribution (ld-> t i "contribution")]
-    (if (nil? (get contribution "onDate")) (str "*E-403" ":" (rand-int 200))
+    (if (nil? (get contribution "contributionDate")) (str "*E-403" ":" (rand-int 200))
       (.format 
         (java.text.SimpleDateFormat. "yyyy-MM-dd") 
         (.parse
           (java.text.SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX")
-          (get contribution "onDate"))))))
+          (get contribution "contributionDate"))))))
   
  (defn get-interpretation
    "Returns a map of all interpretation related fields needed for the 
@@ -167,20 +167,20 @@
 (defn condition-idtype
   ;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
   [t c]
-  (let [disease-coding (ld-> t c "disease" "coding")]
-    (let [disease-code (get disease-coding "code")]
-      (csv-colval (get (re-find #"(.*)\_(.*)" disease-code) 1)))))
+  (let [disease-coding (ld-> t c "disease")]
+    (let [disease-code (last (str/split (get disease-coding "id") #"/"))]
+      (csv-colval (get (re-find #"(.*)\_(.*)" disease-code) 1))))) 
 
 (defn condition-idvals
    ;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
   [t c]
-  (let [disease-coding (ld-> t c "disease" "coding")]
-    (let [disease-code (get disease-coding "code")]
-      (csv-colval (get (re-find #"(.*)\_(.*)" disease-code) 2)))))
-
+  (let [disease-coding (ld-> t c "disease")]
+    (let [disease-code (last (str/split (get disease-coding "id") #"/"))]
+    (csv-colval (get (re-find #"(.*)\_(.*)" disease-code) 2))))) 
+     
 (defn condition-moi
   [t c]
-  (csv-colval (ld-> t c "modeOfInheritance" "display")))
+  (csv-colval (ld-> t c "modeOfInheritance" "label")))
 
 (defn get-condition
   "Processes the condition element to derive the ClinVar sanctioned fields: 
@@ -220,10 +220,10 @@
      create the strength by joining the rule and selected strength with an underscore."
     [t e]
     (try
-    (let [crit (ld-> t e "information" "criterion")
-         act-strength-coding (ld-> t e "evidenceStrength" "coding")
-         def-strength-coding (ld-> t e "information" "criterion" "defaultStrength" "coding")
-         def-strength-display (ld-> t e "information" "criterion" "defaultStrength" "coding" "display")]
+    (let [crit (ld-> t e "evidenceItem" "criterion")
+         act-strength-coding (ld-> t e "evidenceStrength")
+         def-strength-coding (ld-> t e "evidenceItem" "criterion" "defaultStrength")
+         def-strength-display (ld-> t e "evidenceItem" "criterion" "defaultStrength" "label")]
         (let [def-strength-displaylist
           (cond 
           (instance? List def-strength-display)
@@ -232,7 +232,7 @@
           (list def-strength-display))]
           (let [rule-label (get crit "id")
                 def-strength (first def-strength-displaylist)
-                act-strength (get act-strength-coding  "display")]
+                act-strength (get act-strength-coding  "label")]
           (let [def-direction (get (str/split def-strength #" ") 0)
                 def-weight (get (str/split def-strength #" ") 1)
                 act-direction (get (str/split act-strength #" ") 0)
@@ -249,7 +249,7 @@
   (defn evidence-rules
     "Returns the list of criterion rule names for the evidence provided"
     [t e]
-    (let [crits (ld-> t e "information" "criterion")]
+    (let [crits (ld-> t e "evidenceItem" "criterion")]
       (map #(get % "id") crits))) 
   
   (defn evidence-summary
@@ -265,7 +265,7 @@
   (defn evidence-pmid-citations
     "Returns the list of critieron pmid citations for the evidence provided"
     [t e]
-    (let [info-sources (ld-> t e "information" "evidence" "information" "source")
+    (let [info-sources (ld-> t e "evidenceLine" "evidenceItem" "evidenceLine" "evidenceItem" "source")
           pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)]
       (if (nil? pmids) (str "**W-551" ":" (rand-int 200))
       (csv-colval (clojure.string/join ", " (map #(str "PMID:" %) pmids))))))
@@ -274,11 +274,12 @@
    "Returns a collated map of all 'met' evidence records needed for the 
     clinvar 'variant' submission sheet."
    [t i]
-   (let [e (ld-> t i "evidence"  (prop= t "met" "information" "outcome" "code"))]     
+   (let [e (ld-> t i "evidenceLine"  (prop= t "met" "evidenceItem" "outcome" "label"))]     
      (if (nil? e) "*W-551"
      {:summary (evidence-summary t e),
       :rules (evidence-rules t e),
       :assessments (criteria-assessments t e),
-      :pmid-citations (evidence-pmid-citations t e)})))
+      :pmid-citations (evidence-pmid-citations t e)
+      })))
   
   
