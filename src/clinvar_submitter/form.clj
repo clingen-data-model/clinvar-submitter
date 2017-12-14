@@ -265,8 +265,9 @@
   (defn evidence-pmid-citations
     "Returns the list of critieron pmid citations for the evidence provided"
     [t e]
-    (let [info-sources (ld-> t e "evidenceLine" "evidenceItem" "evidenceLine" "evidenceItem" "source")
-          pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)]
+    ;(let [info-sources (ld-> t e "information" "evidence" "information" "source")
+    (let [info-sources (ld-> t e "evidenceItem" "evidenceLine" "evidenceItem" "source")
+          pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)] 
       (if (nil? pmids) (str "**W-551" ":" (rand-int 200))
       (csv-colval (clojure.string/join ", " (map #(str "PMID:" %) pmids))))))
   
@@ -274,7 +275,8 @@
    "Returns a collated map of all 'met' evidence records needed for the 
     clinvar 'variant' submission sheet."
    [t i]
-   (let [e (ld-> t i "evidenceLine"  (prop= t "met" "evidenceItem" "outcome" "label"))]     
+   ;(let [e (ld-> t i "evidence"  (prop= t "met" "information" "outcome" "code"))]   
+   (let [e (ld-> t i "evidenceLine" (prop= t "http://clinicalgenome.org/datamodel/criterion-assertion-outcome/met" "evidenceItem" "outcome" "label"))]
      (if (nil? e) "*W-551"
      {:summary (evidence-summary t e),
       :rules (evidence-rules t e),
