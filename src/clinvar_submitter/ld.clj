@@ -51,7 +51,7 @@
   (fn [m] (if (instance? List m)
             (filter (fn [m1] (let [r (apply ld-> t m1 ks)]
                                (if (instance? List r) (some #(= % v) r) (= r v))))  m)
-            (when (= v (ld-> t m ks)) m))))
+            (when (= v (apply ld-> t m ks)) m))))
 
 (defn construct-symbol-table
   "Construct a map that takes a flattened JSON-LD interpretation as input and associates

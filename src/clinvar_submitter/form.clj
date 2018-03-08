@@ -252,37 +252,41 @@
     (let [crits (ld-> t e "evidenceItem" "criterion")]
       (map #(get % "id") crits))) 
   
-  (defn evidence-summary
-    "Returns a standard formatted summarization of the rules that were met."
-    [t e]
-    (str "The following criteria were met: " (csv-colval (clojure.string/join ", " (criteria-assessments t e)))))
+(defn evidence-summary
+  "Returns a standard formatted summarization of the rules that were met."
+  [t e]
+  (println "evidence summary" e)
+  (let  [criteria-str (if (instance? List e)
+                        (csv-colval (clojure.string/join ", " (criteria-assessments t e)))
+                        (csv-colval (evidence-rule-strength t e)))]
+    (str "The following criteria were met: " criteria-str)))
+
+(defn re-extract
+  "Returns a map of matching regex group captures for any vector, list, map which can be flattened."
+  [items re group]
+  (map #(get (re-find re %) group) (remove nil? (flatten items))))
+
+(defn evidence-pmid-citations
+  "Returns the list of critieron pmid citations for the evidence provided"
+  [t e]
+                                        ;(let [info-sources (ld-> t e "information" "evidence" "information" "source")
+  (let [info-sources (ld-> t e "evidenceItem" "evidenceLine" "evidenceItem" "source")
+        pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)] 
+    (if (nil? pmids) (str "**W-551" ":" (rand-int 200))
+        (csv-colval (clojure.string/join ", " (map #(str "PMID:" %) pmids))))))
   
-  (defn re-extract
-    "Returns a map of matching regex group captures for any vector, list, map which can be flattened."
-    [items re group]
-    (map #(get (re-find re %) group) (remove nil? (flatten items))))
-  
-  (defn evidence-pmid-citations
-    "Returns the list of critieron pmid citations for the evidence provided"
-    [t e]
-    ;(let [info-sources (ld-> t e "information" "evidence" "information" "source")
-    (let [info-sources (ld-> t e "evidenceItem" "evidenceLine" "evidenceItem" "source")
-          pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)] 
-      (if (nil? pmids) (str "**W-551" ":" (rand-int 200))
-      (csv-colval (clojure.string/join ", " (map #(str "PMID:" %) pmids))))))
-  
-  (defn get-met-evidence
-   "Returns a collated map of all 'met' evidence records needed for the 
+(defn get-met-evidence
+  "Returns a collated map of all 'met' evidence records needed for the 
     clinvar 'variant' submission sheet."
-   [t i]
-   ;(let [e (ld-> t i "evidenceLine")]   
-   ; (let [evidence-list (cond (instance? List e) e :else (list e))]
-   ;   (let [x (ld-> t evidence-list (prop= t "http://clinicalgenome.org/datamodel/criterion-assertion-outcome/met" "evidenceItem" "outcome" "label"))]
-   (let [e (ld-> t i "evidenceLine" (prop= t "http://clinicalgenome.org/datamodel/criterion-assertion-outcome/met" "evidenceItem" "outcome" "label"))]
-     {:summary (if (nil? e) "*W-551" (evidence-summary t e)),
-      :rules (if (nil? e) "*W-551" (evidence-rules t e)),
-      :assessments (if (nil? e) "*W-551" (criteria-assessments t e)),
-      :pmid-citations (if (nil? e) "*W-551" (evidence-pmid-citations t e))
-      }))
-  
-  
+  [t i]
+                                        ;(let [e (ld-> t i "evidenceLine")]   
+                                        ; (let [evidence-list (cond (instance? List e) e :else (list e))]
+                                        ;   (let [x (ld-> t evidence-list (prop= t "http://clinicalgenome.org/datamodel/criterion-assertion-outcome/met" "evidenceItem" "outcome" "label"))]
+  (let [e (ld-> t i "evidenceLine" (prop= t "http://clinicalgenome.org/datamodel/criterion-assertion-outcome/met" "evidenceItem" "outcome" "label"))]
+    {:summary (if (nil? e) "*W-551" (evidence-summary t e)),
+     :rules (if (nil? e) "*W-551" (evidence-rules t e)),
+     :assessments (if (nil? e) "*W-551" (criteria-assessments t e)),
+     :pmid-citations (if (nil? e) "*W-551" (evidence-pmid-citations t e))
+     }))
+
+
