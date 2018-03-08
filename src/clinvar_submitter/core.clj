@@ -152,7 +152,7 @@
   (log/error (str "Exception in construct-variant-table: " e)))))
 
 (def schema
-  (slurp "/Users/nafisakhandaker/git/clingen/clinvar-submitter/data/variantInterpretation.json")
+  (slurp "/Users/babbl/Development/clingen/clinvar-submitter/data/variantInterpretation.json")
  )
 
 (def validate (v/validator schema))
@@ -171,13 +171,15 @@
     (log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
     ;(report/write-report input (get options :jsonld-context) (get options :output) (get options :force) (get options :report)) 
     (if (nil? (validate (slurp input))) (log/debug "Json input is valid"))
-    (try    ;if output or report file exists then check if there is a force option. If there is no force option the throw an error with message     
+    (try
+    ;if output or report file exists then check if there is a force option. If there is no force option the throw an error with message     
       ;"ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)." Otherwise create output and report file     
       (if(and (.exists (io/as-file (get options :output))) (.exists (io/as-file (get options :report))))     
         (if (get options :force)           
           [(spit (get options :output) (csv/write-csv records))
           (report/append-to-report (get options :report) input (get options :output) (get options :jsonld-context) (get options :force) records)]
-          (println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)."))                      [(spit (get options :output) (csv/write-csv records))
+          (println "ERROR 101 ‚output or report file exists! (use‚ -f Force overwrite to overwrite these files)."))              
+        [(spit (get options :output) (csv/write-csv records))
           (report/append-to-report (get options :report) input (get options :output) (get options :jsonld-context) (get options :force) records)])     
     (catch Exception e (log/error (str "Exception in main: " e)))))  
   ))))                                  

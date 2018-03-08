@@ -76,9 +76,10 @@
  
   (defn variant-alt-designations
   "Return variant hgvs representations"
-  [v]
-  (if (nil? (get v "alleleName name")) (str "*E-203" ":" (rand-int 200))
-  (csv-colval (get v "alleleName name"))))
+  [t v]
+  (let [allelename (ld-> t v "alleleName" "name")]
+    (if (or (nil? allelename) (nil? (first allelename))) (str "*E-203" ":" (rand-int 200))
+      (csv-colval (first allelename)))))
  
  (defn variant-refseq
   "Return the variant reference sequence."
@@ -133,7 +134,7 @@
   [t i]
   (let [v (ld1-> t i "variant" "relatedContextualAllele" (prop= t true "preferred"))]
     {:variantIdentifier (variant-identifier v),
-     :altDesignations (variant-alt-designations v),
+     :altDesignations (variant-alt-designations t v),
      :refseq (variant-refseq t v),
      :start (variant-start t v),
      :stop  (variant-stop t v),
@@ -161,8 +162,7 @@
   May log warnings if available content does not conform to
   clinvar specifcations."
   [t c]
-  (let [name (get c "name")]
-    (csv-colval (if (nil? name) "" name))))
+  (csv-colval (ld-> t c "disease" "userLabel")))
 
 (defn condition-idtype
   ;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
@@ -230,7 +230,7 @@
            def-strength-display
           :else 
           (list def-strength-display))]
-          (let [rule-label (get crit "id")
+          (let [rule-label (get crit "label")
                 def-strength (first def-strength-displaylist)
                 act-strength (get act-strength-coding  "label")]
           (let [def-direction (get (str/split def-strength #" ") 0)
@@ -275,13 +275,14 @@
    "Returns a collated map of all 'met' evidence records needed for the 
     clinvar 'variant' submission sheet."
    [t i]
-   ;(let [e (ld-> t i "evidence"  (prop= t "met" "information" "outcome" "code"))]   
+   ;(let [e (ld-> t i "evidenceLine")]   
+   ; (let [evidence-list (cond (instance? List e) e :else (list e))]
+   ;   (let [x (ld-> t evidence-list (prop= t "http://clinicalgenome.org/datamodel/criterion-assertion-outcome/met" "evidenceItem" "outcome" "label"))]
    (let [e (ld-> t i "evidenceLine" (prop= t "http://clinicalgenome.org/datamodel/criterion-assertion-outcome/met" "evidenceItem" "outcome" "label"))]
-     (if (nil? e) "*W-551"
-     {:summary (evidence-summary t e),
-      :rules (evidence-rules t e),
-      :assessments (criteria-assessments t e),
-      :pmid-citations (evidence-pmid-citations t e)
-      })))
+     {:summary (if (nil? e) "*W-551" (evidence-summary t e)),
+      :rules (if (nil? e) "*W-551" (evidence-rules t e)),
+      :assessments (if (nil? e) "*W-551" (criteria-assessments t e)),
+      :pmid-citations (if (nil? e) "*W-551" (evidence-pmid-citations t e))
+      }))
   
   
