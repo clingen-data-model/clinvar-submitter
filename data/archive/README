@@ -1,0 +1,12 @@
+# 
+# ClinVar conversion input archive data sets 
+# This folder contains sets of VCI transformed output records in ClinGen
+# valid json form.  Each set, which can be used to run through the 
+# clinvar-submitter process also contains a log file with the output from
+# the VCI transformation process, to aid in troubleshooting data content 
+# issues if needed.
+# These sets will be accumulated here to provide future
+# changes or troubleshooting the opportunity to review or audit prior
+# form and function.
+#
+

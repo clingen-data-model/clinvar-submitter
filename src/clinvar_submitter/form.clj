@@ -255,7 +255,6 @@
 (defn evidence-summary
   "Returns a standard formatted summarization of the rules that were met."
   [t e]
-  (println "evidence summary" e)
   (let  [criteria-str (if (instance? List e)
                         (csv-colval (clojure.string/join ", " (criteria-assessments t e)))
                         (csv-colval (evidence-rule-strength t e)))]

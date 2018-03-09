@@ -111,6 +111,7 @@
      "" ; ref copy number - non sequence var only
      "" ; breakpoint 1 - non sequence var only
      "" ; breakpoint 2 - non sequence var only
+     "" ; comment on variant - req'd if var type is complex
      "" ; Trace or probe data	 - non sequence var only
 		 "" ; empty
 		 (get variant :variantIdentifier) ; Variation identifiers	(http://reg.genome.network.org/allele = ABC ABC:CA123123123)
