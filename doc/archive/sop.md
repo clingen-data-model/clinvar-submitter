@@ -5,6 +5,8 @@
 }
 </style>
 -->
+# Work in Progress - Not up to date yet! Move from archive to /doc folder when ready for public use.
+
 
 ## Instruction to request/receive clinvar submissions for clingen users:
 
