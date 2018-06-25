@@ -1,4 +1,4 @@
-(defproject clinvar-submitter "0.1.0-SNAPSHOT"
+(defproject clinvar-submitter "1.0.0"
   :description "ClinGen ClinVar variant submission generation tool"
   :url "https://github.com/clingen-data-model/clinvar-submitter"
   :license {:name "Eclipse Public License"
