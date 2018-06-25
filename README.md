@@ -6,14 +6,14 @@ This project consists of
 
 * project.clj - Clojure project and build options.
 * [Source code](src) 
-** ld.clj - A linked-data utility for providing XPath-like queries agains json-ld input files
-** form.clj - A set of ClinVar submssion specific form parsing functions 
-** core.clj - A set of input/output procedures for orchestrating the transformation
-** report.clj - The functions for writing out the output and run report.
+  * ld.clj - A linked-data utility for providing XPath-like queries agains json-ld input files
+  * form.clj - A set of ClinVar submssion specific form parsing functions 
+  * core.clj - A set of input/output procedures for orchestrating the transformation
+  * report.clj - The functions for writing out the output and run report.
 * [Unit Tests](test/clinvar-submitter) 
 * [Data files](data)
-** Example json files - input interpretation data files 
-** Clinvar Submission Template - A copy of the ClinVar Submission Template spreadsheet on which this version of the application is aligned. Also available at the ClinVar website.
+  * Example json files - input interpretation data files 
+  * Clinvar Submission Template - A copy of the ClinVar Submission Template spreadsheet on which this version of the application is aligned. Also available at the ClinVar website.
 * [Developer Documentation](doc)
 * combineall.sh - an optional script to combine multiple interpretation json files into a single json file. 
 
