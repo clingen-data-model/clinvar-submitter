@@ -1,901 +1,960 @@
 {
-	"$schema": "http://json-schema.org/draft-06/schema#",
-	"title": "VariantInterpretation",
-	"description": "An assertion about the pathogenicity of a genetic sequence variant, based on evaluation of one or more lines of evidence",
-	"type": "string",
-	"definitions": 
-	{
-		"agent": 
-		{
-			"anyOf": [
-    			{ "type": "string"},
-    			{ "type": "object"}
-  			],
-			"properties": 
-			{
-				"description": 
-				{
-					"type": "string"
-				},
-
-				"label": 
-				{
-					"type": "string"
-				}
-			}			
-		},
-		"contribution": 
-		{
-			"type": "object",
-            
-				"properties": 
-				{
-					"agent": 
-					{
-						"type": "object",
-						"description": "A person, group of people, algorithm, or some other actor that could make a contribution",
-						"$ref": "#/definitions/agent"
-					},
-					"contributionDate": 
-					{
-						"type": "string",
-						"description": "TODO"
-					},
-					"contributionRole": 
-					{						
-						"type": "object",
-						"description": "TODO",
-						"properties": 
-						{
-							"label": 
-							{
-								"type": "string",
-								"description": "ToDo"
-							},	
-							"type": 
-							{
-								"type": "string",
-								"description": "An explanation about the purpose of this instance."
-							}
-						}
-					}
-				}
-		},
-		"evidenceline": 
-		{
-			"type": "object",
-			"properties": 
-			 {
-					"description": 
-					{
-						"description": "A human-readable description of the entity",
-						"type": "string"
-					},
-					"evidenceItem": 
-					{
-						"description": "ToDo",
-						"type": "array",
-						"items":
-						{
-							"type": "object",
-	                        "$ref": "#/definitions/statement"
-						}
-					},
-					"evidenceStrength": 
-					{
-						"description": "ToDo",
-						"anyOf": [
-    						{ "type": "string"},
-    						{ "type": "object"}
-  						]
-					},
-					"contribution": 
-					{
-						"description": "ToDo",
-						"type": "array",
-						"items": 
-						{
-							"type": "object",
-	                      	"$ref": "#/definitions/contribution"
-						}
-					}
-				}						
-		},
-		"geneticcondition": 
-		{
-			"type": "object",
-			"properties": 
-			{
-				"phenotype": 
-				{
-					"type": "object",
-					"description": "phenotype"
-				},
-				"modeOfInheritance": 
-				{
-					"type": "object",
-					"description": "modeOfInheritance",
-					"properties": 
-					{
-						"id": 
-						{
-							"type": "string",
-							"description": "id"
-						},
-
-						"label": 
-						{
-							"type": "string",
-							"description": "label."
-						},
-
-						"type": 
-						{
-							"type": "string",
-							"description": "An explanation about the purpose of this instance."
-						}
-					}
-				},
-				"gene": 
-				{
-					"type": "object",
-					"description": "gene",
-					"properties": 
-					{
-						"geneSymbol": 
-						{
-							"type": "object",
-							"description": "geneSymbol"
-						}
-					}
-				},
-				"name": 
-				{
-					"description": "name",
-					"type": "string"
-				},
-				"disease": 
-				{
-					"type": "array",
-					"description": "disease",
-					"items": 
-					{
-						"type": "object",
-						"properties": 
-						{
-							"id": 
-							{
-								"type": "string",
-								"description": "The schema id"
-							},
-
-							"synonym": 
-							{
-								"type": "array",
-								"description": "synonym"
-							}
-						}
-					}
-				}
-			}
-		},
-		"statement": {
-      			"type": "object",	
-				"properties": 
-				{
-					"qualifier": 
-					{
-						"type": "object",
-						"description": "Use NOT as the value of this property to assert that the statement is negated."
-					},
-					"evidenceLine": 
-					{
-						"type": "array",
-						"description": "supporting evidence",
-						"items": 
-						{
-							"type": "object",
-							"$ref": "#/definitions/evidenceline"
-						}
-					},
-					"contribution": 
-					{
-						"type": "array",
-						"description": "The contributions (agent, time and role) made to this entity",
-						"items": 
-						{
-							"type": "object",
-							"$ref": "#/definitions/contribution"
-						}
-					},
-					"description": 
-					{
-						"type": "string",
-						"description": "A human-readable description of the entity"
-					},
-					"source": 
-					{
-						"type": "array",
-						"description": "source",
-						"items": 
-						{
-							"type": "string"
-						}
-					}
-				}
-			},
-			"AlleleMolecularConsequence": {	
-		    	"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},	            		        
-		        {"description": "A statement that describes the expected effect of a variant allele at the level of genomic or transcript sequence",
-		            	 "type": "object",
-		            	  "properties": {
-			        		"consequence": {
-			            		"description": "Classification of allele based on the manner in which it alters the sequence",
-			            		"type": "object"
-			        		},
-					        "contextualAllele": {
-					            "description": "The contextual (reference-specific) allele that is being classified",
-					            "type": "object"
-					        }
-		    		}}]           
-		     },
-			 "ConditionMechanism": {
-			 		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},
-		        	{"description": "A statement about the mechanism underlying a genetic condition (e.g. if that LOF mutations in a particular gene are a known mechanism of disease).",
-		            "type": "object",
-		            "properties": {
-				        "mechanism": {
-				            "description": "SO term for a class of variants",
-				            "type": "object"
-				        },
-				        "mechanismConfidence": {
-				            "description": "Qualifier on the Condition/Mechanism pair",
-				            "type": "object"
-				        },
-				        "gene": {
-				            "description": "Gene in which the given variants occur",
-				            "type": "object"
-				        },
-				        "condition": {
-				            "description": "The condition whose mechanism is being described",
-				            "type": "object"
-				        }
-				    }
-				   }]         
-		       },
-		       "NullAllele": {
-		       		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},
-            		{"description": "A statement that asserts whether an allele causes commplete loss of function of a gene or gene  product. ",
-            		"type": "object" 
-            		}]       
-        		},
-        		"CriterionAssessment": {
-        			"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},        			
-	            	{"description": "Preferred: An assertion of whether sufficient evidence exists to satisfy some pre-defined 'variant interpretation criterion', which defines requirements for a particular type of argument relevant to the pathogenicity of a genetic variant.\\n\\nAn assertion of whether sufficient evidence exists about a particular variant to satisfy some pre-defined 'variant interpretation criterion'. \\n\\n------\\n\\n(then see clarifying comments to the right)\\n",
-	            	 "type": "object",
-	            	 "properties": {
-				        "contextualAllele": {
-				            "description": "ToDo",
-				            "type": "object"
-				        },
-				        "annotation": {
-				            "description": "ToDo",
-				            "type": "object"
-				        }
-				   }
-				   }]
-	        	},
-	        	"IndividualCondition": {
-	        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},        	
-		            {"description": "A statement about whether a individual is affected by or exhibits a particular condition",
-		            "type": "object",
-		            "properties": {
-				        "individual": {
-				            "description": "The person being assessed for the condition",
-				            "type": "object"
-				        },
-				        "condition": {
-				            "description": "The condition that the person may have",
-				            "type": "object"
-				        },
-				        "individualHasCondition": {
-				            "description": "Whether or not the person has the condition",
-				            "type": "object"
-				        }
-				    }
-				    }]			
-        		},
-        		"FamilyCondition": {
-        			"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},
-		            {"description": "A statement describing the presence of a particular disease appears in the history of a family.",
-		            "type": "object",
-		            "properties": {
-				        "proband": {
-				            "description": "The person that was the original source of the condition in this family",
-				            "type": "object"
-				        },
-				        "condition": {
-				            "description": "A condition that the family may or may not have",
-				            "type": "object"
-				        },
-				        "familyHasCondition": {
-				            "description": "Whether or not this family has the stated condition",
-				            "type": "object"
-				        }
-				    }
-				    }]			
-        		},
-        		"IndividualAlleleInheritance": {  
-        			"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},     	
-		            {"description": "A statement about the origin of a particular allele in an individual - i.e. whether it occurred  de novo in the individual as a result of a spontaneous mutation event, or whether it was inherited from a parent.",
-		            "type": "object",
-		            "properties": {
-				        "canonicalAllele": {
-				            "description": "The allele whose denovo status is being described",
-				            "type": "object"		            
-				        },
-				        "individual": {
-				            "description": "The individual whose allele may be denovo",
-				            "type": "object"		            
-				        },
-				        "parentalConfirmation": {
-				            "description": "ToDo",
-				            "type": "object"		            
-				        },
-				        "alleleInheritance": {
-				            "description": "ToDo",
-				            "type": "object"		            
-				        }
-				    }
-				    }]		
-        		},
-        		"AlleleFunctionalImpact": {
-        			"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},
-		            {"description": "A statement describing a particular experimental result about the impact of an allele on gene product function (typically that of the directly affected gene).",
-		            "type": "object",
-		            "properties": {
-				        "resultDescription": {
-				            "description": "Result of the functional experiment",
-				            "type": "string"
-				        },
-				        "assayType": {
-				            "description": "Specific type of functional data collected",
-				            "type": "object"
-				        },
-				        "contextualAllele": {
-				            "description": "Allele defined with respect to the measured transcript",
-				            "type": "object"
-				        },
-				        "gene": {
-				            "description": "Gene to which the functional data applies",
-				            "type": "object"
-				        }
-				    }
-				    }]			           
-        		},
-        		"CaseControl": {
-        			"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},		
-		            {"description": "A statement describing allele frequencies identified in a particular study group as a function of case-control status (i.e frequency in affected vs unaffected study groups",
-		            "type": "object",
-		            "properties": {
-				        "canonicalAllele": {
-				            "description": "The allele studied in the case-control experiment",
-				            "type": "object"
-				        },
-				        "condition": {
-				            "description": "The condition studied in the case-control experiment",
-				            "type": "object"
-				        },
-				        "oddsRatio": {
-				            "description": "Ratio of the probability of having the condition given the allele to the probability of the condition without the allele.",
-				            "type": "number"
-				        },
-				        "confidenceLevel": {
-				            "description": "Confidence level in percent",
-				            "type": "number"
-				        },
-				        "caseGroupFrequency": {
-				            "description": "The group of individuals with the condition",
-				            "type": "object"		            
-				        },
-				        "controlGroupFrequency": {
-				            "description": "The group of individuals without the condition",
-				            "type": "object"
-				        },
-				        "confidenceIntervalLower": {
-				            "description": "Lower bound of the confidence interval for the odds ratio",
-				            "type": "number"
-				        },
-				        "confidenceIntervalUpper": {
-				            "description": "Upper bound of the confidence interval for the odds ratio",
-				            "type": "number"		            
-				        }
-				    } 
-				    }]			    			         
-        		},      		
-		        "SequenceLocation": {
-		        	"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},
-		            {"description": "The location of a sequence feature as specified by  the coordinates of its starting and ending residues relative to some reference sequence.",
-		            "type": "object",
-		            "properties": {
-				        "referenceSequence": {
-				            "description": "Sequence on which the region is defined",
-				            "type": "object"
-				        },
-				        "start": {
-				            "description": "Start of the region in 0-based coordinates",
-				            "type": "number"
-				        },
-				        "stop": {
-				            "description": "End of the region in 0-based coordinates",
-				            "type": "number"
-				        }
-				    } 
-				    }]          
-		        },
-        		"AlleleFrequency": { 
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},      	
-	            {"description": "A statement that describes the frequency of an allele as determined in a defined group of individuals (typically a representative sampling that serves as a proxy for some larger population of individuals",
-	            "type": "object",
-	            "properties": {
-			        "ascertainment": {
-			            "description": "The criteria applied to create the dataset in which the frequency was measured",
-			            "type": "object"		            
-			        },
-			        "allele": {
-			            "description": "The variant for which the frequency is given",
-			            "type": "object"		            
-			        },
-			        "alleleCount": {
-			            "description": "Frequency numerator: number of times the allele was observed",
-			            "type": "number"		            
-			        },
-			        "alleleNumber": {
-			            "description": "Frequency denominator: number of observations",
-			            "type": "number"		            
-			        },
-			        "individualCount": {
-			            "description": "Number of individuals sampled",
-			            "type": "number"		            
-			        },
-			        "homozygousAlleleIndividualCount": {
-			            "description": "Number of individuals in the group that are homozygous for the allele",
-			            "type": "number"		            
-			        },
-			        "heterozygousAlleleIndividualCount": {
-			            "description": "Number of individuals in the group who are heterozygous for the allele.",
-			            "type": "number"		            
-			        },
-			        "population": {
-			            "description": "Ancestry of population or group over which the frequency was measured",
-			            "type": "object"		            
-			        },
-			        "hemizygousAlleleIndividualCount": {
-			            "description": "Number of individuals in the group that are hemizygous for the allele",
-			            "type": "number"		            
-			        },
-			        "alleleFrequency": {
-			            "description": "Frequency of the named allele in the population",
-			            "type": "number"		            
-			        },
-			        "medianCoverage": {
-			            "description": "Median coverage at the allele site in the data set",
-			            "type": "number"		            
-			        }
-			    }
-			    }]           
-        	},
-	        "RegionType": {  
-	        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},   	
-		            {"description": "A statement that classifies a particular region of biological sequence as being of a specified type or types  (e.g. using terms from the Sequence Ontology).",
-		            "type": "object",
-		            "properties": {
-				        "annotation": {
-				            "description": "ToDo",
-				            "type": "object"
-				        },
-				        "region": {
-				            "description": "Region",
-				            "type": "object"
-				        }
-				    }
-				 }]          
-	        },
-	        "RegionAlleles": { 
-	        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},      	
-		            {"description": "A statement about whether a region of genomic sequence overlaps one or more particular alleles.",
-		            "type": "object",
-		            "properties": {
-				        "allele": {
-				            "description": "Alleles that are being explicited assessed as either included or excluded from the region.",
-				            "type": "object"
-				        },
-				        "outcome": {
-				            "description": "Assessed outcome of specified alleles as either included or excluded.",
-				            "type": "object"
-				        },
-				        "region": {
-				            "description": "Region within which alleles are being measured",
-				            "type": "object"
-				        }
-				   }
-				   }] 	          
-	        },
-        	"IndividualAllele": { 
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},          
-	            {"description": "A statement describing the allelic state of one or more alleles in the genome of an individual (e.g. zygosity information, or phase relative to a second allele).",
-	            "type": "object",
-	            "properties": {
-			        "individual": {
-			            "description": "Person whose alleles the data represents",
-			            "type": "object"		            
-			        },
-			        "primaryAllele": {
-			            "description": "One allele that the person has",
-			            "type": "object"		            
-			        },
-			        "secondaryAllele": {
-			            "description": "A second allele that the person has",
-			            "type": "object"		            
-			        },
-			        "primaryZygosity": {
-			            "description": "Zygosity of the primary allele in the individual",
-			            "type": "object"		            
-			        },
-			        "secondaryZygosity": {
-			            "description": "Zygosity of the secondary allele in the individual",
-			            "type": "object"		            
-			        },
-			        "phase": {
-			            "description": "Phase of the primary and secondary individual",
-			            "type": "object"		            
-			        }
-			    }
-			    }]			         
-        	},
-        	"ExcludedRegionType": {
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},
-	            {"description": "TODO",
-	            "type": "object",
-	            "properties": {
-			        "annotation": {
-			            "description": "ToDo",
-			            "type": "object"
-			        },
-			        "region": {
-			            "description": "Region",
-			            "type": "object"
-			        }
-			    }
-			    }] 			      
-        	},
-        	"VariantInterpretation": {
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"}]      		     
-        	},
-        	"BenignMissenseVariationRate": { 
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},     	
-	            {"description": "A statement about the frequency at which missense variants in a particular region are tolerated (i.e. do not cause a pathological condition)",
-	            "type": "object",
-	            "properties": {
-			        "region": {
-			            "description": "Sequence on which the region is defined",
-			            "type": "object"
-			        },
-			        "value": {
-			            "description": "The rate at which Benign missense variants occur within the region",
-			            "type": "object"
-			        },
-			        "gene": {
-			            "description": "Gene that contains the missense variants",
-			            "type": "object"
-			        }
-			    }  
-			    }]      
-        	},
-        	"FamilySegregation": {
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},
-	            {"description": "A statement describing the correlation between the presence of a particular allele and the manifestation of a mendelian condition, as inherited through a single family pedigree (i.e. co-segregation of an allele and condition in a single family).\r\n\r\n",
-	            "type": "object",
-	            "properties": {
-			        "phenotypePositiveAlleleNegative": {
-			            "description": "Number of (non-proband) individuals with the condition and without the allele",
-			            "type": "number"
-			        },
-			        "inconsistentSegregationCount": {
-			            "description": "ToDo",
-			            "type": "number"
-			        },
-			        "condition": {
-			            "description": "Condition being tested for cosegregation",
-			            "type": "object"
-			        },
-			        "canonicalAllele": {
-			            "description": "Allele being tested for cosegregation",
-			            "type": "object"		            
-			        },
-			        "family": {
-			            "description": "Family in which segregation is being tested",
-			            "type": "object"		            
-			        },
-			        "phenotypePositiveAllelePositive": {
-			            "description": "Number of (non-proband) individuals with both the condition and the allele",
-			            "type": "number"
-			        },
-			        "phenotypeNegativeAllelePositive": {
-			            "description": "Number of (non-proband) individuals without the condition and with the allele",
-			            "type": "number"
-			        },
-			        "columns": {
-			            "description": "Column names for the pedigree data element",
-			            "type": "string"
-			        },
-			        "affectedValues": {
-			            "description": "Map describing how affected status is represented in the pedigree",
-			            "type": "string"
-			        },
-			        "genotypeValues": {
-			            "description": "Map describing how genotypes are represented in the pedigree",
-			            "type": "string"
-			        },
-			        "pedigree": {
-			            "description": "Detailed information about the family structure, affected status, and genotypes in pedigree/linkage format.",
-			            "type": "string"
-			        },
-			        "inconsistentSegregationsObserved": {
-			            "description": "Whether phenotype positive/allele negative or phenotype negative/allele positive individuals are in the family",
-			            "type": "object"
-			        },
-			        "phenotypeNegativeAlleleNegative": {
-			            "description": "The number of non-proband family members that have neither the allele nor the phenotype",
-			            "type": "number"
-			        }
-			    }
-			    }]
-        	},
-        	"AggregateSegregation": {
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},       	
-	            {"description": "A statement describing the correlation between the presense of a particular allele and the manifestation of a disease or phenotypes, as determined by examining inheritance patterns across multiple families (i.e. co-segregation of an allele and condition, aggregated across multiple family pedigrees).",
-	            "type": "object",
-	            "properties": {
-			        "canonicalAllele": {
-			            "description": "Allele being tested for cosegregation",
-			            "type": "object"		            
-			        },
-			        "condition": {
-			            "description": "Condition being tested for cosegregation",
-			            "type": "object"		            
-			        },
-			        "totalNumberOfSegregations": {
-			            "description": "Total number of segregations across families",
-			            "type": "number"	            
-			        },
-			        "familySegregation": {
-			            "description": "List of FamilySegregrationData that have been aggregated",
-			            "type": "object"		            
-			        },
-			        "modeOfInheritance": {
-			            "description": "Mode Of Inheritance used in evaluation of segregation",
-			            "type": "object"		            
-			        },
-			        "totalOfAllelePosConditionPosIndividuals": {
-			            "description": "Number of individuals across families that have the allele and the condition",
-			            "type": "number"		            
-			        },
-			        "totalOfAlleleNegConditionNegIndividuals": {
-			            "description": "Number of individuals across families that lack both the allele and the condition",
-			            "type": "number"		            
-			        },
-			        "totalOfAllelePosConditionNegIndividuals": {
-			            "description": "Number of individuals across families that have the allele but not the condition",
-			            "type": "number"		            
-			        },
-			        "totalOfAlleleNegConditionPosIndividuals": {
-			            "description": "Number of individuals across families that do not have the allele but do have the condition",
-			            "type": "number"		            
-			        },
-			        "totalOfUntestedConditionPosIndividuals": {
-			            "description": "Number of individuals across families that have the condition but whose allele is untested",
-			            "type": "number"		            
-			        },
-			        "totalOfUntestedConditionNegIndividuals": {
-			            "description": "Number of individuals across families that do not have the condition but whose allele is untested",
-			            "type": "number"		            
-			        },
-			        "totalOfFamiliesWithInconsistentSegregations": {
-			            "description": "Number of families containing segregations that are inconsistent with the allele causing the condition",
-			            "type": "number"		            
-			        }
-			    } 
-			   }]			           
-        	},
-        	"InSilicoPrediction": {
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},        	
-	            {"description": "A statement based on the output of a computational algorithm that predicts the impact of a particular allele on the function of its resulting gene product (e.g. 'deleterious', 'damaging', 'tolerated').",
-	            "type": "object",
-	            "properties": {
-			        "transcript": {
-			            "description": "The contextual allele on which the prediction is made",
-			            "type": "object"
-			        },
-			        "score": {
-			            "description": "ToDo",
-			            "type": "number"
-			        },
-			        "canonicalAllele": {
-			            "description": "The contextual allele on which the prediction is made",
-			            "type": "object"
-			        },
-			        "predictionType": {
-			            "description": "The type of prediction being made",
-			            "type": "object"
-			        },
-			        "algorithm": {
-			            "description": "The computational tool or algorithm that makes the prediction",
-			            "type": "string"
-			        },
-			        "categoricalPrediction": {
-			            "description": "The value of the prediction",
-			            "type": "string"
-			        }
-			    }
-			  }]           
-        	},
-        	"LocusHeterogeneity": {
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},
-	            {"description": "A statement that reflects the specificity with which a genetic condition is caused by variants in a particular gene or locus (i.e. whether it is the only known gene associated with the condition, or one or more other genes have been linked to the condition).",
-	            "type": "object",
-	            "properties": {
-			        "condition": {
-			            "description": "The condition for which the eitiology is defined",
-			            "type": "object"
-			        },
-			        "gene": {
-			            "description": "Gene that causes the condition",
-			            "type": "object"
-			        },
-			        "specificity": {
-			            "description": "Specificity of the Gene for the Condition",
-			            "type": "object"
-			        }
-			    }
-			    }]       
-        	},
-        	"ConditionPrevelance": {
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},
-	            {"description": "A statement describing the frequency of a condition as determined for a particular population of persons (ascertained by factors  such as ethnicity, race, socio-economic  status, geographic residence, etc).",
-	            "type": "object",
-	            "properties": {
-			        "condition": {
-			            "description": "Condition for which the prevelance is described",
-			            "type": "object"
-			        },
-			        "minimum": {
-			            "description": "Minimum bound on the condition's prevelance",
-			            "type": "number"
-			        },
-			        "maximum": {
-			            "description": "Maximum bound on the condition's prevelance",
-			            "type": "number"
-			        },
-			        "population": {
-			            "description": "Population over which the prevelance is defined",
-			            "type": "object"
-			        },
-			        "prevelance": {
-			            "description": "Prevelance of the condition in the population",
-			            "type": "number"
-			        }
-			    }
-			    }]			          
-        	},
-        	"ConditionPenetrance": {
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},
-	            {"description": "A statement describing the proportion of individuals carrying a causal allele who exhibit a particular disease or phenotype.",
-	            "type": "object",
-	            "properties": {
-			        "condition": {
-			            "description": "Condition for which the penetrance is described",
-			            "type": "object"
-			        },
-			        "penetrance": {
-			            "description": "Qualitative penetrance value",
-			            "type": "object"
-			        }
-			    } 
-			    }]         
-        	},
-        	"AlleleConservation": {
-        		"allOf":[{"$ref": "#/definitions/statement/definitions/statement"},
-	            {"description": "A statement about the degree of evolutionary conservation of an allele across a defined set of taxa/species. ",
-	            "type": "object",
-	            "properties": {
-			        "allele": {
-			            "description": "The allele for which conservation values are given",
-			            "type": "object"
-			        },
-			        "outcome": {
-			            "description": "Whether the allele is conserved",
-			            "type": "object"
-			        },
-			        "algorithm": {
-			            "description": "Method or program used to calculate conservation",
-			            "type": "string"
-			        },
-			        "score": {
-			            "description": "Numerical score for the conservation of the allele",
-			            "type": "number"
-			        }
-			    }           	        
-	    	 }]
-	    }    		   
-	},
-	"properties": 
-	{
-		"qualifier": 
-		{
-			"type": "object",
-			"description": "Use “NOT” as the value of this property to assert that the statement is negated."
-		},
-		"evidenceLine": 
-		{
-			"description": "supporting evidence",
-			"type": "array",
-			"items": 
-			{
-				"type": "object",
-				"$ref": "#/definitions/evidenceline"
-			}
-		},
-		"contribution": 
-		{			
-			"type": "array",
-			"description": "The contributions (agent, time and role) made to this entity",
-			"items": 
-			{
-				"type": "object",
-				"$ref": "#/definitions/contribution"
-			}
-		},
-		"description": 
-		{
-			"type": "object",
-			"description": "A human-readable description of the entity"
-		},
-
-		"source": 
-		{
-			"type": "array",
-			"description": "source"
-		},
-		"variant": 
-		{
-			"type": "string",
-			"description": "The variant whose pathogenicity is being described"
-		},
-
-		"condition": 
-		{
-			"description": "The condition for which the variant's pathogenicity is described",
-			"type": "array",
-			"items": 
-			{
-				"$ref": "#/definitions/geneticcondition"
-			}
-		},
-		"outcome": 
-		{
-			"type": "object",
-			"description": "The coded pathogenicity of the variant for the condition"
-		},
-
-		"assertionMethod": 
-		{
-			"type": "object",
-			"description": "The  framework that formally defines the methodology used in creating this interpretation."
-		}
-		
-	},
-	
-	"required": ["outcome","variant"]
-	
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "VariantInterpretation",
+  "description": "An assertion about the pathogenicity of a genetic sequence variant, based on evaluation of one or more lines of evidence",
+  "type": "object",
+  "definitions": {
+    "agent": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        }
+      }
+    },
+    "contribution": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "type": "object",
+          "description": "A person, group of people, algorithm, or some other actor that could make a contribution",
+          "$ref": "#/definitions/agent"
+        },
+        "contributionDate": {
+          "type": "string",
+          "description": "TODO"
+        },
+        "contributionRole": {
+          "type": "object",
+          "description": "TODO",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "ToDo"
+            },
+            "type": {
+              "type": "string",
+              "description": "An explanation about the purpose of this instance."
+            }
+          }
+        }
+      }
+    },
+    "evidenceline": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "description": "A human-readable description of the entity",
+          "type": "string"
+        },
+        "evidenceItem": {
+          "description": "ToDo",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/statement"
+          }
+        },
+        "evidenceStrength": {
+          "description": "ToDo",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "contribution": {
+          "description": "ToDo",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/contribution"
+          }
+        }
+      }
+    },
+    "geneticcondition": {
+      "type": "object",
+      "properties": {
+        "phenotype": {
+          "type": "object",
+          "description": "phenotype"
+        },
+        "modeOfInheritance": {
+          "type": "object",
+          "description": "modeOfInheritance",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "id"
+            },
+            "label": {
+              "type": "string",
+              "description": "label."
+            },
+            "type": {
+              "type": "string",
+              "description": "An explanation about the purpose of this instance."
+            }
+          }
+        },
+        "gene": {
+          "type": "object",
+          "description": "gene",
+          "properties": {
+            "geneSymbol": {
+              "type": "object",
+              "description": "geneSymbol"
+            }
+          }
+        },
+        "name": {
+          "description": "name",
+          "type": "string"
+        },
+        "disease": {
+          "type": "array",
+          "description": "disease",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The schema id"
+              },
+              "synonym": {
+                "type": "array",
+                "description": "synonym"
+              }
+            }
+          }
+        }
+      }
+    },
+    "statement": {
+      "type": "object",
+      "properties": {
+        "qualifier": {
+          "type": "object",
+          "description": "Use NOT as the value of this property to assert that the statement is negated."
+        },
+        "evidenceLine": {
+          "type": "array",
+          "description": "supporting evidence",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/evidenceline"
+          }
+        },
+        "contribution": {
+          "type": "array",
+          "description": "The contributions (agent, time and role) made to this entity",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/contribution"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "A human-readable description of the entity"
+        },
+        "source": {
+          "type": "array",
+          "description": "source",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "AlleleMolecularConsequence": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement that describes the expected effect of a variant allele at the level of genomic or transcript sequence",
+          "type": "object",
+          "properties": {
+            "consequence": {
+              "description": "Classification of allele based on the manner in which it alters the sequence",
+              "type": "object"
+            },
+            "contextualAllele": {
+              "description": "The contextual (reference-specific) allele that is being classified",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "ConditionMechanism": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement about the mechanism underlying a genetic condition (e.g. if that LOF mutations in a particular gene are a known mechanism of disease).",
+          "type": "object",
+          "properties": {
+            "mechanism": {
+              "description": "SO term for a class of variants",
+              "type": "object"
+            },
+            "mechanismConfidence": {
+              "description": "Qualifier on the Condition/Mechanism pair",
+              "type": "object"
+            },
+            "gene": {
+              "description": "Gene in which the given variants occur",
+              "type": "object"
+            },
+            "condition": {
+              "description": "The condition whose mechanism is being described",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "NullAllele": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement that asserts whether an allele causes commplete loss of function of a gene or gene  product. ",
+          "type": "object"
+        }
+      ]
+    },
+    "CriterionAssessment": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "Preferred: An assertion of whether sufficient evidence exists to satisfy some pre-defined 'variant interpretation criterion', which defines requirements for a particular type of argument relevant to the pathogenicity of a genetic variant.\\n\\nAn assertion of whether sufficient evidence exists about a particular variant to satisfy some pre-defined 'variant interpretation criterion'. \\n\\n------\\n\\n(then see clarifying comments to the right)\\n",
+          "type": "object",
+          "properties": {
+            "contextualAllele": {
+              "description": "ToDo",
+              "type": "object"
+            },
+            "annotation": {
+              "description": "ToDo",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "IndividualCondition": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement about whether a individual is affected by or exhibits a particular condition",
+          "type": "object",
+          "properties": {
+            "individual": {
+              "description": "The person being assessed for the condition",
+              "type": "object"
+            },
+            "condition": {
+              "description": "The condition that the person may have",
+              "type": "object"
+            },
+            "individualHasCondition": {
+              "description": "Whether or not the person has the condition",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "FamilyCondition": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement describing the presence of a particular disease appears in the history of a family.",
+          "type": "object",
+          "properties": {
+            "proband": {
+              "description": "The person that was the original source of the condition in this family",
+              "type": "object"
+            },
+            "condition": {
+              "description": "A condition that the family may or may not have",
+              "type": "object"
+            },
+            "familyHasCondition": {
+              "description": "Whether or not this family has the stated condition",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "IndividualAlleleInheritance": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement about the origin of a particular allele in an individual - i.e. whether it occurred  de novo in the individual as a result of a spontaneous mutation event, or whether it was inherited from a parent.",
+          "type": "object",
+          "properties": {
+            "canonicalAllele": {
+              "description": "The allele whose denovo status is being described",
+              "type": "object"
+            },
+            "individual": {
+              "description": "The individual whose allele may be denovo",
+              "type": "object"
+            },
+            "parentalConfirmation": {
+              "description": "ToDo",
+              "type": "object"
+            },
+            "alleleInheritance": {
+              "description": "ToDo",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "AlleleFunctionalImpact": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement describing a particular experimental result about the impact of an allele on gene product function (typically that of the directly affected gene).",
+          "type": "object",
+          "properties": {
+            "resultDescription": {
+              "description": "Result of the functional experiment",
+              "type": "string"
+            },
+            "assayType": {
+              "description": "Specific type of functional data collected",
+              "type": "object"
+            },
+            "contextualAllele": {
+              "description": "Allele defined with respect to the measured transcript",
+              "type": "object"
+            },
+            "gene": {
+              "description": "Gene to which the functional data applies",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "CaseControl": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement describing allele frequencies identified in a particular study group as a function of case-control status (i.e frequency in affected vs unaffected study groups",
+          "type": "object",
+          "properties": {
+            "canonicalAllele": {
+              "description": "The allele studied in the case-control experiment",
+              "type": "object"
+            },
+            "condition": {
+              "description": "The condition studied in the case-control experiment",
+              "type": "object"
+            },
+            "oddsRatio": {
+              "description": "Ratio of the probability of having the condition given the allele to the probability of the condition without the allele.",
+              "type": "number"
+            },
+            "confidenceLevel": {
+              "description": "Confidence level in percent",
+              "type": "number"
+            },
+            "caseGroupFrequency": {
+              "description": "The group of individuals with the condition",
+              "type": "object"
+            },
+            "controlGroupFrequency": {
+              "description": "The group of individuals without the condition",
+              "type": "object"
+            },
+            "confidenceIntervalLower": {
+              "description": "Lower bound of the confidence interval for the odds ratio",
+              "type": "number"
+            },
+            "confidenceIntervalUpper": {
+              "description": "Upper bound of the confidence interval for the odds ratio",
+              "type": "number"
+            }
+          }
+        }
+      ]
+    },
+    "SequenceLocation": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "The location of a sequence feature as specified by  the coordinates of its starting and ending residues relative to some reference sequence.",
+          "type": "object",
+          "properties": {
+            "referenceSequence": {
+              "description": "Sequence on which the region is defined",
+              "type": "object"
+            },
+            "start": {
+              "description": "Start of the region in 0-based coordinates",
+              "type": "number"
+            },
+            "stop": {
+              "description": "End of the region in 0-based coordinates",
+              "type": "number"
+            }
+          }
+        }
+      ]
+    },
+    "AlleleFrequency": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement that describes the frequency of an allele as determined in a defined group of individuals (typically a representative sampling that serves as a proxy for some larger population of individuals",
+          "type": "object",
+          "properties": {
+            "ascertainment": {
+              "description": "The criteria applied to create the dataset in which the frequency was measured",
+              "type": "object"
+            },
+            "allele": {
+              "description": "The variant for which the frequency is given",
+              "type": "object"
+            },
+            "alleleCount": {
+              "description": "Frequency numerator: number of times the allele was observed",
+              "type": "number"
+            },
+            "alleleNumber": {
+              "description": "Frequency denominator: number of observations",
+              "type": "number"
+            },
+            "individualCount": {
+              "description": "Number of individuals sampled",
+              "type": "number"
+            },
+            "homozygousAlleleIndividualCount": {
+              "description": "Number of individuals in the group that are homozygous for the allele",
+              "type": "number"
+            },
+            "heterozygousAlleleIndividualCount": {
+              "description": "Number of individuals in the group who are heterozygous for the allele.",
+              "type": "number"
+            },
+            "population": {
+              "description": "Ancestry of population or group over which the frequency was measured",
+              "type": "object"
+            },
+            "hemizygousAlleleIndividualCount": {
+              "description": "Number of individuals in the group that are hemizygous for the allele",
+              "type": "number"
+            },
+            "alleleFrequency": {
+              "description": "Frequency of the named allele in the population",
+              "type": "number"
+            },
+            "medianCoverage": {
+              "description": "Median coverage at the allele site in the data set",
+              "type": "number"
+            }
+          }
+        }
+      ]
+    },
+    "RegionType": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement that classifies a particular region of biological sequence as being of a specified type or types  (e.g. using terms from the Sequence Ontology).",
+          "type": "object",
+          "properties": {
+            "annotation": {
+              "description": "ToDo",
+              "type": "object"
+            },
+            "region": {
+              "description": "Region",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "RegionAlleles": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement about whether a region of genomic sequence overlaps one or more particular alleles.",
+          "type": "object",
+          "properties": {
+            "allele": {
+              "description": "Alleles that are being explicited assessed as either included or excluded from the region.",
+              "type": "object"
+            },
+            "outcome": {
+              "description": "Assessed outcome of specified alleles as either included or excluded.",
+              "type": "object"
+            },
+            "region": {
+              "description": "Region within which alleles are being measured",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "IndividualAllele": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement describing the allelic state of one or more alleles in the genome of an individual (e.g. zygosity information, or phase relative to a second allele).",
+          "type": "object",
+          "properties": {
+            "individual": {
+              "description": "Person whose alleles the data represents",
+              "type": "object"
+            },
+            "primaryAllele": {
+              "description": "One allele that the person has",
+              "type": "object"
+            },
+            "secondaryAllele": {
+              "description": "A second allele that the person has",
+              "type": "object"
+            },
+            "primaryZygosity": {
+              "description": "Zygosity of the primary allele in the individual",
+              "type": "object"
+            },
+            "secondaryZygosity": {
+              "description": "Zygosity of the secondary allele in the individual",
+              "type": "object"
+            },
+            "phase": {
+              "description": "Phase of the primary and secondary individual",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "ExcludedRegionType": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "TODO",
+          "type": "object",
+          "properties": {
+            "annotation": {
+              "description": "ToDo",
+              "type": "object"
+            },
+            "region": {
+              "description": "Region",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "VariantInterpretation": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        }
+      ]
+    },
+    "BenignMissenseVariationRate": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement about the frequency at which missense variants in a particular region are tolerated (i.e. do not cause a pathological condition)",
+          "type": "object",
+          "properties": {
+            "region": {
+              "description": "Sequence on which the region is defined",
+              "type": "object"
+            },
+            "value": {
+              "description": "The rate at which Benign missense variants occur within the region",
+              "type": "object"
+            },
+            "gene": {
+              "description": "Gene that contains the missense variants",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "FamilySegregation": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement describing the correlation between the presence of a particular allele and the manifestation of a mendelian condition, as inherited through a single family pedigree (i.e. co-segregation of an allele and condition in a single family).\r\n\r\n",
+          "type": "object",
+          "properties": {
+            "phenotypePositiveAlleleNegative": {
+              "description": "Number of (non-proband) individuals with the condition and without the allele",
+              "type": "number"
+            },
+            "inconsistentSegregationCount": {
+              "description": "ToDo",
+              "type": "number"
+            },
+            "condition": {
+              "description": "Condition being tested for cosegregation",
+              "type": "object"
+            },
+            "canonicalAllele": {
+              "description": "Allele being tested for cosegregation",
+              "type": "object"
+            },
+            "family": {
+              "description": "Family in which segregation is being tested",
+              "type": "object"
+            },
+            "phenotypePositiveAllelePositive": {
+              "description": "Number of (non-proband) individuals with both the condition and the allele",
+              "type": "number"
+            },
+            "phenotypeNegativeAllelePositive": {
+              "description": "Number of (non-proband) individuals without the condition and with the allele",
+              "type": "number"
+            },
+            "columns": {
+              "description": "Column names for the pedigree data element",
+              "type": "string"
+            },
+            "affectedValues": {
+              "description": "Map describing how affected status is represented in the pedigree",
+              "type": "string"
+            },
+            "genotypeValues": {
+              "description": "Map describing how genotypes are represented in the pedigree",
+              "type": "string"
+            },
+            "pedigree": {
+              "description": "Detailed information about the family structure, affected status, and genotypes in pedigree/linkage format.",
+              "type": "string"
+            },
+            "inconsistentSegregationsObserved": {
+              "description": "Whether phenotype positive/allele negative or phenotype negative/allele positive individuals are in the family",
+              "type": "object"
+            },
+            "phenotypeNegativeAlleleNegative": {
+              "description": "The number of non-proband family members that have neither the allele nor the phenotype",
+              "type": "number"
+            }
+          }
+        }
+      ]
+    },
+    "AggregateSegregation": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement describing the correlation between the presense of a particular allele and the manifestation of a disease or phenotypes, as determined by examining inheritance patterns across multiple families (i.e. co-segregation of an allele and condition, aggregated across multiple family pedigrees).",
+          "type": "object",
+          "properties": {
+            "canonicalAllele": {
+              "description": "Allele being tested for cosegregation",
+              "type": "object"
+            },
+            "condition": {
+              "description": "Condition being tested for cosegregation",
+              "type": "object"
+            },
+            "totalNumberOfSegregations": {
+              "description": "Total number of segregations across families",
+              "type": "number"
+            },
+            "familySegregation": {
+              "description": "List of FamilySegregrationData that have been aggregated",
+              "type": "object"
+            },
+            "modeOfInheritance": {
+              "description": "Mode Of Inheritance used in evaluation of segregation",
+              "type": "object"
+            },
+            "totalOfAllelePosConditionPosIndividuals": {
+              "description": "Number of individuals across families that have the allele and the condition",
+              "type": "number"
+            },
+            "totalOfAlleleNegConditionNegIndividuals": {
+              "description": "Number of individuals across families that lack both the allele and the condition",
+              "type": "number"
+            },
+            "totalOfAllelePosConditionNegIndividuals": {
+              "description": "Number of individuals across families that have the allele but not the condition",
+              "type": "number"
+            },
+            "totalOfAlleleNegConditionPosIndividuals": {
+              "description": "Number of individuals across families that do not have the allele but do have the condition",
+              "type": "number"
+            },
+            "totalOfUntestedConditionPosIndividuals": {
+              "description": "Number of individuals across families that have the condition but whose allele is untested",
+              "type": "number"
+            },
+            "totalOfUntestedConditionNegIndividuals": {
+              "description": "Number of individuals across families that do not have the condition but whose allele is untested",
+              "type": "number"
+            },
+            "totalOfFamiliesWithInconsistentSegregations": {
+              "description": "Number of families containing segregations that are inconsistent with the allele causing the condition",
+              "type": "number"
+            }
+          }
+        }
+      ]
+    },
+    "InSilicoPrediction": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement based on the output of a computational algorithm that predicts the impact of a particular allele on the function of its resulting gene product (e.g. 'deleterious', 'damaging', 'tolerated').",
+          "type": "object",
+          "properties": {
+            "transcript": {
+              "description": "The contextual allele on which the prediction is made",
+              "type": "object"
+            },
+            "score": {
+              "description": "ToDo",
+              "type": "number"
+            },
+            "canonicalAllele": {
+              "description": "The contextual allele on which the prediction is made",
+              "type": "object"
+            },
+            "predictionType": {
+              "description": "The type of prediction being made",
+              "type": "object"
+            },
+            "algorithm": {
+              "description": "The computational tool or algorithm that makes the prediction",
+              "type": "string"
+            },
+            "categoricalPrediction": {
+              "description": "The value of the prediction",
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "LocusHeterogeneity": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement that reflects the specificity with which a genetic condition is caused by variants in a particular gene or locus (i.e. whether it is the only known gene associated with the condition, or one or more other genes have been linked to the condition).",
+          "type": "object",
+          "properties": {
+            "condition": {
+              "description": "The condition for which the eitiology is defined",
+              "type": "object"
+            },
+            "gene": {
+              "description": "Gene that causes the condition",
+              "type": "object"
+            },
+            "specificity": {
+              "description": "Specificity of the Gene for the Condition",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "ConditionPrevelance": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement describing the frequency of a condition as determined for a particular population of persons (ascertained by factors  such as ethnicity, race, socio-economic  status, geographic residence, etc).",
+          "type": "object",
+          "properties": {
+            "condition": {
+              "description": "Condition for which the prevelance is described",
+              "type": "object"
+            },
+            "minimum": {
+              "description": "Minimum bound on the condition's prevelance",
+              "type": "number"
+            },
+            "maximum": {
+              "description": "Maximum bound on the condition's prevelance",
+              "type": "number"
+            },
+            "population": {
+              "description": "Population over which the prevelance is defined",
+              "type": "object"
+            },
+            "prevelance": {
+              "description": "Prevelance of the condition in the population",
+              "type": "number"
+            }
+          }
+        }
+      ]
+    },
+    "ConditionPenetrance": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement describing the proportion of individuals carrying a causal allele who exhibit a particular disease or phenotype.",
+          "type": "object",
+          "properties": {
+            "condition": {
+              "description": "Condition for which the penetrance is described",
+              "type": "object"
+            },
+            "penetrance": {
+              "description": "Qualitative penetrance value",
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "AlleleConservation": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/statement/definitions/statement"
+        },
+        {
+          "description": "A statement about the degree of evolutionary conservation of an allele across a defined set of taxa/species. ",
+          "type": "object",
+          "properties": {
+            "allele": {
+              "description": "The allele for which conservation values are given",
+              "type": "object"
+            },
+            "outcome": {
+              "description": "Whether the allele is conserved",
+              "type": "object"
+            },
+            "algorithm": {
+              "description": "Method or program used to calculate conservation",
+              "type": "string"
+            },
+            "score": {
+              "description": "Numerical score for the conservation of the allele",
+              "type": "number"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "properties": {
+    "qualifier": {
+      "type": "object",
+      "description": "Use “NOT” as the value of this property to assert that the statement is negated."
+    },
+    "evidenceLine": {
+      "description": "supporting evidence",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "#/definitions/evidenceline"
+      }
+    },
+    "contribution": {
+      "type": "array",
+      "description": "The contributions (agent, time and role) made to this entity",
+      "items": {
+        "type": "object",
+        "$ref": "#/definitions/contribution"
+      }
+    },
+    "description": {
+      "type": "object",
+      "description": "A human-readable description of the entity"
+    },
+    "source": {
+      "type": "array",
+      "description": "source"
+    },
+    "variant": {
+      "type": "string",
+      "description": "The variant whose pathogenicity is being described"
+    },
+    "condition": {
+      "description": "The condition for which the variant's pathogenicity is described",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/geneticcondition"
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "description": "The coded pathogenicity of the variant for the condition"
+    },
+    "assertionMethod": {
+      "type": "object",
+      "description": "The  framework that formally defines the methodology used in creating this interpretation."
+    }
+  },
+  "required": [
+    "variant"
+  ]
 }

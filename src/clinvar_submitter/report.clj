@@ -1,178 +1,113 @@
 (ns clinvar-submitter.report
   (:require [clojure.string :as str]
-            [clojure.pprint :as pprint]
-            [clojure.java.io :as io]
-            [clinvar-submitter.form :as form]
-  (:gen-class))
-  (:use clojure-csv.core))
+            [clojure-csv.core :as csv]
+            [clojure.java.io :as io]))
 
-(defn report-header [in cx out frc r]
-  (->> ["\nClinVar-Submitter Run Report"
-       "\nDate/Time: "(new java.util.Date)
-       "\nFile(s): " in
-       "\nMethod Name (-m): ACMG Guidelines, 2017"
-       "\nMethod Citation (-c): 	PMID:25741868"
-       "\nJSON-LD Context (-x): " cx 
-       "\nOutput File (-o): " out
-       "\nForce overwrite (-f): " frc
-       "\nRun Report File (-r): " r 	"<run-report-filename (def:clinvar-submitter-run-report.txt>"
-       "\n\nNOTE: The variant coordinates are based on the preferred genomic representation from the ClinGen Allele Registry.\n\n"
-       "\n*******************************************************************\n\n"
-       "\n\n"(format "%10s%46s%45s""|----------|""----------------- Input --------------- |""----------------- Output ---------------------------|")
-       "\n"(format "%s%10s%s%15s%s%20s%s%8s%s%5s%s%8s%s%8s%s%18s%s"
-                           "|""Result#"
-                           "|""File Name"
-                           "|""Variant (alt desig)"
-                           "|""Record"
-                           "|""Cell"
-                           "|""Status"
-                           "|""Code"
-                           "|""Description""|")
-       "\n"(format "%10s%46s%44s""|----------|""--------------------------------------- |""----------------------------------------------------|\n")] 
-       (str/join)))
+(defn report-header 
+  [input options]
+  [["ClinVar-Submitter Run Report"]
+   ["" "Date/Time: " (str (new java.util.Date))]
+   ["" "File(s): " input]
+   ["" "Method Name (-m): " (get options :method)]
+   ["" "Method Citation (-c): " (get options :methodc)]
+   ["" "JSON-LD Context (-x): " (get options :jsonld-context)]
+   ["" "Output File (-o): " (get options :output)]
+   ["" "Force overwrite (-f): " (str (get options :force))]
+   ["" "Run Report File (-r): " (get options :report)]
+   []
+   ["" "NOTE: The variant coordinates are based on the preferred genomic representation from the ClinGen Allele Registry."]
+   []
+   ["Record #" "File Name" "Interp Id" "Variant (alt desig)" "Output Cell" "Status" "Code" "Description"]])
 
-(defn reportdata
-	 [v]
-   (cond 
-     (nil? v) "" 
-	   (number? v) (str v) 
-     (seq? v) (apply str v) :else v))
+(def exception-code-map 
+    {"*E-202" "Variant identifier not provided.",
+     "*E-203" "No preferred variant information provided.",
+     "*E-204" "Preferred variant reference sequence not provided",
+     "*E-205" "Preferred variant start coordinate not provided.",
+     "*E-206" "Preferred variant end coordinate not provided.",
+     "*E-207" "Preferred variant reference allele not provided.",
+     "*E-208" "Preferred variant alternate allele not provided.",
+     "*W-251" "Preferred variant alternate designation not provided.",
+     "*E-301" "Interpretations with Path or Lik Path outcomes require a condition disease code or name and none was provided.",
+     "*E-302" "Only one disease/phenotype is supported, multiple found.",
+     "*E-303" "Condition id type not supported by ClinVar. Using disease name option in submission instead.",
+     "*E-304" "Condition identifier must have a colon delimiter to separate the type and id values. Using disease name option in submission instead.",
+     "*E-305" "Mode of Inheritance display value not provided.",
+     "*E-401" "Interpretation id not provided.", 
+     "*E-402" "Interpretation significance not provided.",
+     "*E-403" "Interpretation evaluation date not provided.",
+     "*E-404" "Interpretation evaluation date format not valid (<eval-date-value>).",
+     "*E-501" "<x> met criteria rules and/or strength codes are invalid or missing.",
+     "*W-551" "No PMID citations found.",
+     "*W-552" "No ACMG criterion evidence was met."})
+  
+(defn get-exception 
+  [ecode]
+    (let [code (first (str/split ecode #":"))
+          desc (get exception-code-map code)
+          type-str (subs (first (str/split code #"-")) 1)]
+  {:type (cond (= "E" type-str) "Error" (= "W" type-str) "Warning ":else "Unknown")
+   :code code
+   :desc desc}))
 
-(defn isError [errorcode]
-  (let [ecode (first (str/split errorcode  #":"))]
-  (let [errorvector ["*E-202" "*E-203" "*E-204" "*E-205" "*E-206" "*E-207" "*E-208" "*W-251" "*E-301" "*E-302" "*E-401" "*E-402" "*E-403" "E-404" "E-501" "W-551"]]
-  (some #(= ecode %) errorvector))))
+(defn is-exception [ecode]
+  (let [exception-code (first (str/split ecode  #":"))]
+      (not (nil? (get exception-code-map exception-code)))))
 
-
-(defn error-description [errorcode]
-  (cond
-  (= "*E-401" errorcode)
-  {
-   :desc "Interpretation id not provided."
-  }
-  (= "*E-202" errorcode)
-  {
-   :desc "Variant identifier not provided."
-  }
-  (= "*E-203" errorcode)
-  {
-   :desc "No preferred variant information provided" 
-  }
-  (= "*E-204" errorcode)
-  {
-   :desc "Preferred variant reference sequence not provided"
-  }
-  (= "*E-205" errorcode)
-  {
-   :desc "Preferred variant start coordinate not provided." 
-  }
-  (= "*E-206" errorcode)
-  {
-   :desc "Preferred variant end coordinate not provided."
-  }
-  (= "*E-207" errorcode)
-  {
-   :desc "Preferred variant reference allele not provided."
-  }
-  (= "*E-208" errorcode)
-  {
-   :desc "Preferred variant alternate allele not provided."
-  }
-  (= "*W-251" errorcode)
-  {
-   :desc "Preferred variant alternate designation not provided."
-  }
-  (= "*E-301" errorcode)
-  {
-   :desc "Condition disease code or name not provided."
-  }
-  (= "*E-302" errorcode)
-  {
-   :desc "Mode of Inheritance display value not provided."
-  }
-  (= "*E-402" errorcode)
-  {
-   :desc "Interpretation significance not provided."
-  }
-  (= "*E-403" errorcode)
-  {
-   :desc "Interpretation evaluation date not provided."
-  }
-  (= "*E-404" errorcode)
-  {
-   :desc "Interpretation evaluation date format not valid (<eval-date-value>)."
-  }
-  (= "*E-501" errorcode)
-  {
-   :desc "<x> met criteria rules and/or strength codes are invalid or missing." 
-  }
-  (= "*W-551" errorcode)
-  {
-   :desc "No PMID citations found."
-  }))
-
-(defn get-error [errorcode]
-  (let [desc (error-description errorcode)]
-  {
-   :status "Error"
-   :code errorcode
-   :desc (get desc :desc)
-}))
-
-(defn get-variant [records]
-  (let [data (for [items records] (get items 3))]
-    data))
-
-(defn get-errorcode [items]
-  (let [errorlist 
+(defn get-record-exceptions [items]
+  (let [exception-list 
        (for [i (range (count items))]
        (if-not(nil? (get items i))
-         (if(isError (get items i))      
+         (if(is-exception (get items i))      
           [(get items i) i])))]
-       (let [newList (filter some? errorlist)]      
+       (let [newList (filter some? exception-list)]      
        newList)))
+  
+(defn write-run-report
+  [input options records]  
+  (let [reportfile (get options :report)]
+    (do 
+      ;; header
+      (spit reportfile (csv/write-csv (report-header input options) :force-quote true) :append false)
 
-(defn write-report [in cx out frc reportfile]
-  (with-open [report (clojure.java.io/writer reportfile :append false)]
-    (.write report (report-header in cx out frc reportfile)))
-  )
+      (dotimes [n (count records)] 
 
-(defn append-to-report [reportfile in out cx frc records]  
-  (write-report in cx out frc reportfile)
-  (for [n (range (count records))]
-    ;get each row from record set
-    (let [row (nth records n)]
-      ;get errorcode from each row     
-      (let [errorcode (get-errorcode row)]
-        ;if there is error in any row add error information in the report 
-        (if-not(empty? errorcode)
-          (for [i (range (count errorcode))]
-            (let [ecode (first (nth errorcode i))]
-            (let [column (last (nth errorcode i))]
-            (let [uid (last (str/split ecode  #":"))]
-            (let [error (get-error (first (str/split ecode #":")))]
-            (let [outputdata-e (format "%s%10s%s%15s%s%20s%s%8s%s%5s%s%8s%s%8s%s%18s%s"
-                                    "|" uid
-                                    "|" in
-                                    "|" (nth (get-variant records) n)
-                                    "|" (+ n 1)
-                                    "|" (str n "/" column)
-                                    "|" (get error :status)
-                                    "|" (get error :code)
-                                    "|" (get error :desc) "|\n")]       
-             (spit reportfile outputdata-e  :append true)))))))     
-           (let [outputdata-s (format "%s%10s%s%15s%s%20s%s%8s%s%5s%s%8s%s%8s%s%18s%s"    
-                                   "|" (+ n 101)
-                                   "|" in
-                                   "|" (nth (get-variant records) n)
-                                   "|" (+ n 1)
-                                   "|" "--"
-                                   "|" "SUCCESS"
-                                   "|" "--"
-                                   "|" "--" "|\n")]       
-             (spit reportfile outputdata-s :append true)))
-))))
-    
+        ;; for each record
+        (let [row (nth records n)
+              row-exception-list (get-record-exceptions row)]
 
-    
+          ;if there is error in any row add error information in the report 
+          (if-not (empty? row-exception-list)
+            (dotimes [i (count row-exception-list)]
+              (let [ecode (first (nth row-exception-list i))
+                    column (+ 1 (last (nth row-exception-list i)))
+                    record-number (last (str/split ecode  #":"))
+                    exception (get-exception ecode)
+                    outputdata-e [(str record-number)
+                                  input
+                                  (get (nth records n) 0)
+                                  (get (nth records n) 25)
+                                  (str "[" record-number ", " column "]")
+                                  (get exception :type)
+                                  (get exception :code)
+                                  (get exception :desc)]]
+                (spit reportfile (csv/write-csv [outputdata-e] :force-quote true) :append true)))
+              (let [outputdata-s [(str (+ 1 n))
+                                  input
+                                  (get (nth records n) 0)
+                                  (get (nth records n) 25)
+                                  "--"
+                                  "Success"
+                                  "--"
+                                  "--"]]       
+                (spit reportfile (csv/write-csv [outputdata-s] :force-quote true) :append true)))
+          ))
+      )))
 
+(defn write-files
+    [input options records]
+    (do 
+      ;; write clinvar submitter output file
+      (spit (get options :output) (csv/write-csv records :force-quote true)) 
+      ;; write run report output file
+      (write-run-report input options records)))

@@ -11,9 +11,9 @@
   "Return the referent of an identifier if found in symbol table
   otherwise return a bare string"
   [t s]
-  (if (instance? Map s) (if-let [v (get s "id")]
-                          (resolve-id t v) s)
-      (if-let [ret (get t s)] ret s)))
+  (if (instance? Map s) 
+    (if-let [v (get s "id")] (resolve-id t v) s)
+    (if-let [ret (get t s)] ret s)))
 
 (defn ld-get
   "Get property from a map, if the property is a string matching a key
@@ -61,20 +61,26 @@
     (reduce (fn [acc v] (assoc acc (.get v "id") v)) {} graph)))
 
 (defn flatten-interpretation
-  "Use JSONLD-API to read a JSON-LD interpretation using context-path to translate symbols into local properties"
-  [interp-path context-path]
-  (with-open [ir (io/reader interp-path)
-              cxr (io/reader context-path)]
-    (let [i (json/parse-stream ir)
-          cx (json/parse-stream cxr)
-          opts (JsonLdOptions.)]
-      (JsonLdProcessor/flatten i cx opts))))
-
-(defn generate-symbol-table
-  "Flatten JSON-LD document and return a symbol table returning IDs of nodes mapped to the nodes themselves"
+  "Use JSONLD-API to read a JSON-LD interpretation using context-path to translate 
+  symbols into local properties"
   [interp-path context-path]
   (try
-  (construct-symbol-table (flatten-interpretation interp-path context-path))
-  (catch Exception e (log/debug (str "Exception in generate-symbol-table: " (.getMessage e))))))
+    (with-open [ir (io/reader interp-path)
+                cxr (io/reader context-path)]
+      (let [i (json/parse-stream ir)
+            cx (json/parse-stream cxr)
+            opts (JsonLdOptions.)]
+        (JsonLdProcessor/flatten i cx opts)))
+    (catch Exception e 
+      (log/error (str "Exception in flatten-interpretation: " (.getMessage e))))))
+
+(defn generate-symbol-table
+  "Flatten JSON-LD document and return a symbol table returning IDs of nodes mapped 
+  to the nodes themselves"
+  [interp-path context-path]
+  (try 
+    (construct-symbol-table (flatten-interpretation interp-path context-path))
+  (catch Exception e 
+    (log/error (str "Exception in generate-symbol-table: " (.getMessage e))))))
 
 

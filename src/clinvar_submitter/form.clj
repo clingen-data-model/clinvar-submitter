@@ -1,31 +1,27 @@
 (ns clinvar-submitter.form
  (:require [clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]]
            [clojure.string :as str]
-           [clojure-csv.core :as csv]
            [clojure.tools.logging.impl :as impl]
            [clojure.tools.logging :as log])
  (:import [java.util Map List]))
   
 (defn csv-colval
-	"Outputs a well-formed value for output of the CSV file being generated. 
-	   nil should be empty strings, non-strings should be stringified, etc..."
-	[v]
-  (cond 
-    (nil? v) "" 
-	  (number? v) (str v) 
-    (seq? v) (apply str v) :else v))
+    "Outputs a well-formed value for output of the CSV file being generated. 
+    nil should be empty strings, non-strings should be stringified, etc..."
+    [v]
+    (cond 
+        (nil? v) "" 
+        (number? v) (str v) 
+        (seq? v) (apply str v) 
+        :else v))
  
- ;TODO Can Nafisa and/or Tristan figure out how we can 
- ; sort the evidence by acmg rule precedence 
- ; in the method evidence-rule-strength.
- ; This method will sort the rules in a precedence defined by the static list (reversed)
- ; putting any non-matching values at the end in natural order. element match is case-insensitive.
  (defn by-acmg-rule-id
     "Sort ACMG rules using an indexed list to define the order."
     [a b]
     (let [ar (str/upper-case (get a "id"))
           br (str/upper-case (get b "id"))
-          rule-list (vector "BP7" "BP6" "BP5" "BP4" "BP3" "BP2" "BP1" "BS4" "BS3" "BS2" "BS1" "BA1" "PP5" "PP4" "PP3" "PP2" "PP1" "PM6" "PM5" "PM4" "PM3" "PM2" "PM1" "PS4" "PS3" "PS2" "PS1" "PVS1")]
+          rule-list (vector "BP7" "BP6" "BP5" "BP4" "BP3" "BP2" "BP1" "BS4" "BS3" "BS2" "BS1" "BA1" 
+          "PP5" "PP4" "PP3" "PP2" "PP1" "PM6" "PM5" "PM4" "PM3" "PM2" "PM1" "PS4" "PS3" "PS2" "PS1" "PVS1")]
       (let [ai (.indexOf rule-list ar)
             bi (.indexOf rule-list br)]
         (let [c (compare bi ai)]
@@ -35,152 +31,165 @@
  (defn interp-id
    "Return the id portion of the @id url by taking the last part 
     of the url for VariantInterpretation"
-   [i]
+   [i n]
    (let [full-id (get i "id")]
-     (let [id (get (re-find #"\/([a-z0-9\-]+)\/$" full-id) 1)]
-     (if (nil? id) (str "*E-401" ":" (rand-int 200))
+     (let [id (get (re-find #"[\/]{0,1}([a-z0-9\-]+)[\/]{0,1}$" full-id) 1)]
+     (if (nil? id) (str "*E-401" ":" n)
      (csv-colval id)))))
  
-  (defn interp-significance
+(defn interp-significance
   "Return the interpretation clinical significance."
-  [t i]
-  (let [significance (ld-> t i "outcome")]
-    (if (nil? significance) (str "*E-402" ":" (rand-int 200))
+  [t i n]
+  (let [significance (ld-> t i "asserted_conclusion")]
+    (if (nil? significance) (str "*E-402" ":" n)
     (csv-colval (get significance "label")))))
   
-  (defn interp-eval-date
+(defn interp-eval-date
   "Return the interpretation evaluation date."
-  [t i]
-  (let [contribution (ld-> t i "contribution")]
-    (if (nil? (get contribution "contributionDate")) (str "*E-403" ":" (rand-int 200))
+  [t i n]
+  (let [contribution (ld-> t i "qualified_contribution")]
+    (if (nil? (get contribution "activity_date")) (str "*E-403" ":" n)
       (.format 
         (java.text.SimpleDateFormat. "yyyy-MM-dd") 
         (.parse
           (java.text.SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX")
-          (get contribution "contributionDate"))))))
+          (get contribution "activity_date"))))))
   
  (defn get-interpretation
    "Returns a map of all interpretation related fields needed for the 
     clinvar 'variant' submission sheet."
-   [t i]
-   {:id (interp-id i),
-    :significance (interp-significance t i),
-    :eval-date (interp-eval-date t i)})
+   [t i n]
+   {:id (interp-id i n),
+    :significance (interp-significance t i n),
+    :eval-date (interp-eval-date t i n)})
  
  ; *** Variant related transformations
  (defn variant-identifier
   "Return variant identifier, typically the ClinGen AlleleReg id."
-  [v]
-  (if (nil? (get v "CanonicalAllele")) (str "*E-202" ":" (rand-int 200))
-  (csv-colval (get v "CanonicalAllele"))))
+  [can n]
+  (if (nil? (get can "id")) (str "*E-202" ":" n)
+  (csv-colval (get can "id"))))
  
-  (defn variant-alt-designations
-  "Return variant hgvs representations"
-  [t v]
-  (let [allelename (ld-> t v "alleleName" "name")]
-    (if (or (nil? allelename) (nil? (first allelename))) (str "*E-203" ":" (rand-int 200))
-      (csv-colval (first allelename)))))
- 
- (defn variant-refseq
+(defn variant-alt-designations
+  "Return variant hgvs representations. 
+  Prioritize the .relatedIdentifier.label that starts with a transcript (NM_*).
+  If not found then defer to the preferred allele name with 'hgvs' as the 'name type'."
+  [t can ctx n]
+  (try
+    (let [related-identifier-labels (ld-> t can "related identifier" "label")
+          transcript-hgvs (some #(re-find #"NM_\d+\.\d+.*" %) 
+            (if (string? related-identifier-labels) (sequence [related-identifier-labels]) related-identifier-labels))
+          preferred-hgvs (ld1-> t ctx "allele name" (prop= t "hgvs" "name type") "name")]
+    (if-not (str/blank? transcript-hgvs)
+      (csv-colval transcript-hgvs)
+      (if-not (str/blank? preferred-hgvs)
+        (csv-colval preferred-hgvs)
+        (str "*E-203" ":" n))))
+    (catch Exception e (log/error (str "Exception in variant-alt-designations: " e)))))
+
+(defn variant-hgvs
+    "Return the contextual allele HGVS name if available, this is assumed to be in 
+    genomic coordinates.  The variant-alt-designation funtion will use this as a 
+    backup if it does not find a related identifier label that contains a value
+    starting with an NM_ transcript accession."
+    [t ctx n]
+    (let [preferred-hgvs (ld1-> t ctx "allele name" (prop= t "hgvs" "name type") "name")]
+        (csv-colval preferred-hgvs)))
+
+(defn variant-refseq
   "Return the variant reference sequence."
-  [t v]
-  (let [refseq (ld-> t v "referenceCoordinate" "referenceSequence")]
-    (if (nil? (get refseq "display")) (str "*E-204" ":" (rand-int 200))
-    (csv-colval (get refseq "display")))))
- 
- (defn variant-start
+  [t ctx n]
+  (let [refseq (ld-> t ctx "reference coordinate" "reference")]
+    (if (nil? (get refseq "label")) (str "*E-204" ":" n)
+    (csv-colval (get refseq "label")))))
+    
+(defn variant-start
   "Return the variant reference sequence start pos (0-to-1-based transform)."
-  [t v]
+  [t ctx n]
   ; if ref is not null add 1 to start otherwise as-is
-  (let [ref (ld-> t v "referenceCoordinate" "refAllele")
-        alt (get v "allele")
-        start (ld-> t v "referenceCoordinate" "start")]
-    (if (nil? (get start "index")) (str "*E-205" ":" (rand-int 200))
-    (csv-colval (if (str/blank? ref) (get start "index") (+ 1 (get start "index")))))))
+  (let [ref (ld-> t ctx "reference coordinate" "reference state")
+        alt (get ctx "state")
+        start (ld-> t ctx "reference coordinate" "start_position" "index")]
+    (if (nil? start) (str "*E-205" ":" n)
+    (csv-colval (if (str/blank? ref) (Integer. start) (+ 1 (Integer. start)))))))
      
  (defn variant-stop
   "Return the variant reference sequence stop pos (0-to-1-based transform)."
-  [t v]
+  [t ctx n]
   ; if ref is blank and alt is not add 1 to stop otherwise as-is
-  (let [ref (ld-> t v "referenceCoordinate" "refAllele")
-        alt (get v "allele")
-        stop (ld-> t v "referenceCoordinate" "end")]
-    (if (nil? (get stop "index")) (str "*E-206" ":" (rand-int 200))
-    (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (get stop "index")) (get stop "index"))))))
+  (let [ref (ld-> t ctx "reference coordinate" "reference state")
+        alt (get ctx "state")
+        stop (ld-> t ctx "reference coordinate" "end_position" "index")]
+    (if (nil? stop) (str "*E-206" ":" n)
+    (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (Integer. stop)) (Integer. stop))))))
  
  (defn variant-ref
-  "Return the variant ref allele sequence."
-  [t v]
-  (let [refcoord (ld-> t v "referenceCoordinate")]
-    (if (nil? (get refcoord "refAllele")) (str "*E-207" "." (rand-int 200))
-    (csv-colval (get refcoord "refAllele")))))
+  "Return the variant reference state sequence."
+  [t ctx n]
+  (let [ref-coord (ld-> t ctx "reference coordinate")]
+    (if (nil? (get ref-coord "reference state")) (str "*E-207" ":" n)
+    (csv-colval (get ref-coord "reference state")))))
  
  (defn variant-alt
-   "Return the variant alt allele sequence."
-   [v]
-   (if (nil? (get v "allele")) (str "*E-205" ":" (rand-int 200))
-   (csv-colval (get v "allele"))))
+   "Return the variant state sequence."
+   [ctx n]
+   (if (nil? (get ctx "state")) (str "*E-205" ":" n)
+   (csv-colval (get ctx "state"))))
  
- (defn get-variant
+(defn get-variant
   "Returns a map of all variant related fields needed for the clinvar 
    'variant' submission form.
      :variantId - canonical allele with ClinGen AR PURL,
-     :altDesignations - alternate designations (semi-colon separated)
+     :altDesignations - the related identifier for the canonical allele that 
+                        contains the transcript hgvs representation.
      :refseq - preferred accession GRCh38 ie. NC_000014.9
+     :hgvs - the preferred contexutal allele's hgvs representation
      :start - genomic start pos (transform to 1-based)
      :stop - genomic end pos (transform to 1-based)
      :ref - ref seq
      :alt - alternate seq"
-  [t i]
-  (let [v (ld1-> t i "variant" "relatedContextualAllele" (prop= t true "preferred"))]
-    {:variantIdentifier (variant-identifier v),
-     :altDesignations (variant-alt-designations t v),
-     :refseq (variant-refseq t v),
-     :start (variant-start t v),
-     :stop  (variant-stop t v),
-     :ref (variant-ref t v),
-     :alt (variant-alt v)}))
+  [t i n]
+  (let [can-allele (ld-> t i "is_about_allele")
+        pref-ctx-allele (ld1-> t can-allele "related contextual allele" (prop= t true "preferred"))]
+    {:variantIdentifier (variant-identifier can-allele n),
+     :altDesignations (variant-alt-designations t can-allele pref-ctx-allele n),
+     :hgvs (variant-hgvs t pref-ctx-allele n),
+     :refseq (variant-refseq t pref-ctx-allele n),
+     :start (variant-start t pref-ctx-allele n),
+     :stop  (variant-stop t pref-ctx-allele n),
+     :ref (variant-ref t pref-ctx-allele n),
+     :alt (variant-alt pref-ctx-allele n)}))
  
-    ; *** Condition related transformations
- 
-    ; TODO build out formal condition-XXX methods with clinvar rules and logging.
-;((defn condition-name
-;  "Returns the condition name based on the clinvar submission rules.
-;   The disease (dis) and phenotype (phen) maps are passed in as well in order
-;   to determine whether any warnings should be reported. 
-;   Additionally, the significance (sig) of the interp is passed in to
-;   determine if the [Not Specified] name should be defaulted for B, LB, VUS."
-;  [c dis phen sig]
-;  (let [cn (if (nil? c) nil (get c "name"))]
-;    ; test to see if no name and no diseases or phenotypes were provided. if so, report warning.
-;    (if (and (every? nil? '(c cn dis phen)) (some (partial = (lower cn)) ["not specified" "not provided"] (lower cn) )) 
-;      (log "WARNING - No condition name, disease or phenotype has been specified for a Path or Likely Path interpretation.")
-;      ())))
- 
- (defn condition-name
-  "Returns clinvar condition name based on available content. 
-  May log warnings if available content does not conform to
-  clinvar specifcations."
-  [t c]
-  (csv-colval (ld-> t c "disease" "userLabel")))
+; *** Condition related transformations 
+(def clinvar-valid-condition-types ["OMIM", "MeSH", "MedGen", "UMLS", "Orphanet", "HPO"])
 
-(defn condition-idtype
-  ;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
-  [t c]
-  (let [disease-coding (ld-> t c "disease")]
-    (let [disease-code (last (str/split (get disease-coding "id") #"/"))]
-      (csv-colval (get (re-find #"(.*)\_(.*)" disease-code) 1))))) 
+(defn condition-part
+  "Returns the single c.'has part' element. if c is nil or has no 'has part's
+    then return an E-301. if more than one 'has part' exists return an E-302."
+  [t c n]
+  (let [cond-part (ld-> t c "has part")]
+    (if (instance? java.util.LinkedHashMap cond-part)
+      (csv-colval cond-part)
+      (if (= (count cond-part) 0) nil (str "*E-302" ":" n)))))
 
-(defn condition-idvals
-   ;TODO modify to deal with phenotypes and multi-values for satisfying clinvar specs.
-  [t c]
-  (let [disease-coding (ld-> t c "disease")]
-    (let [disease-code (last (str/split (get disease-coding "id") #"/"))]
-    (csv-colval (get (re-find #"(.*)\_(.*)" disease-code) 2))))) 
-     
+(defn condition-part-id
+  "Returns only a valid clinvar id in a map {val, type} from the passed in condition-part, otherwise
+  it returns a string indicating the issue."
+  [t c n]
+  (let [cond-part (ld-> t c "has part")]
+    (if (instance? java.util.LinkedHashMap cond-part)
+      (let [cond-part-id (get cond-part "id")]
+        (if (some? (re-find #"(.*):(.*)" cond-part-id))
+          (let [cond-id-type (first (str/split cond-part-id #":"))]
+            (if (.contains clinvar-valid-condition-types cond-id-type)
+              {:type cond-id-type, :value (last (str/split cond-part-id #":"))}
+              (str "*E-303" ":" n)))
+          (str "*E-304" ":" n)))
+        (csv-colval cond-part))))
+   
 (defn condition-moi
-  [t c]
-  (csv-colval (ld-> t c "modeOfInheritance" "label")))
+  [t c n]
+  (csv-colval (ld-> t c "has disposition" "label")))
 
 (defn get-condition
   "Processes the condition element to derive the ClinVar sanctioned fields: 
@@ -206,24 +215,42 @@
    be set to 'Not Specified' by default.  If it is Path or Lik Path a
    warning will be reported 'Condition is missing for a clinically significant
    interpretation.'"
-  [t i]
-  (let [c (ld-> t i "condition")]
-     {:name (condition-name t c),
-      :idtype (condition-idtype t c),
-      :idvalue (condition-idvals t c),
-      :moi (condition-moi t c)}))
+  [t i n]
+  (let [c (ld-> t i "is_about_condition")
+    cond-part (condition-part t c n)
+    interp-sig (interp-significance t i n)
+    moi (condition-moi t c n)]
+    (if (or (nil? c) (nil? cond-part))
+      (if (.contains ["Pathogenic", "Likely Pathogenic" ] interp-sig)
+        {:name (str "*E-301" ":" n), :idtype "", :idvalue "", :moi moi}
+        {:name "Not Specified", :idtype "", :idvalue "", :moi moi})
+      (if (instance? java.lang.String cond-part)
+          {:name cond-part,
+           :idtype "",
+           :idvalue "",
+           :moi moi}
+        (let [cond-part-id (condition-part-id t c n)]
+          (if (instance? java.lang.String cond-part-id)
+            {:name (get cond-part "label"),
+             :idtype "",
+             :idvalue "",
+             :moi moi}
+            {:name "",
+             :idtype (get cond-part-id :type),
+             :idvalue (get cond-part-id :value),
+             :moi moi}))))))
 
-  (defn evidence-rule-strength
+(defn evidence-rule-strength
     "Returns the translated strength based on the clingen/acmg recommended 
      values; PS1, PS1_Moderate, BM2, BM2_Strong, etc..
      NOTE: if the rule's default strength is not the selected strength then 
      create the strength by joining the rule and selected strength with an underscore."
-    [t e]
+    [t e n]
     (try
-    (let [crit (ld-> t e "evidenceItem" "criterion")
-         act-strength-coding (ld-> t e "evidenceStrength")
-         def-strength-coding (ld-> t e "evidenceItem" "criterion" "defaultStrength")
-         def-strength-display (ld-> t e "evidenceItem" "criterion" "defaultStrength" "label")]
+    (let [crit (ld-> t e "has_evidence_item" "is_specified_by")
+         act-strength-coding (ld-> t e "evidence_has_strength")
+         def-strength-coding (ld-> t e "has_evidence_item" "is_specified_by" "default_criterion_strength")
+         def-strength-display (ld-> t e "has_evidence_item" "is_specified_by" "default_criterion_strength" "label")]
         (let [def-strength-displaylist
           (cond 
           (instance? List def-strength-display)
@@ -240,24 +267,24 @@
           (if (= def-strength act-strength) rule-label (if (= def-direction act-direction) (str rule-label "_" act-weight) #"error"))))))
     (catch Exception e (log/error (str "Exception in evidence-rule-strength: " e)))))
 
-  (defn criteria-assessments
+(defn criteria-assessments
     "Returns the criterion assessments map translated to the standard
      acmg terminology for all evidence lines passed in."
-    [t e]
-    (map #(evidence-rule-strength t %) e))
+    [t e n]
+    (map #(evidence-rule-strength t % n) e))
   
-  (defn evidence-rules
+(defn evidence-rules
     "Returns the list of criterion rule names for the evidence provided"
-    [t e]
-    (let [crits (ld-> t e "evidenceItem" "criterion")]
-      (map #(get % "id") crits))) 
+    [t e n]
+    (let [crits (ld-> t e "has_evidence_item" "is_specified_by")]
+      (map #(get % "id") crits)))
   
 (defn evidence-summary
   "Returns a standard formatted summarization of the rules that were met."
-  [t e]
+  [t e n]
   (let  [criteria-str (if (instance? List e)
-                        (csv-colval (clojure.string/join ", " (criteria-assessments t e)))
-                        (csv-colval (evidence-rule-strength t e)))]
+                        (csv-colval (str/join ", " (criteria-assessments t e n)))
+                        (csv-colval (evidence-rule-strength t e n)))]
     (str "The following criteria were met: " criteria-str)))
 
 (defn re-extract
@@ -267,25 +294,20 @@
 
 (defn evidence-pmid-citations
   "Returns the list of critieron pmid citations for the evidence provided"
-  [t e]
-                                        ;(let [info-sources (ld-> t e "information" "evidence" "information" "source")
-  (let [info-sources (ld-> t e "evidenceItem" "evidenceLine" "evidenceItem" "source")
-        pmids (re-extract info-sources #"https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/(\p{Digit}*)" 1)] 
-    (if (nil? pmids) (str "**W-551" ":" (rand-int 200))
-        (csv-colval (clojure.string/join ", " (map #(str "PMID:" %) pmids))))))
-  
+  [t e n]
+  (let [info-sources (ld-> t e "has_evidence_item" "has_evidence_line" "has_evidence_item" "source")
+        ; convert fully qualified pmid iri or compact pmid iri to compact form for clinvar 
+        pmids (re-extract info-sources #"(https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/|PMID:)(\p{Digit}*)" 2)] 
+    (if (empty? pmids) (str "*W-551" ":" n)
+        (csv-colval (str/join ", " (map #(str "PMID:" %) pmids))))))
+
 (defn get-met-evidence
   "Returns a collated map of all 'met' evidence records needed for the 
     clinvar 'variant' submission sheet."
-  [t i]
-                                        ;(let [e (ld-> t i "evidenceLine")]   
-                                        ; (let [evidence-list (cond (instance? List e) e :else (list e))]
-                                        ;   (let [x (ld-> t evidence-list (prop= t "http://clinicalgenome.org/datamodel/criterion-assertion-outcome/met" "evidenceItem" "outcome" "label"))]
-  (let [e (ld-> t i "evidenceLine" (prop= t "http://clinicalgenome.org/datamodel/criterion-assertion-outcome/met" "evidenceItem" "outcome" "label"))]
-    {:summary (if (nil? e) "*W-551" (evidence-summary t e)),
-     :rules (if (nil? e) "*W-551" (evidence-rules t e)),
-     :assessments (if (nil? e) "*W-551" (criteria-assessments t e)),
-     :pmid-citations (if (nil? e) "*W-551" (evidence-pmid-citations t e))
+  [t i n]                                        
+  (let [e (ld-> t i "has_evidence_line" (prop= t "Met" "has_evidence_item" "asserted_conclusion" "label"))]
+    {:summary (if (empty? e) (str "*W-552:" n) (evidence-summary t e n)),
+     :rules (if (empty? e) (str "*W-552:" n) (evidence-rules t e n)),
+     :assessments (if (empty? e) (str "*W-552:" n) (criteria-assessments t e n)),
+     :pmid-citations (if (empty? e) (str "*W-552:" n) (evidence-pmid-citations t e n))
      }))
-
-
