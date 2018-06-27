@@ -2,7 +2,7 @@
 
 # seed file with wrapper brace and VariantInterpretation array
 rm -f tmpfile
-echo '{"@context": "http://datamodel.clinicalgenome.org/interpretation/json/context",' > allinput.json
+echo '{"@context": "http://dataexchange.clinicalgenome.org/interpretation/json/context",' > allinput.json
 echo '"VariantPathogenicityInterpretation":[' >> allinput.json
 
 # Loop through product of gcsplit operation above...

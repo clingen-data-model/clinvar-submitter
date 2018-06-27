@@ -19,7 +19,7 @@
    ["-o" "--output FILENAME" "CSV output filename" :default "clinvar-variant.csv"]
    ["-f" "--force" :default false]
    ["-x" "--jsonld-context URI" "JSON-LD context file URI" 
-    :default "http://datamodel.clinicalgenome.org/interpretation/json/sepio_context"]
+    :default "http://dataexchange.clinicalgenome.org/interpretation/json/sepio_context"]
    ["-b" "--build BUILD" "Genome build alignment, GRCh37 or GRCh38"
     :default "GRCh37"]
    ["-r" "--report FILENAME" "Run-report filename" :default "clinvar-submitter-run-report.csv"]
@@ -152,7 +152,7 @@
       (log/error (str "Exception in construct-variant-table: " e)))))
 
 (def schema
-  (slurp "http://datamodel.clinicalgenome.org/interpretation/json/schema.json"))
+  (slurp "http://dataexchange.clinicalgenome.org/interpretation/json/schema.json"))
 
 (def validate (v/validator schema))
 

@@ -6,9 +6,9 @@ The sample and context files are located in the */doc/resources/data/clinvar-sub
 
 JSON-LD context files 
 ---
-*context.jsonld* is the ClinGen json-ld semantic context file which aligns with the published documentation. It contains the iri mappings to the semantic terms defined explicitly by the ClinGen for all variant pathogenicity interpretations.  You can download the context file at [http://datamodel.clinicalgenome.org/interpretation/json/context](http://datamodel.clinicalgenome.org/interpretation/json/context).
+*context.jsonld* is the ClinGen json-ld semantic context file which aligns with the published documentation. It contains the iri mappings to the semantic terms defined explicitly by the ClinGen for all variant pathogenicity interpretations.  You can download the context file at [http://dataexchange.clinicalgenome.org/interpretation/json/context](http://dataexchange.clinicalgenome.org/interpretation/json/context).
 
-*sepio_context.jsonld* is the baseline context file that the clinvar-submitter code depends on to be able to reliably transform the ClinGen standard json file into a consistent form that can be used by the clinvar-submitter generation routines to parse out elements required to construct a clinvar submission worksheet. This is an ontologically purer form of the clingen-dmwg-v2.jsonld file which has some naming overlaps that do not comply with the design of the clinvar-submitter generation routines below. You can download the sepio_context file at [http://datamodel.clinicalgenome.org/interpretation/json/sepio_context](http://datamodel.clinicalgenome.org/interpretation/json/sepio_context).
+*sepio_context.jsonld* is the baseline context file that the clinvar-submitter code depends on to be able to reliably transform the ClinGen standard json file into a consistent form that can be used by the clinvar-submitter generation routines to parse out elements required to construct a clinvar submission worksheet. This is an ontologically purer form of the clingen-dmwg-v2.jsonld file which has some naming overlaps that do not comply with the design of the clinvar-submitter generation routines below. You can download the sepio_context file at [http://dataexchange.clinicalgenome.org/interpretation/json/sepio_context](http://dataexchange.clinicalgenome.org/interpretation/json/sepio_context).
 
 
 
@@ -36,22 +36,22 @@ JSON-LD context files
 
 
 
-    Added jars: [jackson-core-2.8.6.jar, jackson-databind-2.8.6.jar, slf4j-api-1.7.23.jar, jackson-annotations-2.8.0.jar, jcl-over-slf4j-1.7.23.jar, httpclient-osgi-4.5.3.jar, httpmime-4.5.3.jar, commons-io-2.5.jar, httpclient-cache-4.5.3.jar, jsonld-java-0.10.0.jar, commons-codec-1.9.jar, httpcore-nio-4.4.6.jar, httpclient-4.5.3.jar, fluent-hc-4.5.3.jar, httpcore-osgi-4.4.6.jar, httpcore-4.4.6.jar]
+    Added jars: [httpcore-nio-4.4.6.jar, jsonld-java-0.10.0.jar, commons-io-2.5.jar, jcl-over-slf4j-1.7.23.jar, httpclient-osgi-4.5.3.jar, jackson-databind-2.8.6.jar, slf4j-api-1.7.23.jar, jackson-core-2.8.6.jar, httpmime-4.5.3.jar, httpcore-osgi-4.4.6.jar, fluent-hc-4.5.3.jar, jackson-annotations-2.8.0.jar, httpclient-4.5.3.jar, httpclient-cache-4.5.3.jar, httpcore-4.4.6.jar, commons-codec-1.9.jar]
 
 
 
 
-    Added jars: [jsr305-3.0.0.jar, json-schema-core-1.2.5.jar, json-schema-validator-2.2.6.jar, jackson-annotations-2.2.3.jar, activation-1.1.jar, scjsv-0.4.0.jar, msg-simple-1.1.jar, jopt-simple-4.6.jar, uri-template-0.9.jar, jackson-databind-2.2.3.jar, guava-16.0.1.jar, tigris-0.1.1.jar, joda-time-2.3.jar, jackson-dataformat-smile-2.7.5.jar, btf-1.2.jar, libphonenumber-6.2.jar, jackson-core-2.7.5.jar, jackson-coreutils-1.8.jar, mailapi-1.4.3.jar, jackson-dataformat-cbor-2.7.5.jar, rhino-1.7R4.jar, clojure-1.5.1.jar, cheshire-5.6.3.jar]
+    Added jars: [jopt-simple-4.6.jar, clojure-1.5.1.jar, jackson-databind-2.2.3.jar, msg-simple-1.1.jar, mailapi-1.4.3.jar, libphonenumber-6.2.jar, guava-16.0.1.jar, jackson-core-2.7.5.jar, activation-1.1.jar, jackson-dataformat-cbor-2.7.5.jar, scjsv-0.4.0.jar, jackson-dataformat-smile-2.7.5.jar, tigris-0.1.1.jar, uri-template-0.9.jar, btf-1.2.jar, joda-time-2.3.jar, jsr305-3.0.0.jar, rhino-1.7R4.jar, cheshire-5.6.3.jar, jackson-coreutils-1.8.jar, json-schema-core-1.2.5.jar, jackson-annotations-2.2.3.jar, json-schema-validator-2.2.6.jar]
 
 
 
 
-    Added jars: [jackson-dataformat-smile-2.8.6.jar, jackson-dataformat-cbor-2.8.6.jar, cheshire-5.7.1.jar]
+    Added jars: [jackson-dataformat-cbor-2.8.6.jar, jackson-dataformat-smile-2.8.6.jar, cheshire-5.7.1.jar]
 
 
 
 
-    Added jars: [clojure-1.3.0.jar, data.json-0.2.1.jar]
+    Added jars: [data.json-0.2.1.jar, clojure-1.3.0.jar]
 
 
 
@@ -98,7 +98,7 @@ It can be modified and re-run through this notebook to play with different outco
 ```
 
     {"@context"
-     "file:///home/beakerx/doc/resources/data/clinvar-submitter/context.jsonld",
+     "http://dataexchange.clinicalgenome.org/interpretation/json/context",
      "VariantPathogenicityInterpretation"
      [{"condition"
        [{"disease"
@@ -420,7 +420,7 @@ The 2nd argument, `context-path` is a clinvar-submitter project specific context
           opts (JsonLdOptions.)]
       (JsonLdProcessor/flatten i cx opts))))
 (def interp-path "../resources/data/clinvar-submitter/test-min.json")
-(def context-path "http://datamodel.clinicalgenome.org/interpretation/json/sepio_context")
+(def context-path "http://dataexchange.clinicalgenome.org/interpretation/json/sepio_context")
 (flatten-interpretation interp-path context-path)
 ```
 
@@ -1060,7 +1060,7 @@ The logging file is a lower level output produced by the application to help a d
 
 
 
-    #'beaker_clojure_shell_528ddda1-67b5-4069-b248-a60b9255f555/write-files
+    #'beaker_clojure_shell_887d3361-5dee-415b-a2f5-d7df7be62f9b/write-files
 
 
 
@@ -1256,7 +1256,7 @@ Below are the additional methods along with the `-main` method and an example of
    ["-o" "--output FILENAME" "CSV output filename" :default "clinvar-variant.csv"]
    ["-f" "--force" :default false]
    ["-x" "--jsonld-context URI" "JSON-LD context file URI" 
-    :default "http://datamodel.clinicalgenome.org/interpretation/json/sepio_context"]
+    :default "http://dataexchange.clinicalgenome.org/interpretation/json/sepio_context"]
    ["-b" "--build BUILD" "Genome build alignment, GRCh37 or GRCh38"
     :default "GRCh37"]
    ["-r" "--report FILENAME" "Run-report filename" :default "clinvar-submitter-run-report.csv"]
@@ -1318,7 +1318,7 @@ Below are the additional methods along with the `-main` method and an example of
  (println msg))
 
 (def schema
-  (slurp "http://datamodel.clinicalgenome.org/interpretation/json/schema.json"))
+  (slurp "http://dataexchange.clinicalgenome.org/interpretation/json/schema.json"))
  
 (def validate (v/validator schema))
 
@@ -1504,13 +1504,13 @@ Description - The description of the error or warning. No value for Success.
 ```
 
     (["ClinVar-Submitter Run Report"]
-     ["" "Date/Time: " "Sun Jun 24 23:10:54 UTC 2018"]
+     ["" "Date/Time: " "Wed Jun 27 14:51:30 UTC 2018"]
      ["" "File(s): " "../resources/data/clinvar-submitter/test-min.json"]
      ["" "Method Name (-m): " "ACMG Guidelines, 2015"]
      ["" "Method Citation (-c): " "PMID:25741868"]
      [""
       "JSON-LD Context (-x): "
-      "http://datamodel.clinicalgenome.org/interpretation/json/sepio_context"]
+      "http://dataexchange.clinicalgenome.org/interpretation/json/sepio_context"]
      [""
       "Output File (-o): "
       "../resources/data/clinvar-submitter/myoutput.csv"]

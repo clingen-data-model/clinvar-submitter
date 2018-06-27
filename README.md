@@ -52,7 +52,7 @@ $ java -jar target/uberjar/clinvar-submitter-0.0.0-SNAPSHOT.jar "-o" "myoutput.c
 #### Command Line Parameters
 ```
 "-o" "--output FILENAME" "CSV output filename" : default "clinvar-submitter.csv"
-"-x" "--jsonld-context URI" "JSON-LD context file URI" :default "http://datamodel.clinicalgenome.org/interpretatoin/json/sepio_context"
+"-x" "--jsonld-context URI" "JSON-LD context file URI" :default "http://dataexchange.clinicalgenome.org/interpretatoin/json/sepio_context"
 "-f" "force-overwrite of output file if it exists"
 "-b" "--build BUILD" "Genome build alignment, GRCh37 or GRCh38" :default "GRCh37"
 "-r" "--report FILENAME" "Run-report filename" :default "clinvar-submission-run-report.csv"
