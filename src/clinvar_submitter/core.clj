@@ -8,8 +8,8 @@
             [clojure.tools.logging.impl :as impl]
             [clojure.tools.logging :as log]
             [clojure.tools.cli :refer [parse-opts]]
-            [clojure.pprint :as pprint])
-  (:use clojure.pprint)
+            [clinvar-submitter.web-service :as web]
+            [clojure.pprint :refer [pprint]])
   (:import [java.lang.Exception])
   (:gen-class))
 
@@ -29,6 +29,7 @@
    ["-a" "--allele-origin ALLELEORIGIN" "Allele origin (see ClnVar for allowed values)" :default "germline"]
    ["-s" "--affected-status AFFECTEDSTATUS" "Affected status (see ClnVar for allowed values)" :default "yes"]
    ["-p" "--expert-panel-name EXPERTPANELNAME" "Expert panel name for use in summary text generation."]
+   ["-w" "--web-service" :default false]
    ["-h" "--help"]])
 
 (defn usage [options-summary]
@@ -165,10 +166,32 @@
     (catch Exception e
       (log/error (str "Exception in construct-variant-table: " e)))))
 
-(def schema
-  (slurp "http://dataexchange.clinicalgenome.org/interpretation/json/schema.json"))
+(def schema-uri "http://dataexchange.clinicalgenome.org/interpretation/json/schema.json")
 
-(def validate (v/validator schema))
+(defn process-input-file
+  "From the command line arguments, process and return appropriate output for input file"
+  [input options]
+  (let [records (construct-variant-table input options)
+        output-file (:output options)
+        report-file (:report :options)
+        existing-files (remove nil? (map #(if (.exists (io/as-file %)) (str "'" % "'") nil ) [output-file report-file]))
+        schema (slurp schema-uri)
+        validate (v/validator schema)]
+                                        ;(log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
+    (if (nil? (validate (slurp input))) (log/debug "Json input is valid"))
+    (try
+      ;; if output or report file exists then check if there is a force option.
+      ;; If there is no force option the display an exception
+      ;; Otherwise create output and report file
+      (if (and (> (count existing-files) 0) (not (get options :force)))
+        (println (str "**Error**"
+                      "\nThe file"
+                      (if (> (count existing-files) 1) "s " " ")
+                      (str/join " & " existing-files)
+                      " already exist in the output directory."
+                      "\nUse option‚ -f Force overwrite to overwrite existing file(s)."))
+        (report/write-files input options records))
+      (catch Exception e (log/error (str "Exception in main: " e))))))
 
 (defn -main
   "take input assertion, transformation context, and output filename as input and write variant table in csv format"
@@ -176,23 +199,6 @@
   (let [{:keys [input options exit-message ok?]} (validate-args args)]
     (if exit-message
       (exit (if ok? 0 1) exit-message)
-      (let [records (construct-variant-table input options)
-            output-file (:output options)
-            report-file (:report options)
-            existing-files (remove nil? (map #(if (.exists (io/as-file %)) (str "'" % "'") nil ) [output-file report-file]))]
-        ;(log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
-        (if (nil? (validate (slurp input))) (log/debug "Json input is valid"))
-        (try
-            ;; if output or report file exists then check if there is a force option.
-            ;; If there is no force option the display an exception
-            ;; Otherwise create output and report file
-            (if (and (> (count existing-files) 0) (not (:force options)))
-              (println (str "**Error**"
-                   "\nThe file"
-                   (if (> (count existing-files) 1) "s " " ")
-                   (str/join " & " existing-files)
-                   " already exist in the output directory."
-                   "\nUse option‚ -f Force overwrite to overwrite existing file(s)."))
-              (report/write-files input options records))
-        (catch Exception e (log/error (str "Exception in main: " e))))
-    ))))
+      (if (:web-service options)
+        (web/run-service)
+        (process-input-file input options)))))
