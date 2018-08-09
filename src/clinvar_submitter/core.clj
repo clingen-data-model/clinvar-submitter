@@ -8,8 +8,8 @@
             [clojure.tools.logging.impl :as impl]
             [clojure.tools.logging :as log]
             [clojure.tools.cli :refer [parse-opts]]
-            [clojure.pprint :as pprint])
-  (:use clojure.pprint)
+            [clinvar-submitter.web-service :as web]
+            [clojure.pprint :refer [pprint]])
   (:import [java.lang.Exception])
   (:gen-class))
 
@@ -25,6 +25,7 @@
    ["-r" "--report FILENAME" "Run-report filename" :default "clinvar-submitter-run-report.csv"]
    ["-m" "--method METHODNAME" "Assertion-method-name" :default "ACMG Guidelines, 2015"]
    ["-c" "--methodc METHODCITATION" "Method Citation" :default "PMID:25741868"]
+   ["-w" "--web-service" :default false]
    ["-h" "--help"]])
 
 (defn usage [options-summary]
@@ -62,20 +63,25 @@
   should exit (with a error message, and optional ok status), or a map
   indicating the action the program should take and the options provided."
   [args]  
+
+  ;; TODO Improve error message reporting in case of missing arguments
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
     (cond
       (or (:help options) (missing-required? options)) ; help => exit OK with usage summary
-        {:exit-message (usage summary) :ok? true}
+      {:exit-message (usage summary) :ok? true}
       
       errors ; errors => exit with description of errors
-        {:exit-message (error-msg errors)}
+      {:exit-message (error-msg errors)}
+
+      (and (:web-service options) (= 0 (count arguments)))
+      {:options options}
       
       ;; custom validation on arguments
-      (= 1 (count arguments))
-          {:input (first arguments) :options options}
-      
+      (and (= 1 (count arguments)) (nil? (:web-service options)))
+      {:input (first arguments) :options options}
+
       :else ; failed custom validation => exit with usage summary      
-          {:exit-message (usage summary)})))
+      {:exit-message (usage summary)})))
 
 (defn exit [status msg]
  (println msg))
@@ -151,10 +157,32 @@
     (catch Exception e 
       (log/error (str "Exception in construct-variant-table: " e)))))
 
-(def schema
-  (slurp "http://dataexchange.clinicalgenome.org/interpretation/json/schema.json"))
+(def schema-uri "http://dataexchange.clinicalgenome.org/interpretation/json/schema.json")
 
-(def validate (v/validator schema))
+(defn process-input-file
+  "From the command line arguments, process and return appropriate output for input file"
+  [input options]
+  (let [records (construct-variant-table input (get options :jsonld-context) (get options :method) (get options :methodc))
+        output-file (get options :output)
+        report-file (get options :report)
+        existing-files (remove nil? (map #(if (.exists (io/as-file %)) (str "'" % "'") nil ) [output-file report-file]))
+        schema (slurp schema-uri)
+        validate (v/validator schema)]
+                                        ;(log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
+    (if (nil? (validate (slurp input))) (log/debug "Json input is valid"))
+    (try
+      ;; if output or report file exists then check if there is a force option. 
+      ;; If there is no force option the display an exception
+      ;; Otherwise create output and report file     
+      (if (and (> (count existing-files) 0) (not (get options :force)))
+        (println (str "**Error**"
+                      "\nThe file"
+                      (if (> (count existing-files) 1) "s " " ")
+                      (str/join " & " existing-files)
+                      " already exist in the output directory."
+                      "\nUse option‚ -f Force overwrite to overwrite existing file(s)."))
+        (report/write-files input options records))
+      (catch Exception e (log/error (str "Exception in main: " e))))))
 
 (defn -main
   "take input assertion, transformation context, and output filename as input and write variant table in csv format"
@@ -162,23 +190,6 @@
   (let [{:keys [input options exit-message ok?]} (validate-args args)] 
     (if exit-message
       (exit (if ok? 0 1) exit-message)
-      (let [records (construct-variant-table input (get options :jsonld-context) (get options :method) (get options :methodc))
-            output-file (get options :output)
-            report-file (get options :report)
-            existing-files (remove nil? (map #(if (.exists (io/as-file %)) (str "'" % "'") nil ) [output-file report-file]))]
-        ;(log/debug "Input,output and context filename in main method: " input (get options :jsonld-context) (get options :output))
-        (if (nil? (validate (slurp input))) (log/debug "Json input is valid"))
-        (try
-            ;; if output or report file exists then check if there is a force option. 
-            ;; If there is no force option the display an exception
-            ;; Otherwise create output and report file     
-            (if (and (> (count existing-files) 0) (not (get options :force)))
-              (println (str "**Error**"
-                   "\nThe file"
-                   (if (> (count existing-files) 1) "s " " ")
-                   (str/join " & " existing-files)
-                   " already exist in the output directory."
-                   "\nUse option‚ -f Force overwrite to overwrite existing file(s)."))
-              (report/write-files input options records))
-        (catch Exception e (log/error (str "Exception in main: " e))))
-    ))))
+      (if (:web-service options)
+        (web/run-service)
+        (process-input-file input options)))))
