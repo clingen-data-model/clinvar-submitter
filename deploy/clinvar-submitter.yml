@@ -1,0 +1,47 @@
+- hosts: all
+  tasks:
+  - name: Install java8
+    become: true
+    apt:
+      name: openjdk-8-jdk
+  - name: Set java8 to default
+    become: true
+    command: /usr/sbin/update-java-alternatives -s java-1.8.0-openjdk-amd64
+  - name: Compile uberjar for clinvar-submitter
+    local_action: command lein uberjar
+  - name: Ensure target directory exists on remote
+    become: true
+    file:
+      state: directory
+      path: /usr/local/clinvar-submitter
+      mode: 0755
+  - name: Add lib directory
+    become: true
+    file:
+      state: directory
+      path: /usr/local/clinvar-submitter/lib
+      mode: 0755
+  - name: Add log directory
+    become: true
+    file:
+      state: directory
+      path: /usr/local/clinvar-submitter/log
+      mode: 0755
+  - name: Copy uberjar to server
+    become: true
+    copy:
+      src: ../target/uberjar/clinvar-submitter-1.0.0-standalone.jar
+      dest: /usr/local/clinvar-submitter/lib
+      mode: 0755
+  - name: Copy systemd unit to server
+    become: true
+    template:
+      src: clinvar-submitter.service
+      dest: /etc/systemd/system/clinvar-submitter.service
+  - name: Start clinvar-submitter service
+    become: true
+    systemd:
+      name: clinvar-submitter
+      state: restarted
+      enabled: yes
+      daemon_reload: yes

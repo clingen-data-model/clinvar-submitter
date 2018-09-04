@@ -1,0 +1,13 @@
+[Unit]
+Description=ClinGen ClinVar Submitter Generator service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/local/clinvar-submitter
+Environment=CLINVAR_SUBMITTER_PORT={{ clinvar_submitter_port }}
+ExecStart=/usr/bin/java -jar /usr/local/clinvar-submitter/lib/clinvar-submitter-1.0.0-standalone.jar -w
+ExecStop=/bin/kill -TERM $MAINPID
+
+[Install]
+WantedBy=multi-user.target
