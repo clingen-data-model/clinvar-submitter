@@ -8,17 +8,26 @@
 
 (def default-port 3000)
 
+(defn parse-int [s]
+  (Integer. (re-find #"\d+" s)))
+
 (defn port-num
   []
-  (if-let [p (System/getenv "CV_SUBMITTER_PORT")]
-    p
+  (if-let [p (System/getenv "CLINVAR_SUBMITTER_PORT")]
+    (parse-int p)
     default-port))
 
 (defn handler [request]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body  (-> (slurp (:body request)) json/parse-string json/generate-string)})
+  ;; get request
+  (let [req (-> (slurp (:body request)) json/parse-string)]
+    ;; validate request
 
+    ;; process request
+
+    ;; return response
+    {:status 200
+      :headers {"Content-Type" "application/json"}
+      :body  (json/generate-string req)}))
 
 (def app handler)
 
@@ -27,5 +36,6 @@
 
 (defn run-service
   []
-  (println "Running VCI Submitter as web service on " (port-num))
-  (run-jetty handler {:port (port-num)}))
+  (let [p ()]
+    (println "Running VCI Submitter as web service on " (port-num))
+    (run-jetty handler {:port (port-num)})))
