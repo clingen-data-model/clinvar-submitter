@@ -241,30 +241,30 @@
              :moi moi}))))))
 
 (defn evidence-rule-strength
-    "Returns the translated strength based on the clingen/acmg recommended 
+  "Returns the translated strength based on the clingen/acmg recommended 
      values; PS1, PS1_Moderate, BM2, BM2_Strong, etc..
      NOTE: if the rule's default strength is not the selected strength then 
      create the strength by joining the rule and selected strength with an underscore."
-    [t e n]
-    (try
+  [t e n]
+  (try
     (let [crit (ld-> t e "has_evidence_item" "is_specified_by")
-         act-strength-coding (ld-> t e "evidence_has_strength")
-         def-strength-coding (ld-> t e "has_evidence_item" "is_specified_by" "default_criterion_strength")
-         def-strength-display (ld-> t e "has_evidence_item" "is_specified_by" "default_criterion_strength" "label")]
-        (let [def-strength-displaylist
-          (cond 
-          (instance? List def-strength-display)
-           def-strength-display
-          :else 
-          (list def-strength-display))]
-          (let [rule-label (get crit "label")
-                def-strength (first def-strength-displaylist)
-                act-strength (get act-strength-coding  "label")]
+          act-strength-coding (ld-> t e "evidence_has_strength")
+          def-strength-coding (ld-> t e "has_evidence_item" "is_specified_by" "default_criterion_strength")
+          def-strength-display (ld-> t e "has_evidence_item" "is_specified_by" "default_criterion_strength" "label")]
+      (let [def-strength-displaylist
+            (cond 
+              (instance? List def-strength-display)
+              def-strength-display
+              :else 
+              (list def-strength-display))]
+        (let [rule-label (get crit "label")
+              def-strength (first def-strength-displaylist)
+              act-strength (get act-strength-coding  "label")]
           (let [def-direction (get (str/split def-strength #" ") 0)
                 def-weight (get (str/split def-strength #" ") 1)
                 act-direction (get (str/split act-strength #" ") 0)
                 act-weight (get (str/split act-strength #" ") 1)]
-          (if (= def-strength act-strength) rule-label (if (= def-direction act-direction) (str rule-label "_" act-weight) #"error"))))))
+            (if (= def-strength act-strength) rule-label (if (= def-direction act-direction) (str rule-label "_" act-weight) #"error"))))))
     (catch Exception e (log/error (str "Exception in evidence-rule-strength: " e)))))
 
 (defn criteria-assessments
@@ -300,6 +300,30 @@
         pmids (re-extract info-sources #"(https\:\/\/www\.ncbi\.nlm\.nih\.gov\/pubmed\/|PMID:)(\p{Digit}*)" 2)] 
     (if (empty? pmids) (str "*W-551" ":" n)
         (csv-colval (str/join ", " (map #(str "PMID:" %) pmids))))))
+
+(defn -extract-pmid [s]
+  (let [m (re-find #"https://www.ncbi.nlm.nih.gov/pubmed/(\d+)" s)]
+    (when m
+      (second m))))
+
+(defn -evidence-pmids [t e]
+  (let [base-list (ld-> t e "has_evidence_item" "has_evidence_line" 
+                        "has_evidence_item" "source")
+        pmid-list (cond (string? base-list) [(-extract-pmid base-list)]
+                        (seq base-list) (map -extract-pmid (remove nil? base-list))
+                        :default nil)]
+    (remove nil? pmid-list)))
+
+(defn -get-evidence-tuple [t e]
+  [(evidence-rule-strength t e 0)
+   {:id (get (ld-> t e "has_evidence_item" "is_specified_by") "id")
+    :desc (ld-> t e "has_evidence_item" "description")
+    :pmids (-evidence-pmids t e)}])
+
+(defn get-met-evidence-map
+  [t i]
+  (let [e (ld-> t i "has_evidence_line" (prop= t "Met" "has_evidence_item" "asserted_conclusion" "label"))]
+    (into {} (map #(-get-evidence-tuple t %) e))))
 
 (defn get-met-evidence
   "Returns a collated map of all 'met' evidence records needed for the 
