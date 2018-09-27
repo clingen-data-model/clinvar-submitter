@@ -301,6 +301,23 @@
     (if (empty? pmids) (str "*W-551" ":" n)
         (csv-colval (str/join ", " (map #(str "PMID:" %) pmids))))))
 
+
+(defn -build-pmid-list [pmid-list]
+  (let [prefix-pmid-list (map #(str "PMID:" %) pmid-list)]
+    (str/join ", " prefix-pmid-list) ))
+
+(defn summary-string-evidence-code [tuple]
+  (let [m (val tuple)
+        pmid-list (when (seq (:pmids m))
+                    (str " (" (-build-pmid-list (:pmids m)) ")"))]
+    (str (key tuple) "; " (:desc m) pmid-list )))
+
+(defn summary-string 
+  "Generate the summary string for the record based on the map returned from
+  get-met-evidence-map"
+  [m]
+  (str/join ": " (map summary-string-evidence-code m)))
+
 (defn -extract-pmid [s]
   (let [m (re-find #"https://www.ncbi.nlm.nih.gov/pubmed/(\d+)" s)]
     (when m
