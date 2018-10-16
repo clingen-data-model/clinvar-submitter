@@ -30,6 +30,10 @@
    ["-s" "--affected-status AFFECTEDSTATUS" "Affected status (see ClnVar for allowed values)" :default "yes"]
    ["-p" "--expert-panel-name EXPERTPANELNAME" "Expert panel name for use in summary text generation."]
    ["-w" "--web-service" :default false]
+   ["-l" "--collection-method COLLECTIONMETHOD" "Collection method (see ClnVar for allowed values)" :default "curation"]
+   ["-a" "--allele-origin ALLELEORIGIN" "Allele origin (see ClnVar for allowed values)" :default "germline"]
+   ["-s" "--affected-status AFFECTEDSTATUS" "Affected status (see ClnVar for allowed values)" :default "yes"]
+   ["-p" "--expert-panel-name EXPERTPANELNAME" "Expert panel name for use in summary text generation."]
    ["-h" "--help"]])
 
 (defn usage [options-summary]
@@ -69,15 +73,15 @@
   [args]
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
     (cond
-      (or (:help options) (missing-required? options)) ; help => exit OK with usage summary
-        {:exit-message (usage summary) :ok? true}
+      (or (:help options) (missing-required? options) ; help => exit OK with usage summary
+        {:exit-message (usage summary) :ok? true})
 
       errors ; errors => exit with description of errors
         {:exit-message (error-msg errors)}
 
       ;; custom validation on arguments
-      (= 1 (count arguments))
-          {:input (first arguments) :options options}
+      (= 1 (count arguments)
+          {:input (first arguments) :options options})
 
       :else ; failed custom validation => exit with usage summary
           {:exit-message (usage summary)})))
