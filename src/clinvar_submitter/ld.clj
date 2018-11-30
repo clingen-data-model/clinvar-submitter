@@ -25,19 +25,20 @@
     (fn? prop) (prop loc)
      (instance? List loc) (map #(ld-get t % prop) loc)
      :else (let [v (get loc prop)]
-      (cond
-        (string? v) (resolve-id t v)
-        (instance? Map v) (if-let [vn (get v "id")] (resolve-id t vn) v)
-        (instance? List v) (map #(resolve-id t %) v)
-        :else v))))
+            (cond
+              (string? v) (resolve-id t v)
+              (instance? Map v) (if-let [vn (get v "id")] (resolve-id t vn) v)
+              (instance? List v) (map #(resolve-id t %) v)
+              :else v))))
 
 (defn ld->
   "Take a symbol table, a location, and a set of predicates,
   return the set of nodes mapping to a given property"
   [t loc & preds]
   (let [res (reduce #(ld-get t %1 %2) loc preds)]
-    ;(println preds res)
-    res))
+    (if (or (not (seqable? res)) (string? res) (instance? Map res))
+      [res]
+      res)))
 
 (defn ld1->
   "Take the first result of a ld-> path expression"
@@ -50,8 +51,8 @@
   [t v & ks]
   (fn [m] (if (instance? List m)
             (filter (fn [m1] (let [r (apply ld-> t m1 ks)]
-                               (if (instance? List r) (some #(= % v) r) (= r v))))  m)
-            (when (= v (apply ld-> t m ks)) m))))
+                               (some #(= % v) r)))  m)
+            (when (some #(= % v) (apply ld-> t m ks)) m))))
 
 (defn construct-symbol-table
   "Construct a map that takes a flattened JSON-LD interpretation as input and associates
@@ -78,7 +79,7 @@
   "Flatten JSON-LD document and return a symbol table returning IDs of nodes mapped
   to the nodes themselves"
   [interp-path context-path]
-  (try 
+  (try
     (construct-symbol-table (flatten-interpretation interp-path context-path))
-  (catch Exception e
-    (log/error (str "Exception in generate-symbol-table: " (.getMessage e))))))
+   (catch Exception e
+     (log/error (str "Exception in generate-symbol-table: " (.getMessage e))))))
