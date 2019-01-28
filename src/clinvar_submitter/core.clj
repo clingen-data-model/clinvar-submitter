@@ -25,7 +25,7 @@
    ["-r" "--report FILENAME" "Run-report filename" :default "clinvar-submitter-run-report.csv"]
    ["-l" "--collection-method COLLECTIONMETHOD" "Collection method (see ClnVar for allowed values)" :default "curation"]
    ["-a" "--allele-origin ALLELEORIGIN" "Allele origin (see ClnVar for allowed values)" :default "germline"]
-   ["-s" "--affected-status AFFECTEDSTATUS" "Affected status (see ClnVar for allowed values)" :default "yes"]
+   ["-s" "--affected-status AFFECTEDSTATUS" "Affected status (see ClnVar for allowed values)" :default "unknown"]
    ["-w" "--web-service" :default false]
    ["-h" "--help"]])
 
@@ -90,17 +90,19 @@
         condition (form/get-condition sym-tbl interp-input interp-num (:significance interp))
         evidence (form/get-met-evidence sym-tbl interp-input)
         method (form/get-assertion-method sym-tbl interp-input interp-num)
-        approver (form/get-contribution sym-tbl interp-input "approver")]
+        approver (form/get-contribution sym-tbl interp-input "approver")
+        variant-coord (:coord variant)
+        hgvs (:hgvs variant)]
     [(:id interp "") ; local id
      (:id interp "") ; linking id - only needed if providing case data or func evidence tabs
      (:gene variant "") ; gene symbol - not provided since we are avoiding contextual allele representation.
-     (:refseq variant) ;rdefseq
-     (:hgvs variant) ; hgvs - not providing since we are avoiding contextual allele representation
+     (:refseq variant) ;refseq
+     (if (some? hgvs) hgvs "") ; hgvs - not providing since we are avoiding contextual allele representation
      (:chromosome variant "")  ; chromosome - not providing since we are using the refseq field to denote the accession.
-     "" ;(:start variant) ; start + 1  (from 0-based to 1-based)
-     "" ;(:stop variant)  ; stop + 1  (from 0-based to 1-based)
-     "" ;(:ref variant)   ; ref
-     "" ;(:alt variant)   ; alt
+     (if (nil? hgvs) (:start variant-coord) "") ; start + 1  (from 0-based to 1-based)
+     (if (nil? hgvs) (:stop variant-coord) "")  ; stop + 1  (from 0-based to 1-based)
+     (if (nil? hgvs) (:ref variant-coord) "")   ; ref
+     (if (nil? hgvs) (:alt variant-coord) "")   ; alt
      "" ; variant type - non sequence var only
      "" ; outer start - non sequence var only
      "" ; inner start - non sequence var only
@@ -117,7 +119,7 @@
      ;(get variant :variantIdentifier) ; Variation identifiers (http://reg.genome.network.org/allele = ABC ABC:CA123123123)
      "" ; ClinVar does not accept the CAR identifiers? (replacing above commented code)
      "" ; Location - N/A
-     "" ; (:altDesignations variant)    ; Alternate designations
+     (:alt-designations variant)    ; Alternate designations
      "" ; Official allele name  - N/A
      "" ; URL - bypassing for now, no set home for a public URL at this time
      "" ; empty
@@ -190,7 +192,7 @@
      ""
      ""
      (:id variant "")  ; clinvar or clingen ar variant id
-     (:scv variant "")  ; scv if it was able to find a match
+     (first (str/split (:scv variant "") #"\.+"))  ; scv if it was able to find a match, without version info
      (if (str/blank? (:scv variant)) "" "Update")]))  ; Novel or Update .. always update if prior column is not empty.
 
 (defn construct-variant-table

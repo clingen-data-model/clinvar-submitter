@@ -1,0 +1,244 @@
+Open Questions... as of 15.Dec.2018 LBabb
+(CAR) are the coordinates left-shifted?
+(ClinVar) don't they "normalize" coordinates if they are left-shifted?
+(SEPIO) approver => affiliation (if available) user (otherwise)
+(SEPIO) contributor(s) => any user and/or affiliation specifically selected as "contributor" (only in GCI thus far).
+(VCI) when will the GCI's contributor selection list be available in VCI?
+(SEPIO) The rule for approver datetime is to use the "approval reviewed date
+
+
+NOTES about VCI json
+====================
+root (interpretation)
+  schema_version        (X schema version 6 of interp - not needed - internal for VCI? could be useful for provenance possibly?)
+  @id                   (vci iri/identifier/guid with /interpretations/<uuid> prefix)
+  uuid                  (the guid of the @id above - use this to create an iri or parse the @id?)
+  status                (X not needed - in progress | ? | ? | ... )
+  date_created          (X not needed)
+  last_modified         (X not needed at this point - UTC DT format)
+  modified_by           (X not needed - last modified by - could be different than submitted_by I guess - ask VCI for diff)
+  submitted_by          (this is the backup "approver")
+  affiliation           (this is the "approver" by default if not then submitter)
+  audit                 (X unused or not needed)
+  ---
+  variant               ( the variant )
+  provisional_variant   (lots of important interp info in here)
+  provisional_count     (X not needed is this always 1? - guesing yes)
+  interpretation_disease (@id of disease /diseases/<disease.uuid>)
+  disease
+  interpretation_status (X not needed - Provisional | ? | ? | ... )
+  modeInheritance       (MOI - need to deal with MOIAdjective)
+  modeInheritanceAdjective (TBD not currently handled - needed)
+  evaluations[]         (this are the crit assessments)
+  evaluation_count      (X not needed)
+  extra_evidence_list[]
+  actions[]
+  completed_sections[]
+  interpretation_genes  (X unused by vci)
+
+  provisional_variant (provisional_variant<<item>>)
+    schema_version
+    @id
+    uuid
+    status
+    date_created
+    last_modified
+    modified_by
+    submitted_by
+    affiliation
+    ---
+    interpretation_associated[]
+    alteredClassification_present   (always exists but blank if same as autoClassification)
+    alteredClassification           (seems to be a dupe of above- only exists if above is not blank)
+    reason_present                  (if altered then this is the "reason" for the alteration - it will be blank if no alteration occurs)
+    reason                          (seems to be a dupe of above- only exists if above is not blank)
+    classificationStatus            (** RULE: should always be "Approved")
+    classificationApprover          (individual user name /no id/ that approved - i believe this is the selected one by the actual user)
+    autoClassification              (calculated classification)
+    approvalSubmitter               (this is the user /name/ that saved the approval - the classificationApprover is the selected approver if provided)
+    approvalDate                    (this appears to be the same as the approvalReviewDate)
+    approvalReviewDate              (the selected approval date - can be backdated and may not match actual snapshot record dates)
+    approvedClassification          (equal to autoClassification unless alteredClassification exists)
+    evidenceSummary
+    provisionalDate
+    provisionedClassification
+    provisionalReviewDate
+    provisionalSubmitter
+    publishClassification           (boolean t/f -> always false - not clear if this is implemented yet)
+    associatedInterpretationSnapshots[]   (the approvalStatus = "approved" is the one that is the actual date/time it was last approved - application timestamps of saved provisional or approval records)
+      uuid
+      date_created         (date time of this snapshot record)
+      resourceId           (interp.uuid)
+      resourceType         (always "interpretation")
+      approvalStatus       (Provisioned | Approved)
+
+  submitted_by, modified_by (user<<item>>)
+    @id                  (/users/<user.uuid>)
+    last_name
+    first_name
+    title                (seems to always be <first_name> <last_name>)
+    email
+    affiliation[]        (all current affiliations for the user)
+    lab                  (? always "/labs/curator/" ?)
+
+  VERIFY with VCI which use cases exist for the diseases (MONDO id, phenotypes or text?)
+  disease (single map item - analogous to genetic condition)
+    schema_version        (X schema version of disease - not needed - internal we think)
+    @id                   (iri of disease - same as /interpretation_disease - "/diseases/<disease.uuid>")
+    uuid                  (vci disease uuid - equal to Genetic condition concept id)
+    status                (X not needed - internal - status of disease?)
+    date_created          (X not needed - is this the date the disease was created overall or in the context of this interp? - odd)
+    last_modified         (X ? the last date/time the disease was modified ?)
+    modified_by           (X not needed - user that changed the disease last ?)
+    submitted_by          (X not needed - user that submitted the disease? - what does it mean to "submit the disease" - ask VCI)
+    ---
+    diseaseId             (MONDO id MONDO_99999999 format)
+    phenotypes[]          (? is this being picked up in situations where the disease is not selected? it should be)
+    term                  (label of disease)
+    description           (description of disease)
+    synonyms[]            (X alt labels for disease - not needed - maybe we should?)
+    associatedInterpretations[]   (X not needed - list of interpretation ids from all of VCI linked to this disease - odd?)
+    associatedFamilies[]  (X not needed - seems like there's a "families" model for all the families in VCI that relate to this disease - all iris in format /families/<family.uuid>)
+    associatedIndividuals[] (X not needed - seems like there's an "individuals" model for all the individuals in VCI that relate to this disease - all iris in format /individuals/<individual.uuid>)
+    associatedGdm[]       (X not needed - seems like there's a "gdm" model for all the GDMs? in VCI that relate to this disease - all iris in format /gdm/<gdm.uuid>)
+    associatedGroups[]    (X not needed - not used?)
+
+  evaluations[] (evaluation<<item>>) (criterion assessments - one per rule)
+    (groups of criterion get copies of the same evidence, pmids, explanations, submitted_by, modified_by, dates)
+    HERE ARE the groups
+      group1: (population) BA1, PM2, BS1
+      group2: (computational) PP3, BP4, BP1, PP2
+      group3: (no evidence) PVS1
+      group4: (no evidence) BP2
+      group5: (no evidence) PM3
+      group6: (no evidence) BS3, PS3
+
+    schema_version        (X evaluation class schema verions - an encode schema versioning approach?)
+    @id
+    uuid                  (the uuid of the evaluation @id = /evaluations/<eval.uuid>)
+    status                (X not needed - i think this is a super class thing on all versioned schema concepts)
+    date_created
+    last_modified
+    modified_by
+    submitted_by
+    affiliation           (? why is this on evaluations since they are part of interpretations - when would it ever differ)
+    variant
+    ---
+    criteria              (criterion code (BA1, BS1, PM2, etc..)
+    criteriaModifier      (the modifier for the strength (strong->moderate, etc)
+    modifier              (? not sure what this is - seems to be redundant with criteriaModifier)
+    criteriaStatus        (met | not-met | not-evaluated)
+    interpretation_associated[] (X not needed - list of all interps this evaluation is related to - should alwasy be one item - it is!)
+    explanation           (this is the text the users enter on the group of criterion)
+    evidence_type         (this dictates the "evidence concept" for this evaluation - eg. Population)
+    <evidence-class see below>
+
+  extra_evidence_list (extra_evidence <<item>>)
+    @id
+    uuid
+    schema_version
+    status
+    date_created
+    last_modified
+    submitted_by
+    modified_by
+    affiliation
+    variant
+    ---
+    category                 (? case-segregation | ? )
+    subcategory              (? allele-data | ? )
+    evidenceDescription      (text explanation for articles)
+    articles[]               (see articles)
+
+  article (article <<item>>)
+    schema_version
+    @id
+    uuid
+    date_created
+    last_modified
+    modified_by
+    submitted_by
+    ---
+    doi
+    pmcid
+    pmid
+    journal
+    active
+    abstract
+    authors[]
+    date
+    title
+
+
+
+
+  evidence-classes
+    computational (group2)
+      schema_version
+      @id
+      uuid
+      status
+      date_created
+      last_modified
+      modified_by
+      submitted_by
+      variant               (iri to variant id for interp - see variant)
+      ---
+      evaluation_associated[]  (fk to evaluations that this population record is linked to - all of group1 evals - 3 in total)
+      disease_present
+      computationalData
+        clingen
+          cftr, revel
+            score
+            visible
+            prediction
+            score_range
+        other_predictors
+          cadd, metalr, polyphen2_hdiv, mutationtaster, fathmm, mutationassessor, fitcons, metasvm, fathmm_mkl, sift, provean, lrt, polyphen2_hvar
+            score
+            prediction
+            score_range
+        conservation
+          siphy, phylop20way, gerp, phastconsp7way, phylop7way, phastconsp20way
+
+    population (group1)
+      schema_version
+      @id
+      uuid
+      status
+      date_created
+      last_modified
+      modified_by
+      submitted_by
+      variant               (iri to variant id for interp - see variant)
+      ---
+      evaluation_associated[]  (fk to evaluations that this population record is linked to - all of group1 evals - 3 in total)
+      maf_count             (eg 7)
+      populationData        (map of pop data sets)
+        desiredCI           (CI: confidence interval? eg 95)
+        mafCutoff           (max allele freq cuttoff eg 5)
+        highestMAF
+          af                (eg 0)
+        tGenomes            (if not found then all pop groups will be empty maps, only _extra will be identified - variant)
+          afr, espaa, _tot, amr, eur, espea, eas, sas
+            gc, gf, ac, af
+              {}
+          _extra            (if this exists and no data for any group then what does that mean?)
+            ref             (ref)
+            alt             (alt)
+            name            (rsid)
+            var_class       (SNP|?)
+        exac
+          nfe, afr, fin, amr, _tot, eas, oth, sas
+            af              (exac only has this one, can be null)
+        gnomAD
+          nfe, afr, fin, amr, _tot, asj, oth, eas, sas
+            {}
+          _extra
+            {}
+        esp
+          aa, _tot, ea
+            gc, ac
+              {}
+          _extra
+            {}

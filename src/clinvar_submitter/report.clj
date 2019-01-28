@@ -19,25 +19,11 @@
 
 (def exception-code-map
     {"*E-202" "Variant identifier not provided.",
-     "*E-203" "No preferred variant information provided.",
-     "*E-204" "Preferred variant reference sequence not provided",
-     "*E-205" "Preferred variant start coordinate not provided.",
-     "*E-206" "Preferred variant end coordinate not provided.",
-     "*E-207" "Preferred variant reference allele not provided.",
-     "*E-208" "Preferred variant alternate allele not provided.",
-     "*W-251" "Preferred variant alternate designation not provided.",
      "*E-301" "Interpretations with Path or Lik Path outcomes require a condition disease code or name and none was provided.",
-     "*E-302" "Only one disease/phenotype is supported, multiple found.",
-     "*E-303" "Condition id type not supported by ClinVar. Using disease name option in submission instead.",
-     "*E-304" "Condition identifier must have a colon delimiter to separate the type and id values. Using disease name option in submission instead.",
-     "*E-305" "Mode of Inheritance display value not provided.",
      "*E-401" "Interpretation id not provided.",
      "*E-402" "Interpretation significance not provided.",
      "*E-403" "Interpretation evaluation date not provided.",
-     "*E-404" "Interpretation evaluation date format not valid (<eval-date-value>).",
-     "*E-501" "<x> met criteria rules and/or strength codes are invalid or missing.",
-     "*W-551" "No PMID citations found.",
-     "*W-552" "No ACMG criterion evidence was met."})
+     "*E-501" "<x> met criteria rules and/or strength codes are invalid or missing."})
 
 (defn get-exception
   [ecode]

@@ -100,14 +100,9 @@
     (str "*E-202" ":" interp-num)
     (csv-colval (get can "id"))))
 
-(defn -extract-gene-symbol [s]
-    (let [m (re-find #"NM_\d+\.\d+\(([A-Z0-9]+)\)\:.*" s)]
-     (when m
-       (second m))))
-
 (defn variant-scv
   "Returns the SCV for any ClinVar variant identifier by
-   looking it up in the scv-map provided."
+   looking it up in the scv-map provided. "
   [can scv-map]
   (let [id (get can "id")
         id-parts (if id (str/split id #":"))
@@ -118,103 +113,46 @@
         (if (= (count result) 1)
           (:SCV (first result)))))))
 
-(defn variant-label
-  "Return variant label as provided by source (i.e. VCI clinvarvarianttitle).
-   Use the canonical allele label if available, otherwise the first hgvs name
-   for the preferred contextual allele."
-  [sym-tbl can preferred-ctx interp-num]
-  (let [can-label (ld1-> sym-tbl can "label")
-        preferred-hgvs (ld1-> sym-tbl preferred-ctx "allele name" (prop= sym-tbl "hgvs" "name type") "name")]
-    (if-not (str/blank? can-label)
-      (csv-colval can-label)
-      (if-not (str/blank? preferred-hgvs)
-        (csv-colval preferred-hgvs)
-        (str "*E-203" ":" interp-num)))))
-
-(defn variant-hgvs
-    "Return the contextual allele HGVS name if available, this is assumed to be in
-    genomic coordinates.  The variant-alt-designation funtion will use this as a
-    backup if it does not find a related identifier label that contains a value
-    starting with an NM_ transcript accession."
-    [sym-tbl ctx interp-num]
-    (let [preferred-hgvs (ld1-> sym-tbl ctx "allele name" (prop= sym-tbl "hgvs" "name type") "name")]
-        (csv-colval preferred-hgvs)))
-
-(defn variant-refseq
-  "Return the variant reference sequence."
+(defn variant-coord
+  "Returns the 1-based index position start, stop, ref and alt for the contextual allele."
   [sym-tbl ctx interp-num]
-  (let [refseq (ld1-> sym-tbl ctx "reference coordinate" "reference")]
-    (if-let [label (get refseq "label")]
-      (csv-colval label)
-      (str "*E-204" ":" interp-num))))
-
-(defn variant-start
-  "Return the variant reference sequence start pos (0-to-1-based transform)."
-  [sym-tbl ctx interp-num]
-  ; if ref is not null add 1 to start otherwise as-is
   (let [ref (ld1-> sym-tbl ctx "reference coordinate" "reference state")
         alt (get ctx "state")
-        start (ld1-> sym-tbl ctx "reference coordinate" "start_position" "index")]
-    (if (nil? start)
-      (str "*E-205" ":" interp-num)
-      (csv-colval (if (str/blank? ref) (Integer. start) (+ 1 (Integer. start)))))))
-
-(defn variant-stop
-  "Return the variant reference sequence stop pos (0-to-1-based transform)."
-  [sym-tbl ctx interp-num]
-  ; if ref is blank and alt is not add 1 to stop otherwise as-is
-  (let [ref (ld1-> sym-tbl ctx "reference coordinate" "reference state")
-        alt (get ctx "state")
+        start (ld1-> sym-tbl ctx "reference coordinate" "start_position" "index")
         stop (ld1-> sym-tbl ctx "reference coordinate" "end_position" "index")]
-    (if (nil? stop)
-      (str "*E-206" ":" interp-num)
-      (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (Integer. stop)) (Integer. stop))))))
-
-(defn variant-ref
-  "Return the variant reference state sequence."
-  [sym-tbl ctx interp-num]
-  (let [ref-coord (ld1-> sym-tbl ctx "reference coordinate")]
-    (if-let [ref (get ref-coord "reference state")]
-      (csv-colval ref)
-      (str "*E-207" ":" interp-num))))
-
-(defn variant-alt
-   "Return the variant state sequence."
-   [ctx interp-num]
-   (if-let [alt (get ctx "state")]
-    (csv-colval alt)
-    (str "*E-205" ":" interp-num)))
+    (if (every? some? [start stop])
+      {:start (csv-colval (if (str/blank? ref) (Integer. start) (+ 1 (Integer. start))))
+       :stop (csv-colval (if (and (str/blank? ref) (not (str/blank? alt))) (+ 1 (Integer. stop)) (Integer. stop)))
+       :ref ref
+       :alt alt})))
 
 (defn get-variant
   "Returns a map of all variant related fields needed for the clinvar
    'variant' submission form.
      :id - clinvar or clingen ar id depending on the 'source'
-     :label - preferred title
+     :label - preferred name
      :scv - scv from scv-map if only 1 is found (only for ClinVar:xxx ids)
      :chromosome - chromosome label if available
      :gene - gene symbol if available
      :refseq - accession associated with the preferred related ctx
      :hgvs -  c., g., n. portion of full hgvs expression for pref allele
-     :start - start pos (transform to 1-based) of preferred allele
-     :stop - end pos (transform to 1-based) of preferred allele
-     :ref - ref seq of preferred allele
-     :alt - alternate seq of preferred allele"
+     :coord - the ref, alt, start and stop of the hgvs expression, if available
+     :alt-designations - the label"
   [sym-tbl interp-input interp-num scv-map]
   (let [can-allele (ld1-> sym-tbl interp-input "is_about_allele")
+        b38-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl "GRCh38" "reference genome build" "label"))
         pref-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl true "preferred"))
-        preferred-hgvs (ld1-> sym-tbl pref-ctx-allele "allele name" (prop= sym-tbl "hgvs" "name type") "name")
-        [refseq hgvs] (str/split preferred-hgvs #":")]
+        b38-hgvs (ld1-> sym-tbl b38-ctx-allele "allele name" (prop= sym-tbl "hgvs" "name type") "name")
+        [refseq hgvs] (str/split b38-hgvs #":")]
     {:id (variant-identifier can-allele interp-num)
-     :label (variant-label sym-tbl can-allele pref-ctx-allele interp-num)
+     :label (get can-allele "label")
      :scv (csv-colval (variant-scv can-allele scv-map))
-     :chromosome  (csv-colval (ld1-> sym-tbl pref-ctx-allele "related chromsome" "label"))
+     :chromosome  (csv-colval (ld1-> sym-tbl b38-ctx-allele "related chromosome" "label"))
      :gene (csv-colval (ld1-> sym-tbl pref-ctx-allele "related gene" "label"))
      :hgvs (csv-colval hgvs)
      :refseq (csv-colval refseq)
-     :start (variant-start sym-tbl pref-ctx-allele interp-num)
-     :stop  (variant-stop sym-tbl pref-ctx-allele interp-num)
-     :ref (variant-ref sym-tbl pref-ctx-allele interp-num)
-     :alt (variant-alt pref-ctx-allele interp-num)}))
+     :coord (variant-coord sym-tbl b38-ctx-allele interp-num)
+     :alt-designations (str/replace (get can-allele "label") #"(.*) \((p\..*)\)$" "$1|$2")}))
 
 (defn condition-moi
   [sym-tbl c interp-num]
@@ -260,7 +198,7 @@
       ;; test for free from or mondo version of disease
       (let [disease-id (get disease "id")]
         (if (str/starts-with? disease-id "MONDO:")
-          (let [result (ols/find-prioritized-term (str/replace disease-id ":" "_"))]
+          (let [result (ols/find-prioritized-term-memo (str/replace disease-id ":" "_"))]
             (merge result {:preferred-name (get disease "label")
                            :moi moi}))
           (let [result (construct-phenotype-list phenotype)]
