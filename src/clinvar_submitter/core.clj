@@ -218,9 +218,9 @@
   "From the command line arguments, process and return appropriate output for input file"
   [input options]
   (let [records (construct-variant-table input options)
-        output-file (:output :options)
-        report-file (:report :options)
-        existing-files (remove nil? (map #(if (.exists (io/as-file %)) (str "'" % "'") nil ) [output-file report-file]))
+        output-file (:output options)
+        report-file (:report options)
+        existing-files (remove nil? (map #(if (.exists (io/as-file %)) % nil) [output-file report-file]))
         schema (slurp schema-uri)
         validate (v/validator schema)]
     (if (nil? (validate (slurp input)))
@@ -230,7 +230,7 @@
           ;; if output or report file exists then check if there is a force option.
           ;; If there is no force option the display an exception
           ;; Otherwise create output and report file
-          (if (and (not (nil? existing-files)) (not (get options :force)))
+          (if (and (not (.isEmpty existing-files)) (not (get options :force)))
             (println (str "**Error**"
                                "\nThe file"
                                (if (> (count existing-files) 1) "s " " ")
