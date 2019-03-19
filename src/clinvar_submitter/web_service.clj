@@ -3,8 +3,8 @@
             [clojure.pprint :refer [pprint]]
             [cheshire.core :as json]
             [ring.middleware.params :refer :all]
-            [ring.middleware.multipart-params :refer :all]
-            ))
+            [ring.middleware.multipart-params :refer :all]))
+
 
 (def default-port 3000)
 

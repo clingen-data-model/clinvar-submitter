@@ -1,0 +1,1155 @@
+{
+    "@context": "http://dataexchange.clinicalgenome.org/interpretation/json/context",
+    "assertionMethod": {
+        "id": "_:b0",
+        "label": "Hearing Loss ACMG Specifications v1 2018",
+        "type": "VariantPathogenicityInterpretationGuideline",
+        "url": "https://submit.ncbi.nlm.nih.gov/ft/byid/vroiax8b/hearing_loss_acmg_specifications_v1_2018.pdf"
+    },
+    "condition": [
+        {
+            "disease": [
+                {
+                    "id": "MONDO:0019501",
+                    "label": "Usher syndrome"
+                }
+            ],
+            "phenotype": [
+                {
+                    "id": "HP:0000001"
+                },
+                {
+                    "id": "HP:0000002"
+                }
+            ],
+            "id": "_:b4",
+            "inheritancePattern": {
+                "id": "HP:0000007",
+                "label": "Autosomal recessive inheritance"
+            },
+            "type": "GeneticCondition"
+        }
+    ],
+    "contribution": [
+        {
+            "agent": {
+                "id": "http://curation.clinicalgenome.org/affiliation/10007",
+                "label": "ClinGen Hearing Loss Expert Panel",
+                "type": "Agent"
+            },
+            "contributionDate": "2018-09-14T16:00:00.000Z",
+            "contributionRole": {
+                "id": "SEPIO:0000155",
+                "label": "approver"
+            },
+            "id": "_:b1",
+            "type": "Contribution"
+        },
+        {
+            "agent": "http://curation.clinicalgenome.org/affiliation/10007",
+            "contributionDate": "2018-10-02T00:00:00",
+            "contributionRole": {
+                "id": "SEPIO-CG:97010",
+                "label": "publisher"
+            },
+            "id": "_:b2",
+            "type": "Contribution"
+        }
+    ],
+    "description": "The allele frequency of the p.Asn346His variant in the USH2A gene is 0.016% (20/126318) of European (Non-Finnish) chromosomes by the Genome Aggregation Database (http://gnomad.broadinstitute.org), which is a low enough frequency to award PM2_Supporting based on the thresholds defined by the ClinGen Hearing Loss Expert Panel for autosomal recessive Usher syndrome (PM2_Supporting). The p.Asn346His variant in USH2A has been reported to segregate with hearing loss in at least 7 families including 13 family members (PP1_S; 10729113, 15241801, 17405132, 25521520, 24160897, 22135276). This variant has been detected in patients with hearing loss in trans with at least 4 pathogenic or suspected-pathogenic variants (PM3_VS; PMID: 15241801, 24160897, 22135276, 26969326). At least one patient with a variant in this gene displayed features of mild to severe hearing loss and retinitis pigmentosa (PP4; PMID: 10729113, 15241801, 17405132, 25521520, 24160897, 22135276). Computational prediction tools and conservation analysis suggest that the p.Asn346His variant may impact the protein (PP3). In summary, this variant meets criteria to be classified as pathogenic for autosomal recessive Usher syndrome based on the ACMG/AMP criteria applied, as specified by the Hearing Loss Expert Panel: PM2_Supporting, PP1_S, PM3_VS, PP4, PP3.",
+    "evidenceLine": [
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000325",
+                            "label": "Benign Stand Alone"
+                        },
+                        "id": "SEPIO-CG:99038",
+                        "label": "BA1",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "I agree. Variant is present in  (20/126318) ) 0.00015% Europeans in gnomAD.\n-MD",
+                    "id": "/evaluations/a2cd45f1-d5e9-43aa-9642-b80b34941b72/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": {
+                        "id": "ClinVar:48347",
+                        "label": "NM_206933.2(USH2A):c.1036A>C (p.Asn346His)",
+                        "relatedContextualAllele": [
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "NC_000001.11:g.216325412T>G",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "contextualAlleleType": "genomic",
+                                "referenceGenome": {
+                                    "id": "SEPIO-CG:98203",
+                                    "label": "GRCh38"
+                                },
+                                "relatedCanonicalAllele": "ClinVar:48347",
+                                "relatedChromosome": {
+                                    "id": "SEPIO-CG:98101",
+                                    "label": "1"
+                                },
+                                "type": "ContextualAllele"
+                            },
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "NC_000001.10:g.216498754T>G",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "contextualAlleleType": "genomic",
+                                "referenceGenome": {
+                                    "id": "SEPIO-CG:98202",
+                                    "label": "GRCh37"
+                                },
+                                "relatedCanonicalAllele": "ClinVar:48347",
+                                "relatedChromosome": {
+                                    "id": "SEPIO-CG:98101",
+                                    "label": "1"
+                                },
+                                "type": "ContextualAllele"
+                            },
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "NG_009497.1:g.102985A>C",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "contextualAlleleType": "genomic",
+                                "relatedCanonicalAllele": "ClinVar:48347",
+                                "type": "ContextualAllele"
+                            },
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "NM_206933.2:c.1036A>C",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "contextualAlleleType": "transcript",
+                                "preferred": true,
+                                "relatedCanonicalAllele": "ClinVar:48347",
+                                "relatedGene": {
+                                    "id": "_:b3",
+                                    "label": "USH2A"
+                                },
+                                "type": "ContextualAllele"
+                            },
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "NP_996816.2:p.Asn346His",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "contextualAlleleType": "protein",
+                                "relatedCanonicalAllele": "ClinVar:48347",
+                                "type": "ContextualAllele"
+                            },
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "O75445:p.Asn346His",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "relatedCanonicalAllele": "ClinVar:48347",
+                                "type": "ContextualAllele"
+                            }
+                        ],
+                        "relatedIdentifier": [
+                            {
+                                "label": "NM_206933.2(USH2A):c.1036A>C (p.Asn346His)"
+                            }
+                        ],
+                        "type": "CanonicalAllele"
+                    }
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000325",
+            "id": "_:b5",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000216",
+                            "label": "Pathogenic Moderate"
+                        },
+                        "id": "SEPIO-CG:99028",
+                        "label": "PM2",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "I agree. Variant is present in  (20/126318) ) 0.00015% Europeans in gnomAD.\n-MD",
+                    "id": "/evaluations/b7623af6-b5c3-4f09-a08f-103b2a46b8dd/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000223",
+                        "label": "Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": {
+                "id": "SEPIO:0000329",
+                "label": "Pathogenic Supporting"
+            },
+            "id": "_:b6",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000328",
+                            "label": "Benign Strong"
+                        },
+                        "id": "SEPIO-CG:99039",
+                        "label": "BS1",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "I agree. Variant is present in  (20/126318) ) 0.00015% Europeans in gnomAD.\n-MD",
+                    "id": "/evaluations/85b8e2e9-5aad-44b3-a9cc-9b0e27987331/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000328",
+            "id": "_:b7",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000328",
+                            "label": "Benign Strong"
+                        },
+                        "id": "SEPIO-CG:99040",
+                        "label": "BS2",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/1edcc517-50d4-4b20-bc7e-0efc2882911c/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000328",
+            "id": "_:b8",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000330",
+                            "label": "Pathogenic Strong"
+                        },
+                        "id": "SEPIO-CG:99026",
+                        "label": "PS4",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/bc8e748d-15c8-48e2-b221-e8cea7e73cab/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000330",
+            "id": "_:b9",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000328",
+                            "label": "Benign Strong"
+                        },
+                        "id": "SEPIO-CG:99042",
+                        "label": "BS4",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "evidenceLine": [
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "Four compound hets reported; variants on remaining allele were Thr4439Ile, Glu3305fs, Trp3521Arg, Cys419Phe.  One individual was het only.",
+                                    "id": "_:b31",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/22135276"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b33",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "1 compound het proband with Arg1295X on remaining allele.  Variants segregated in 3 affected relatives. 1 homozygous proband, variant segregated in 2 affected relatives.",
+                                    "id": "_:b34",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/24160897"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b36",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "Two siblings were cmp het for this variant and Thr4439Ile.  The brother had Usher syndrome.  The 43 year old sister had hearing loss and a slightly abnormal finding on ERG, but was otherwise normal.",
+                                    "id": "_:b37",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/25521520"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b39",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "Asn346His variant was identified in 1 proband with USH2, compound heterozygous with Gly4403fs variant",
+                                    "id": "_:b54",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/17405132"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b56",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "The Asn346His variant was identified in 1 proband in combination with a second loss of function allele c.1227G>A (p.Trp409X)",
+                                    "id": "_:b57",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/15241801"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b59",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "The Asn346His variant was identified in 2 probands with USH2. It was observed in a large Swedish family with Arg1295X, but the two variants were not present in the same individuals.  In an American family, it was compound heterozygous with another pathogenic variant 2299delG (Glu767fs).  The cDNA coordinate (c.1042A>C = p.348) in this paper was wrong, but the alignment figure showed the variant matching N346H.",
+                                    "id": "_:b60",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/10729113"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b62",
+                            "type": "EvidenceLine"
+                        }
+                    ],
+                    "id": "/evaluations/55882ace-6ca2-4068-bd27-7b16bec70888/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000328",
+            "id": "_:b10",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000329",
+                            "label": "Pathogenic Supporting"
+                        },
+                        "id": "SEPIO-CG:99033",
+                        "label": "PP1",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "Cosegretation with the phenotype were observed in at least 7 families including 13 affected members.\n\nAgree with this code usage. MD",
+                    "evidenceLine": [
+                        {
+                            "evidenceItem": [
+                                "_:b31"
+                            ],
+                            "id": "_:b32",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                "_:b34"
+                            ],
+                            "id": "_:b35",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                "_:b37"
+                            ],
+                            "id": "_:b38",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                "_:b54"
+                            ],
+                            "id": "_:b55",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                "_:b57"
+                            ],
+                            "id": "_:b58",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                "_:b60"
+                            ],
+                            "id": "_:b61",
+                            "type": "EvidenceLine"
+                        }
+                    ],
+                    "id": "/evaluations/c1ce28e6-2a1c-4e78-84ad-419de7f1eb02/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000223",
+                        "label": "Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": {
+                "id": "SEPIO:0000330",
+                "label": "Pathogenic Strong"
+            },
+            "id": "_:b11",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000216",
+                            "label": "Pathogenic Moderate"
+                        },
+                        "id": "SEPIO-CG:99032",
+                        "label": "PM6",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/fa3dbabe-7b32-4b0c-a338-25120d2982b8/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000216",
+            "id": "_:b12",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000330",
+                            "label": "Pathogenic Strong"
+                        },
+                        "id": "SEPIO-CG:99024",
+                        "label": "PS2",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/a72adc45-aba1-4872-92bb-fa3388ddf501/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000330",
+            "id": "_:b13",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000327",
+                            "label": "Benign Supporting"
+                        },
+                        "id": "SEPIO-CG:99044",
+                        "label": "BP2",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "evidenceLine": [
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "detected in trans with c.2299del",
+                                    "id": "_:b40",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/26969326"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b42",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "detected in trans with p.Glu3305ArgfsX41, p.Trp3521Arg, and Lys419Phe",
+                                    "id": "_:b45",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/22135276"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b47",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "detected in trans with p.R1295X",
+                                    "id": "_:b48",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/24160897"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b50",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "detected in trans with p.Trp409X",
+                                    "id": "_:b51",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/15241801"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b53",
+                            "type": "EvidenceLine"
+                        }
+                    ],
+                    "id": "/evaluations/4b104912-7a78-4f01-98ae-def97ac05594/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000327",
+            "id": "_:b14",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000216",
+                            "label": "Pathogenic Moderate"
+                        },
+                        "id": "SEPIO-CG:99029",
+                        "label": "PM3",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "This could actually be upgraded to PM3_very strong. There are >4 cases of this variant being identified in trans with a known pathogenic variant. I've added more publications below.\n\n-MD",
+                    "evidenceLine": [
+                        {
+                            "evidenceItem": [
+                                "_:b40"
+                            ],
+                            "id": "_:b41",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                "_:b45"
+                            ],
+                            "id": "_:b46",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                "_:b48"
+                            ],
+                            "id": "_:b49",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                "_:b51"
+                            ],
+                            "id": "_:b52",
+                            "type": "EvidenceLine"
+                        }
+                    ],
+                    "id": "/evaluations/74f4097a-0051-431c-9505-9a8e98cbc9ce/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000223",
+                        "label": "Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": {
+                "id": "SEPIO:0000220",
+                "label": "Pathogenic Very Strong"
+            },
+            "id": "_:b15",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000327",
+                            "label": "Benign Supporting"
+                        },
+                        "id": "SEPIO-CG:99047",
+                        "label": "BP5",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/cd4f9c90-58c3-436c-934e-df54a3c0e20c/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000327",
+            "id": "_:b16",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000329",
+                            "label": "Pathogenic Supporting"
+                        },
+                        "id": "SEPIO-CG:99036",
+                        "label": "PP4",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "The patiens of compound heterozygotes or homozygotes with the mutation showed retinitis pigmentosa with hearing loss.\n\nEnough patients were also tested for the other Usher syndrome genes and found to be negative for changes in them.  I also agree.\n-MD",
+                    "evidenceLine": [
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "Usher syndrome type II",
+                                    "id": "_:b43",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/22135276"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b44",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "The Asn346His variant was identified in 2 probands with USH2. It was observed in a large Swedish family with Arg1295X, but the two variants were not present in the same individuals. In an American family, it was compound heterozygous with another pathogenic variant 2299delG (Glu767fs). The cDNA coordinate (c.1042A>C = p.348) in this paper was wrong, but the alignment figure showed the variant matching N346H.",
+                                    "id": "_:b63",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/10729113"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b64",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "The Asn346His variant was identified in 1 proband in combination with a second loss of function allele c.1227G>A (p.Trp409X).",
+                                    "id": "_:b65",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/15241801"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b66",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "Asn346His variant was identified in 1 proband with USH2, compound heterozygous with Gly4403fs variant",
+                                    "id": "_:b67",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/17405132"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b68",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "Two siblings were cmp het for this variant and Thr4439Ile. The brother had Usher syndrome. The 43 year old sister had hearing loss and a slightly abnormal finding on ERG, but was otherwise normal.",
+                                    "id": "_:b69",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/25521520"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b70",
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "1 compound het proband with Arg1295X on remaining allele. Variants segregated in 3 affected relatives. 1 homozygous proband, variant segregated in 2 affected relatives.",
+                                    "id": "_:b71",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/24160897"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "id": "_:b72",
+                            "type": "EvidenceLine"
+                        }
+                    ],
+                    "id": "/evaluations/93b99d41-836a-44bc-8088-bdd838589371/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000223",
+                        "label": "Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000329",
+            "id": "_:b17",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000329",
+                            "label": "Pathogenic Supporting"
+                        },
+                        "id": "SEPIO-CG:99035",
+                        "label": "PP3",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "Agree. REVEL is >0.7\n-MD",
+                    "id": "/evaluations/5616e6d5-7f86-49e3-9ea1-71a7b773159d/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000223",
+                        "label": "Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000329",
+            "id": "_:b18",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000327",
+                            "label": "Benign Supporting"
+                        },
+                        "id": "SEPIO-CG:99046",
+                        "label": "BP4",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "Agree. REVEL is >0.7\n-MD",
+                    "id": "/evaluations/f9cfb2d3-3d20-4504-a578-2871af8999b0/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000327",
+            "id": "_:b19",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000327",
+                            "label": "Benign Supporting"
+                        },
+                        "id": "SEPIO-CG:99043",
+                        "label": "BP1",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/ceb68047-e012-4980-a5b0-801789bea53b/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000327",
+            "id": "_:b20",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000329",
+                            "label": "Pathogenic Supporting"
+                        },
+                        "id": "SEPIO-CG:99034",
+                        "label": "PP2",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/8edae42e-aab1-484b-a896-c718fc723b30/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000329",
+            "id": "_:b21",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000216",
+                            "label": "Pathogenic Moderate"
+                        },
+                        "id": "SEPIO-CG:99031",
+                        "label": "PM5",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/662f5c10-c6b5-4fed-8f33-278d242dfc13/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000216",
+            "id": "_:b22",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000330",
+                            "label": "Pathogenic Strong"
+                        },
+                        "id": "SEPIO-CG:99023",
+                        "label": "PS1",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/abdafc0b-a024-4ca4-869e-e40fa6026ae7/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000330",
+            "id": "_:b23",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000216",
+                            "label": "Pathogenic Moderate"
+                        },
+                        "id": "SEPIO-CG:99027",
+                        "label": "PM1",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/7ea52d4f-c4ad-4193-b095-f4dc782ca82b/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000216",
+            "id": "_:b24",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000328",
+                            "label": "Benign Strong"
+                        },
+                        "id": "SEPIO-CG:99041",
+                        "label": "BS3",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/bc446b22-1440-4156-b8a2-1a106c9de860/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000328",
+            "id": "_:b25",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000330",
+                            "label": "Pathogenic Strong"
+                        },
+                        "id": "SEPIO-CG:99025",
+                        "label": "PS3",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/cf6f6da6-e3dd-47f9-bed2-6b662bb998fe/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000330",
+            "id": "_:b26",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000220",
+                            "label": "Pathogenic Very Strong"
+                        },
+                        "id": "SEPIO-CG:99022",
+                        "label": "PVS1",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/38027f88-5a5b-4b55-846d-095c5fa52b48/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000220",
+            "id": "_:b27",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000327",
+                            "label": "Benign Supporting"
+                        },
+                        "id": "SEPIO-CG:99049",
+                        "label": "BP7",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/885294a6-ffe8-4565-923d-15fa65dfed3b/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000327",
+            "id": "_:b28",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000327",
+                            "label": "Benign Supporting"
+                        },
+                        "id": "SEPIO-CG:99045",
+                        "label": "BP3",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/47bdc345-4ff6-4c97-ae15-14ba734633ba/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000327",
+            "id": "_:b29",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000216",
+                            "label": "Pathogenic Moderate"
+                        },
+                        "id": "SEPIO-CG:99030",
+                        "label": "PM4",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "",
+                    "id": "/evaluations/b83e3b5b-1079-48c9-9a07-7f817632ec34/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:48347"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000216",
+            "id": "_:b30",
+            "type": "EvidenceLine"
+        }
+    ],
+    "id": "https://vci.clinicalgenome.org/interpretations/211c3a9c-3789-42d9-ab55-04892c95f534/",
+    "statementOutcome": {
+        "id": "LOINC:LA6668-3",
+        "label": "Pathogenic"
+    },
+    "type": "VariantPathogenicityInterpretation",
+    "variant": "ClinVar:48347"
+}

@@ -1,0 +1,416 @@
+{
+    "@context": "http://dataexchange.clinicalgenome.org/interpretation/json/context",
+    "assertionMethod": {
+        "label": "Hearing Loss ACMG Specifications v1 2018",
+        "type": "VariantPathogenicityInterpretationGuideline",
+        "url": "https://submit.ncbi.nlm.nih.gov/ft/byid/vroiax8b/hearing_loss_acmg_specifications_v1_2018.pdf"
+    },
+    "condition": [
+        {
+            "disease": [
+                {
+                    "id": "MONDO:0019497",
+                    "label": "nonsyndromic genetic deafness"
+                }
+            ],
+            "inheritancePattern": {
+                "id": "HP:0000007",
+                "label": "Autosomal recessive inheritance"
+            },
+            "type": "GeneticCondition"
+        }
+    ],
+    "contribution": [
+        {
+            "agent": {
+                "id": "http://curation.clinicalgenome.org/affiliation/10007",
+                "label": "ClinGen Hearing Loss Expert Panel",
+                "type": "Agent"
+            },
+            "contributionDate": "2018-09-14T16:00:00.000Z",
+            "contributionRole": {
+                "id": "SEPIO:0000155",
+                "label": "approver"
+            },
+            "type": "Contribution"
+        },
+        {
+            "agent": "http://curation.clinicalgenome.org/affiliation/10007",
+            "contributionDate": "2018-12-10T00:00:00",
+            "contributionRole": {
+                "id": "SEPIO-CG:97010",
+                "label": "publisher"
+            },
+            "type": "Contribution"
+        }
+    ],
+    "description": "The filtering allele frequency of the p.Leu79CysfsX3 variant in the GJB2 gene is 0.55% (121/ 18870) of East Asian chromosomes by the Genome Aggregation Database (http://gnomad.broadinstitute.org; calculated by using inverse allele frequency at https://www.cardiodb.org/allelefrequencyapp/), which is a high enough frequency to be classified as benign based on thresholds defined by the ClinGen Hearing Loss Expert Panel for autosomal recessive hearing loss variants (BS1). The ClinGen Hearing Loss Expert Panel believes that the evidence for the pathogenicity of this variant for nonsyndromic hearing loss outweighs the high allele frequency of the variant in population databases. Therefore, the BS1 code will not contribute to the overall classification. The p.Leu79CysfsX3 variant in GJB2 is predicted to cause a premature stop codon in the only exon of the gene, leading to absent protein in a gene in which loss-of-function is an established mechanism (PVS1). This variant has been detected in patients with hearing loss in trans with at least 4 pathogenic or suspected-pathogenic variants (PM3_VS; PMID: 10983956, 10633133). A dye transfer assay, a functional study, has shown that the variant impacts protein function (PS3_M; PMID: 12352684). In summary, this variant meets criteria to be classified as pathogenic for autosomal recessive nonsyndromic hearing loss based on the ACMG/AMP criteria applied, as specified by the Hearing Loss Expert Panel: PVS1, PM3_VS, PS3_M, BS1.",
+    "evidenceLine": [
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000325",
+                            "label": "Benign Stand Alone"
+                        },
+                        "id": "SEPIO-CG:99038",
+                        "label": "BA1",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "Although the MAF (using the ExAC FAF) is .38% in  East Asians, BS1 is not contributing to the overall pathogenicity because this variant is on the HL ClinGen CDWG exclusion list.",
+                    "id": "/evaluations/50f2407d-286d-48a4-a753-71d6e67450cd/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": {
+                        "id": "ClinVar:17014",
+                        "label": "NM_004004.5(GJB2):c.235delC (p.Leu79Cysfs)",
+                        "relatedContextualAllele": [
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "NC_000013.11:g.20189347delG",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "contextualAlleleType": "genomic",
+                                "referenceCoordinate": {
+                                    "referenceSequence": {
+                                        "label": "NC_000013.11"
+                                    }
+                                },
+                                "referenceGenome": {
+                                    "id": "SEPIO-CG:98203",
+                                    "label": "GRCh38"
+                                },
+                                "relatedCanonicalAllele": "ClinVar:17014",
+                                "relatedChromosome": {
+                                    "id": "SEPIO-CG:98113",
+                                    "label": "13"
+                                },
+                                "type": "ContextualAllele"
+                            },
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "NC_000013.10:g.20763486del",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "contextualAlleleType": "genomic",
+                                "referenceCoordinate": {
+                                    "referenceSequence": {
+                                        "label": "NC_000013.10"
+                                    }
+                                },
+                                "referenceGenome": {
+                                    "id": "SEPIO-CG:98202",
+                                    "label": "GRCh37"
+                                },
+                                "relatedCanonicalAllele": "ClinVar:17014",
+                                "relatedChromosome": {
+                                    "id": "SEPIO-CG:98113",
+                                    "label": "13"
+                                },
+                                "type": "ContextualAllele"
+                            },
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "NG_008358.1:g.8629delC",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "contextualAlleleType": "genomic",
+                                "referenceCoordinate": {
+                                    "referenceSequence": {
+                                        "label": "NG_008358.1"
+                                    }
+                                },
+                                "relatedCanonicalAllele": "ClinVar:17014",
+                                "type": "ContextualAllele"
+                            },
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "NM_004004.5:c.235delC",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "contextualAlleleType": "transcript",
+                                "preferred": true,
+                                "referenceCoordinate": {
+                                    "referenceSequence": {
+                                        "label": "NM_004004.5"
+                                    }
+                                },
+                                "relatedCanonicalAllele": "ClinVar:17014",
+                                "relatedGene": {
+                                    "id": "NCBIGene:2706",
+                                    "label": "GJB2"
+                                },
+                                "type": "ContextualAllele"
+                            },
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "NP_003995.2:p.Leu79Cysfs",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "contextualAlleleType": "protein",
+                                "referenceCoordinate": {
+                                    "referenceSequence": {
+                                        "label": "NP_003995.2"
+                                    }
+                                },
+                                "relatedCanonicalAllele": "ClinVar:17014",
+                                "type": "ContextualAllele"
+                            },
+                            {
+                                "alleleName": [
+                                    {
+                                        "name": "NM_004004.5:c.235del",
+                                        "nameType": "hgvs"
+                                    }
+                                ],
+                                "contextualAlleleType": "transcript",
+                                "preferred": true,
+                                "referenceCoordinate": {
+                                    "referenceSequence": {
+                                        "label": "NM_004004.5"
+                                    }
+                                },
+                                "relatedCanonicalAllele": "ClinVar:17014",
+                                "relatedGene": {
+                                    "id": "NCBIGene:2706",
+                                    "label": "GJB2"
+                                },
+                                "state": "",
+                                "type": "ContextualAllele"
+                            }
+                        ],
+                        "relatedIdentifier": [
+                            {
+                                "id": "http://reg.genome.network/allele/CA127025",
+                                "label": "NM_004004.5(GJB2):c.235delC (p.Leu79Cysfs)"
+                            },
+                            {
+                                "id": "dbSNP:80338943"
+                            }
+                        ],
+                        "type": "CanonicalAllele"
+                    }
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000325",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000216",
+                            "label": "Pathogenic Moderate"
+                        },
+                        "id": "SEPIO-CG:99028",
+                        "label": "PM2",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "Although the MAF (using the ExAC FAF) is .38% in  East Asians, BS1 is not contributing to the overall pathogenicity because this variant is on the HL ClinGen CDWG exclusion list.",
+                    "id": "/evaluations/3d6edcc8-d327-4a4d-ae41-3351707ac4dc/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:17014"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000216",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000328",
+                            "label": "Benign Strong"
+                        },
+                        "id": "SEPIO-CG:99039",
+                        "label": "BS1",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "Although the MAF (using the ExAC FAF) is .38% in  East Asians, BS1 is not contributing to the overall pathogenicity because this variant is on the HL ClinGen CDWG exclusion list.",
+                    "id": "/evaluations/27fc6087-dfc3-4a06-94cb-ce5f72cfa29e/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000223",
+                        "label": "Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:17014"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000328",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000329",
+                            "label": "Pathogenic Supporting"
+                        },
+                        "id": "SEPIO-CG:99035",
+                        "label": "PP3",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "No splicing change predicted by MaxEntScan.",
+                    "id": "/evaluations/d5a5c7f5-2bd5-469b-ab14-fccb4dab0f6b/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000224",
+                        "label": "Not Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:17014"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000329",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000220",
+                            "label": "Pathogenic Very Strong"
+                        },
+                        "id": "SEPIO-CG:99022",
+                        "label": "PVS1",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "There are no alternate transcripts, the variant should results in NMD and lack of protein.",
+                    "id": "/evaluations/6c08885d-ce9b-4dc9-9cd9-13a1d6d773fe/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000223",
+                        "label": "Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:17014"
+                }
+            ],
+            "evidenceStrength": "SEPIO:0000220",
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000216",
+                            "label": "Pathogenic Moderate"
+                        },
+                        "id": "SEPIO-CG:99029",
+                        "label": "PM3",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "This variant was identified in  >10 individuals with a pathogenic variant in trans. See the individuals publication notes below for case counts.",
+                    "evidenceLine": [
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "This is a mutation analysis for Japanese non-syndromic hearing loss. The c.235delC variant was identified in 7 affected families. Two families were homozygous, three families were compound het for Y136X, and two families were compound het for R143W.",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/10633133"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "type": "EvidenceLine"
+                        },
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "147 Korean patients with NSHL were screened for variants in GJB2. The c.235delC variant was identifed in 5 homozygous individuals and 5 compound hets. Because the het individuals did not have a second variant listed, I would only count the homozygous individuals here.",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/10983956"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "type": "EvidenceLine"
+                        }
+                    ],
+                    "id": "/evaluations/e02f03be-2aa4-4ffd-b061-38c8a4a02b47/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000223",
+                        "label": "Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:17014"
+                }
+            ],
+            "evidenceStrength": {
+                "id": "SEPIO:0000220",
+                "label": "Pathogenic Very Strong"
+            },
+            "type": "EvidenceLine"
+        },
+        {
+            "evidenceItem": [
+                {
+                    "criterion": {
+                        "defaultStrength": {
+                            "id": "SEPIO:0000330",
+                            "label": "Pathogenic Strong"
+                        },
+                        "id": "SEPIO-CG:99025",
+                        "label": "PS3",
+                        "type": "VariantPathogenicityInterpretationCriterion"
+                    },
+                    "description": "A dye transfer assay demonstrated that there was no dye transfer in cells transfected with the c.235delC variant.",
+                    "evidenceLine": [
+                        {
+                            "evidenceItem": [
+                                {
+                                    "description": "HeLa cells were transfected with WT, mock transfected cells, or c.235delC constructs. Lucifer yellow was incubated with the cells for the dye transfer assay. Cells with the WT GJB2 demonstrated dye transfer, the negative control and the c.235delC cells had no dye transfer.",
+                                    "source": [
+                                        "https://www.ncbi.nlm.nih.gov/pubmed/12352684"
+                                    ],
+                                    "type": "Statement"
+                                }
+                            ],
+                            "type": "EvidenceLine"
+                        }
+                    ],
+                    "id": "/evaluations/73bbb907-7d42-468c-adff-a73b3cf468a9/",
+                    "statementOutcome": {
+                        "id": "SEPIO:0000223",
+                        "label": "Met"
+                    },
+                    "type": "CriterionAssessment",
+                    "variant": "ClinVar:17014"
+                }
+            ],
+            "evidenceStrength": {
+                "id": "SEPIO:0000216",
+                "label": "Pathogenic Moderate"
+            },
+            "type": "EvidenceLine"
+        }
+    ],
+    "id": "https://vci.clinicalgenome.org/interpretations/eda5030c-9ccf-4b14-bada-077b25b2562c/",
+    "statementOutcome": {
+        "id": "LOINC:LA6668-3",
+        "label": "Pathogenic"
+    },
+    "type": "VariantPathogenicityInterpretation",
+    "variant": "ClinVar:17014"
+}
