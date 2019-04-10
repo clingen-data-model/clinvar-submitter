@@ -3,8 +3,9 @@
             [clojure.pprint :refer [pprint]]
             [cheshire.core :as json]
             [ring.middleware.params :refer :all]
-            [ring.middleware.multipart-params :refer :all]))
-
+            [ring.middleware.multipart-params :refer :all]
+            [clinvar-submitter.report :as report :refer :all]
+            [clinvar-submitter.variant :as variant :refer [process-input]]))
 
 (def default-port 3000)
 
@@ -17,25 +18,56 @@
     (parse-int p)
     default-port))
 
-(defn handler [request]
-  ;; get request
-  (let [req (-> (slurp (:body request)) json/parse-string)]
-    ;; validate request
-
-    ;; process request
-
-    ;; return response
+;; Return REST response to POST request.
+;; Response is a JSON array of objects,
+;; each entry containing a "variant" JSON object containing an array of values,
+;; and an "errors" object, containing an array of error values pertinent to the
+;; variant.
+;; [
+;;    {
+;;       "variant" : [...],
+;;       "errors"  : [...]
+;;    },
+;;    {
+;;       "variant" : [...],
+;;       "errors"  : [...]
+;;    },
+;;    ...
+;; ]
+;;
+(defn submitter-v1-handler [request]
+  (let [req (slurp (:body request))
+        options (:options request)
+        records (variant/process-input req options)
+        variants (into [] (map (fn [record] {:submission record
+                                             :errors (report/get-webservice-exception-data-for-row record options)}) records))
+        success_count (count (filter empty? (map #(:errors %) variants)))
+        body {:status {:totalRecords (count records)
+                       :successCount success_count
+                       :errorCount (- (count records) success_count)}
+              :variants variants}]
     {:status 200
-      :headers {"Content-Type" "application/json"}
-      :body  (json/generate-string req)}))
+     :headers {"Content-Type" "application/json"}
+     :body (json/generate-string body)}))
 
-(def app handler)
+;; Routing handler
+(defn route-handler [request]
+  ;; this is admittedly rudimentary routing
+  (let [uri (:uri request)]
+    (case uri
+      "/api/v1/submission" (submitter-v1-handler request)
+      ;; default not-found
+      {:status 404
+       :headers {"Content-Type" "text/html"}
+       :body "Not found. Perhaps you meant to use a URI of '/api/v1/submission'."})))
 
-;; (def app
-;;   (wrap-multipart-params handler))
+;; Middleware that injects the options map into the
+;; http request map with the :options keyword before calling handler.
+(defn wrap-options [handler options]
+  (fn [request]
+    (handler (assoc request :options options))))
 
 (defn run-service
-  []
-  (let [p ()]
-    (println "Running VCI Submitter as web service on " (port-num))
-    (run-jetty handler {:port (port-num)})))
+  [options]
+  (println "Running VCI Submitter as web service on " (port-num))
+  (run-jetty (wrap-options route-handler options) {:port (port-num)}))

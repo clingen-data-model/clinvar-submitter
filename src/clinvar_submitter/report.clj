@@ -4,10 +4,10 @@
             [clojure.java.io :as io]))
 
 (defn report-header
-  [input options]
+  [options]
   [["ClinVar-Submitter Run Report"]
    ["" "Date/Time: " (str (new java.util.Date))]
-   ["" "File(s): " input]
+   ["" "File(s): " (get options :input)]
    ["" "JSON-LD Context (-x): " (get options :jsonld-context)]
    ["" "Output File (-o): " (get options :output)]
    ["" "Force overwrite (-f): " (str (get options :force))]
@@ -46,49 +46,72 @@
               [(get items i) i])))]
     (filter some? exception-list)))
 
+(defn get-exception-data-for-error [record error options]
+    (let [ecode (first error)
+          column (+ 1 (last error))
+          record-number (last (str/split ecode  #":"))
+          exception (get-exception ecode)
+          exception-row [(str record-number)
+                         (get options :input "--")
+                         (get record 0)
+                         (get record 25)
+                         (str "[" record-number ", " column "]")
+                         (get exception :type)
+                         (get exception :code)
+                         (get exception :desc)]]
+      exception-row))
+
+(defn get-exception-data-for-row [row options]
+  (let [row-exception-list (get-record-exceptions row)
+        results (reduce (fn [v err] (conj v (get-exception-data-for-error row err options))) [] row-exception-list)]
+    results))
+
+(defn get-webservice-exception-data-for-row [row options]
+  (let [error-list (get-exception-data-for-row row options)
+        ws-results (map (fn [error-array] (if (empty? error-array) [] {:errorCode (get error-array 6)
+                                                                       :errorMessage (get error-array 7)})) error-list)]
+    ws-results))
+
+(defn get-success-data-for-row [record record-number options]
+  (let [summary-row [ (str (inc record-number))
+                      (get options :input "--")
+                      (get record 0)
+                      (get record 25)
+                      "--"
+                      "Success"
+                      "--"
+                      "--"]]
+    summary-row))
+  
 (defn write-run-report
-  [input options records]
+  [input-rows options records]
   (let [reportfile (get options :report)]
-    (do
-      ;; header
-      (spit reportfile (csv/write-csv (report-header input options) :force-quote true) :append false)
+    ;; header
+    (spit reportfile (csv/write-csv (report-header options) :force-quote true) :append false)
 
-      (dotimes [n (count records)]
+    (dotimes [n (count records)]
 
-        ;; for each record
-        (let [row (nth records n)
-              row-exception-list (get-record-exceptions row)]
+      ;; for each record
+      (let [row (nth records n)
+            row-exception-list (get-record-exceptions row)]
 
-          ;if there is error in any row add error information in the report
-          (if-not (empty? row-exception-list)
-            (dotimes [i (count row-exception-list)]
-              (let [ecode (first (nth row-exception-list i))
-                    column (+ 1 (last (nth row-exception-list i)))
-                    record-number (last (str/split ecode  #":"))
-                    exception (get-exception ecode)
-                    outputdata-e [(str record-number)
-                                  input
-                                  (get (nth records n) 0)
-                                  (get (nth records n) 25)
-                                  (str "[" record-number ", " column "]")
-                                  (get exception :type)
-                                  (get exception :code)
-                                  (get exception :desc)]]
-                (spit reportfile (csv/write-csv [outputdata-e] :force-quote true) :append true)))
-            (let [outputdata-s [(str (+ 1 n))
-                                input
-                                (get (nth records n) 0)
-                                (get (nth records n) 25)
-                                "--"
-                                "Success"
-                                "--"
-                                "--"]]
-              (spit reportfile (csv/write-csv [outputdata-s] :force-quote true) :append true))))))))
+        ;; if there is error in any row add error information in the report
+        (if-not (empty? row-exception-list)
+
+          ;; one input row may have multiple errors in it so there may be multiple
+          ;; error-lines to be output.
+          (let [outputdata-e (get-exception-data-for-row row options)]
+            (for [error-line outputdata-e]
+              (spit reportfile (csv/write-csv [error-line] :force-quote true) :append true)))
+          
+          ;; success information is always one per input row 
+          (let [outputdata-s (get-success-data-for-row row n options)]
+            (spit reportfile (csv/write-csv [outputdata-s] :force-quote true) :append true)))))))
 
 (defn write-files
-    [input options records]
+    [input-rows options records]
     (do
       ;; write clinvar submitter output file
       (spit (get options :output) (csv/write-csv records :force-quote true))
       ;; write run report output file
-      (write-run-report input options records)))
+      (write-run-report input-rows options records)))

@@ -64,22 +64,21 @@
 (defn flatten-interpretation
   "Use JSONLD-API to read a JSON-LD interpretation using context-path to translate
   symbols into local properties"
-  [interp-path context-path]
+  [interp-rows context-path]
   (try
-    (with-open [ir (io/reader interp-path)
-                cxr (io/reader context-path)]
-      (let [i (json/parse-stream ir)
+    (with-open [cxr (io/reader context-path)]
+      (let [interps (json/parse-string interp-rows)
             cx (json/parse-stream cxr)
             opts (JsonLdOptions.)]
-        (JsonLdProcessor/flatten i cx opts)))
+        (JsonLdProcessor/flatten interps cx opts)))
     (catch Exception e
       (log/error (str "Exception in flatten-interpretation: " (.getMessage e))))))
 
 (defn generate-symbol-table
   "Flatten JSON-LD document and return a symbol table returning IDs of nodes mapped
   to the nodes themselves"
-  [interp-path context-path]
+  [interp-rows context-path]
   (try
-    (construct-symbol-table (flatten-interpretation interp-path context-path))
+    (construct-symbol-table (flatten-interpretation interp-rows context-path))
    (catch Exception e
      (log/error (str "Exception in generate-symbol-table: " (.getMessage e))))))
