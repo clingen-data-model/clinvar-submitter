@@ -10,10 +10,13 @@ This project consists of
   * form.clj - A set of ClinVar submssion specific form parsing functions 
   * core.clj - A set of input/output procedures for orchestrating the transformation
   * report.clj - The functions for writing out the output and run report.
+  * variant.clj - Functions shared between the command line and web service that operate on the the submitted variants
+  * web_service.clj -Functions to provide REST API web service.
 * [Unit Tests](test/clinvar-submitter) 
 * [Data files](data)
   * Example json files - input interpretation data files 
   * Clinvar Submission Template - A copy of the ClinVar Submission Template spreadsheet on which this version of the application is aligned. Also available at the ClinVar website.
+  * Postman - This file contains importable files for the Postman (free program for testing REST APIs - https://www.getpostman.com/) program that will allow testing of the Web Service.
 * [Developer Documentation](doc)
 * combineall.sh - an optional script to combine multiple interpretation json files into a single json file. 
 
@@ -40,8 +43,10 @@ By default, the output file will not be overwitten. However, if this is desired,
 ```
 $ lein run "-o" -"f" "myoutput.csv"å "data/dmwg1.json" 
 ```
-
-
+To run the web service use just the "-w" flag
+```
+$ lein run "-w"
+```
 ### Command line using executable jar
 NOTE: This approach requires that the executable jar file exists. See Generating Executable Jar below for more information.
 
@@ -58,6 +63,7 @@ $ java -jar target/uberjar/clinvar-submitter-0.0.0-SNAPSHOT.jar "-o" "myoutput.c
 "-r" "--report FILENAME" "Run-report filename" :default "clinvar-submission-run-report.csv"
 "-m" "--method METHODNAME" "Assertion-method-name" :default "ACMG Guidelines, 2015"
 "-c" "--methodc METHODCITATION" "Method Citation" :default "PMID:25741868"
+"-w" -- run in web service mode
 ```
 
 #### Error Handling
