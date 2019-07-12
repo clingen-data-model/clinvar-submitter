@@ -7,7 +7,8 @@
             [clojure.tools.logging :as log]))
 
 ;OMIM, MeSH, MedGen, UMLS, Orphanet, HPO
-(def auth-priority [[:Orphanet #"http://purl\.obolibrary\.org/obo/Orphanet_(.+)" "ORPHA"]
+(def auth-priority [[:Orphanet #"Orphanet:(.+)" "ORPHA"]
+                    [:Orphanet #"http://purl\.obolibrary\.org/obo/Orphanet_(.+)" "ORPHA"]
                     [:OMIM #"http://identifiers\.org/omim/(.+)" ""]
                     [:UMLS #"http://linkedlifedata\.com/resource/umls/id/(.+)" ""]
                     [:MeSH #"http://identifiers\.org/mesh/(.+)" ""]])
@@ -17,6 +18,14 @@
   (let [http-out (client/get (str "http://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252F" mondo-id))]
     (json/parse-string (:body http-out) true)))
 
+(defn unscrew-mondo [mondo-node]
+  (let [props (get-in mondo-node [:annotation :property_value])
+        prop-pairs (map #(str/split % #" ") props)
+        keyworded-pairs (map #(vector (keyword (nth % 0)) (nth % 1)) prop-pairs)
+        props-map (reduce (fn [acc [k v]] (assoc acc k (conj (acc k) v)))
+                          {} keyworded-pairs)]
+    (assoc mondo-node :annotation (merge (:annotation mondo-node) props-map))))
+
 (defn find-term [term-lookup-tuple term-list]
   (some
     #(when-let [[_ term-id] (re-find (second term-lookup-tuple) %)]
@@ -24,7 +33,7 @@
     term-list))
 
 (defn find-prioritized-term [mondo-id]
-  (let [mondo-node (get-mondo-concept mondo-id)
+  (let [mondo-node (unscrew-mondo (get-mondo-concept mondo-id))
         exact-match-list (get-in mondo-node [:annotation :exactMatch])]
     (if-let [result (some #(find-term % exact-match-list) auth-priority)]
       result
