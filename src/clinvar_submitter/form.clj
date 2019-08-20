@@ -69,7 +69,6 @@
       (some? (re-find #"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3,6}\+\d{2}:\d{2}" s)) (.parse (java.text.SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX") s)
       :else (throw (Exception. (str "Unexpected date format for parsing '" s "'"))))))
 
-
 (defn interp-eval-date
   "Return the interpretation evaluation date."
   [sym-tbl interp-input interp-num]
@@ -143,7 +142,12 @@
         b38-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl "GRCh38" "reference genome build" "label"))
         pref-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl true "preferred"))
         b38-hgvs (ld1-> sym-tbl b38-ctx-allele "allele name" (prop= sym-tbl "hgvs" "name type") "name")
-        [refseq hgvs] (str/split b38-hgvs #":")]
+        pref-hgvs (ld1-> sym-tbl pref-ctx-allele "allele name" (prop= sym-tbl "hgvs" "name type") "name")
+        [refseq hgvs] (if-not (nil? b38-hgvs)
+                        (str/split b38-hgvs #":")
+                        (if-not (nil? pref-hgvs)
+                          (str/split pref-hgvs #":")
+                          (throw (Exception. "Unknown allele - neither preferred or GRCh38 representation found."))))]
     {:id (variant-identifier can-allele interp-num)
      :label (get can-allele "label")
      :scv (csv-colval (variant-scv can-allele scv-map))
