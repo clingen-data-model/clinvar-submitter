@@ -30,7 +30,7 @@
   - name: Copy uberjar to server
     become: true
     copy:
-      src: ../target/uberjar/clinvar-submitter-1.0.0-standalone.jar
+      src: ../target/uberjar/clinvar-submitter-1.0.1-standalone.jar
       dest: /usr/local/clinvar-submitter/lib
       mode: 0755
   - name: Copy systemd unit to server

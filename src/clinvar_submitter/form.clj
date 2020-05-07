@@ -163,12 +163,14 @@
   (csv-colval (ld-> sym-tbl c "has disposition" "label")))
 
 (defn construct-phenotype-list
-  " assume an HP:xxxx set of ids"
+  " assume an HP:xxxx set of ids
+    { :id-type <HPO>
+      :id-value <semi-colon separated HP:xxx ids>}  "
   [phenotype]
   (when (seq phenotype)
-    (let [ids (map #(second (re-find #"HP:(.+)" %)) (map #(get % "id") phenotype))]
-      {:id-type "HP"
-       :id-value (str/join ";" ids)})))
+    (let [ids (map #(get % "id") phenotype)]
+      {:id-type "HPO"
+       :id-value ids})))
 
 (defn get-condition
   "Processes the condition element to derive the ClinVar sanctioned fields:
@@ -184,35 +186,45 @@
        If a condition is not provided and required then return *E-301 exception.
        If a condition is not provided and not required then 'Not Specified' is the default label.
        If a condition is provided then...
-         If the disease is a MONDO disease use prioritized id transform if available,
-         If the MONDO id cannot be transformed or if a freeform disease then...
+         If the disease is a MONDO disease use the MONDO ID,
+         If the disease is a freeform disease then...
             use disease label for ClinVar condition.
          If phenotypes exists create semi-colon separated list of id values for condition ids.
    The resulting structure should be:
-      {:id-type <MONDO or HP>,
-       :id-value <semi-colon separated ids for id-type>,
+      {:id-type <MONDO or HPO>,
+       :id-value <semi-colon separated ids for id-type e.g. MONDO:000000, HP:000000>,
        :preferred-name <only if id-type/id-val are blank, disease.label>,
        :moi <mode of inh>} "
   [sym-tbl interp-input interp-num interp-sig]
   (let [cond (ld-> sym-tbl interp-input "is_about_condition")
         disease (ld1-> sym-tbl cond "is_about_disease")
-        phenotype (ld-> sym-tbl cond "is_about_phenotype")
+        phenotype (ld1-> sym-tbl cond "is_about_phenotype")
         moi (condition-moi sym-tbl cond interp-num)]
     (if disease
-      ;; test for free from or mondo version of disease
+      ;; test for free form or mondo version of disease
       (let [disease-id (get disease "id")]
         (if (str/starts-with? disease-id "MONDO:")
-          (let [result (ols/find-prioritized-term-memo (str/replace disease-id ":" "_"))]
-            (merge result {:preferred-name (get disease "label")
-                           :moi moi}))
-          (let [result (construct-phenotype-list phenotype)]
-            (merge result {:preferred-name (get disease "label")
-                           :moi moi}))))
+          {:id-type "MONDO"
+           :id-value disease-id
+           :preferred-name (get disease "label")
+           :moi moi}
+          (if phenotype
+            (let [result (construct-phenotype-list phenotype)]
+              (merge result {:preferred-name (get disease "label")
+                             :moi moi}))
+            {:id-type "???"
+             :id-value disease-id
+             :preferred-name (get disease "label")
+             :moi moi})))
       (if (.contains ["Pathogenic" "Likely Pathogenic" ] interp-sig)
-        {:preferred-name (str "*E-301" ":" interp-num)
-          :moi moi}
-        {:preferred-name "Not Specified"
-          :moi moi}))))
+        {:id-type ""
+         :id-value ""
+         :preferred-name (str "*E-301" ":" interp-num)
+         :moi moi}
+        {:id-type ""
+         :id-value ""
+         :preferred-name "Not Specified"
+         :moi moi}))))
 
 (defn evidence-rule-strength
   "Returns the translated strength based on the clingen/acmg recommended

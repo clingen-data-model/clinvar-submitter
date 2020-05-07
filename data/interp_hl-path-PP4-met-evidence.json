@@ -14,14 +14,6 @@
                     "label": "Usher syndrome"
                 }
             ],
-            "phenotype": [
-                {
-                    "id": "HP:0000001"
-                },
-                {
-                    "id": "HP:0000002"
-                }
-            ],
             "id": "_:b4",
             "inheritancePattern": {
                 "id": "HP:0000007",
