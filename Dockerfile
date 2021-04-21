@@ -17,9 +17,7 @@ FROM openjdk:11
 MAINTAINER Clingen Developers <clingendevs@broadinstitute.org>
 
 COPY --from=builder /usr/src/app/target/uberjar/app.jar /app/app.jar
-# COPY keys/dev.serveur.keystore.jks /keys/dev.serveur.keystore.jks
-# COPY keys/serveur.truststore.jks /keys/serveur.truststore.jks
 
-# EXPOSE 8080
+EXPOSE 3000
 
-# CMD ["java", "-jar", "/app/app.jar"]
+CMD ["java", "-jar", "/app/app.jar", "-w"]
