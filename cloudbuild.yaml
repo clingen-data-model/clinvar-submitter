@@ -1,0 +1,23 @@
+# Cloud Build configuration for clinvar-submitter
+#
+# Command line test usage:
+# gcloud builds submit --project=clingen-stage --config ./cloudbuild.yaml \
+#  --substitutions=COMMIT_SHA="testbuild" .
+
+# Builds clinvar-submitter and tags for both stage and prod image repositories
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '.', '-t', 'clinvar-submitter:$COMMIT_SHA']
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'tag', 'clinvar-submitter:$COMMIT_SHA', 'gcr.io/clingen-stage/clinvar-submitter:$COMMIT_SHA']
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'tag', 'clinvar-submitter:$COMMIT_SHA', 'gcr.io/clingen-dx/clinvar-submitter:$COMMIT_SHA']
+
+# push the images
+images:
+  - 'gcr.io/clingen-stage/clinvar-submitter:$COMMIT_SHA'
+  - 'gcr.io/clingen-dx/clinvar-submitter:$COMMIT_SHA'
+
+# timeout if not complete in 30 minutes
+timeout: 1800s
+
