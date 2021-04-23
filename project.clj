@@ -24,4 +24,5 @@
   :ring {:handler clinvar-submitter.web-service/app}
   :plugins [[lein-ring "0.12.1"]]
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all
+                       :uberjar-name "app.jar"}})
