@@ -12,12 +12,28 @@ steps:
   args: [ 'tag', 'clinvar-submitter:$COMMIT_SHA', 'gcr.io/clingen-stage/clinvar-submitter:$COMMIT_SHA']
 - name: 'gcr.io/cloud-builders/docker'
   args: [ 'tag', 'clinvar-submitter:$COMMIT_SHA', 'gcr.io/clingen-dx/clinvar-submitter:$COMMIT_SHA']
+- name: 'gcr.io/clingen-stage/git-image-updater'
+  secretEnv: ["GITHUB_TOKEN"]
+  args: 
+    - '-c'
+    - |
+      git clone https://clingen-ci:$$GITHUB_TOKEN@github.com/clingen-data-model/architecture \
+      && cd architecture \
+      && git checkout -b image-update-$COMMIT_SHA \
+      && /usr/bin/yq eval -i '.image.tag = "$COMMIT_SHA"' ./helm/values/clinvar-submitter/values-stage.yaml \
+      && git add -u \
+      && git -c user.name="Clingen CI Automation" -c user.email="clingendevs@broadinstitute.org" commit -m "bumping docker image for clinvar-submitter" \
+      && git push origin image-update-$COMMIT_SHA \
+      && gh pr create --fill -l automation
 
-# push the images
+availableSecrets:
+  secretManager:
+    - versionName: projects/clingen-stage/secrets/clingen-ci-github-token/versions/2
+      env: GITHUB_TOKEN
+
 images:
   - 'gcr.io/clingen-stage/clinvar-submitter:$COMMIT_SHA'
   - 'gcr.io/clingen-dx/clinvar-submitter:$COMMIT_SHA'
 
 # timeout if not complete in 30 minutes
 timeout: 1800s
-
