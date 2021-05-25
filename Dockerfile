@@ -20,4 +20,4 @@ COPY --from=builder /usr/src/app/target/uberjar/app.jar /app/app.jar
 
 EXPOSE 3000
 
-CMD ["java", "-jar", "/app/app.jar", "-w"]
+CMD ["java", "-jar", "/app/app.jar"]

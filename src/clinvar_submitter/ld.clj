@@ -7,6 +7,8 @@
            [com.github.jsonldjava.utils JsonUtils]
            [java.util Map List]))
 
+(def jsonld-context "http://dataexchange.clinicalgenome.org/interpretation/json/sepio_context")
+
 (defn resolve-id
   "Return the referent of an identifier if found in symbol table
   otherwise return a bare string"
@@ -62,11 +64,11 @@
     (reduce (fn [acc v] (assoc acc (.get v "id") v)) {} graph)))
 
 (defn flatten-interpretation
-  "Use JSONLD-API to read a JSON-LD interpretation using context-path to translate
+  "Use JSONLD-API to read a JSON-LD interpretation using jsonld-context to translate
   symbols into local properties"
-  [interp-rows context-path]
+  [interp-rows]
   (try
-    (with-open [cxr (io/reader context-path)]
+    (with-open [cxr (io/reader jsonld-context)]
       (let [interps (json/parse-string interp-rows)
             cx (json/parse-stream cxr)
             opts (JsonLdOptions.)]
@@ -77,8 +79,8 @@
 (defn generate-symbol-table
   "Flatten JSON-LD document and return a symbol table returning IDs of nodes mapped
   to the nodes themselves"
-  [interp-rows context-path]
+  [interp-rows]
   (try
-    (construct-symbol-table (flatten-interpretation interp-rows context-path))
+    (construct-symbol-table (flatten-interpretation interp-rows))
    (catch Exception e
      (log/error (str "Exception in generate-symbol-table: " (.getMessage e))))))

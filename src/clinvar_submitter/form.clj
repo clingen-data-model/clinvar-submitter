@@ -101,16 +101,18 @@
 
 (defn variant-scv
   "Returns the SCV for any ClinVar variant identifier by
-   looking it up in the scv-map provided. "
-  [can scv-map]
-  (let [id (get can "id")
-        id-parts (if id (str/split id #":"))
-        id-type (if id-parts (first id-parts))
-        id-value (if id-parts (second id-parts))]
-    (if (and (= "ClinVar" id-type) (not (empty? scv-map)))
-      (if-let [result (filter #(= (:VariationID %) (Integer. id-value)) scv-map)]
-        (if (= (count result) 1)
-          (:SCV (first result)))))))
+   looking it up."
+  [vci-id]
+  (let [response (->> vci-id
+                     (re-find #"https://vci.clinicalgenome.org/interpretations/([0-9a-z-]*)/")
+                     fnext
+                     (ols/find-scv))
+        status (:status response)
+        body (:body response)]
+    (if (and (= 200 status)
+             (str/starts-with? body "SCV"))
+      body
+      nil)))
 
 (defn variant-coord
   "Returns the 1-based index position start, stop, ref and alt for the contextual allele."
@@ -130,14 +132,13 @@
    'variant' submission form.
      :id - clinvar or clingen ar id depending on the 'source'
      :label - preferred name
-     :scv - scv from scv-map if only 1 is found (only for ClinVar:xxx ids)
      :chromosome - chromosome label if available
      :gene - gene symbol if available
      :refseq - accession associated with the preferred related ctx
      :hgvs -  c., g., n. portion of full hgvs expression for pref allele
      :coord - the ref, alt, start and stop of the hgvs expression, if available
      :alt-designations - the label"
-  [sym-tbl interp-input interp-num scv-map]
+  [sym-tbl interp-input interp-num]
   (let [can-allele (ld1-> sym-tbl interp-input "is_about_allele")
         b38-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl "GRCh38" "reference genome build" "label"))
         pref-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl true "preferred"))
@@ -150,7 +151,7 @@
                           (throw (Exception. "Unknown allele - neither preferred or GRCh38 representation found."))))]
     {:id (variant-identifier can-allele interp-num)
      :label (get can-allele "label")
-     :scv (csv-colval (variant-scv can-allele scv-map))
+     :scv (csv-colval (variant-scv (get interp-input "id")))
      :chromosome  (csv-colval (ld1-> sym-tbl b38-ctx-allele "related chromosome" "label"))
      :gene (csv-colval (ld1-> sym-tbl pref-ctx-allele "related gene" "label"))
      :hgvs (csv-colval hgvs)

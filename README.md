@@ -10,7 +10,7 @@ This project consists of
   * form.clj - A set of ClinVar submssion specific form parsing functions 
   * core.clj - A set of input/output procedures for orchestrating the transformation
   * report.clj - The functions for writing out the output and run report.
-  * variant.clj - Functions shared between the command line and web service that operate on the the submitted variants
+  * variant.clj - Functions that operate on the the submitted variants
   * web_service.clj -Functions to provide REST API web service.
 * [Unit Tests](test/clinvar-submitter) 
 * [Data files](data)
@@ -19,52 +19,19 @@ This project consists of
   * Postman - This file contains importable files for the Postman (free program for testing REST APIs - https://www.getpostman.com/) program that will allow testing of the Web Service.
 * [Developer Documentation](doc)
 * combineall.sh - an optional script to combine multiple interpretation json files into a single json file. 
+* gcp - Google Cloud Function and BigQuery artifacts
 
 ## Setup Environment
 This project is managed using [Leiningen](https://leiningen.org/), a tool and style that focuses on project automation and declarative configuration.  See the [tutorial](https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md) for more information.
 
 This project can be downloaded and run using the `lein run` command-line tool or it can used to build a stand-alone executable file for distribution. In order to perform either of these steps, you must first install the tool following the instructions in the Install section found at [Leiningen](https://leiningen.org/). 
 
-## Executing Conversions
-### Command line using 'Lein Run'
-To run a conversion using the command-line with the lein run command ...
-```
-$ lein run "-o" "<csv output file>" "<json input file>" 
-```
-for example... 
-```
-$ lein run "-o" "myoutput.csv"  "data/dmwg1.json" 
-```
-This will output the comma-separated clinvar-submitter records to a file called "myoutput.csv"
-using the input file found at "data/dmwg1.json".
+This project runs as a webserver.
 
-By default, the output file will not be overwitten. However, if this is desired, use the
-"-f" like so...
-```
-$ lein run "-o" -"f" "myoutput.csv"å "data/dmwg1.json" 
-```
-To run the web service use just the "-w" flag
-```
-$ lein run "-w"
-```
-### Command line using executable jar
-NOTE: This approach requires that the executable jar file exists. See Generating Executable Jar below for more information.
+#### Environment Variables
+CLINVAR_SUBMITTER_PORT - The port to run the service on. Defaults to 3000.
+SCV_SERVICE_URL - The URL for the SCV cloud function. Must be provided. 
 
-To run a conversion using the command-line with the executable jar ...
-```
-$ java -jar target/uberjar/clinvar-submitter-0.0.0-SNAPSHOT.jar "-o" "myoutput.csv" "data/dmwg1.json" 
-```
-#### Command Line Parameters
-```
-"-o" "--output FILENAME" "CSV output filename" : default "clinvar-submitter.csv"
-"-x" "--jsonld-context URI" "JSON-LD context file URI" :default "http://dataexchange.clinicalgenome.org/interpretatoin/json/sepio_context"
-"-f" "force-overwrite of output file if it exists"
-"-b" "--build BUILD" "Genome build alignment, GRCh37 or GRCh38" :default "GRCh37"
-"-r" "--report FILENAME" "Run-report filename" :default "clinvar-submission-run-report.csv"
-"-m" "--method METHODNAME" "Assertion-method-name" :default "ACMG Guidelines, 2015"
-"-c" "--methodc METHODCITATION" "Method Citation" :default "PMID:25741868"
-"-w" -- run in web service mode
-```
 
 #### Error Handling
 To handle general exceptions, standard clojure exception handling methods are used using try catch block.
