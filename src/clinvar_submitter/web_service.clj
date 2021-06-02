@@ -1,22 +1,11 @@
 (ns clinvar-submitter.web-service
   (:require [ring.adapter.jetty :refer [run-jetty]]
-            [clojure.pprint :refer [pprint]]
             [cheshire.core :as json]
             [ring.middleware.params :refer :all]
             [ring.middleware.multipart-params :refer :all]
             [clinvar-submitter.report :as report :refer :all]
-            [clinvar-submitter.variant :as variant :refer [process-input]]))
-
-(def default-port 3000)
-
-(defn parse-int [s]
-  (Integer. (re-find #"\d+" s)))
-
-(defn port-num
-  []
-  (if-let [p (System/getenv "CLINVAR_SUBMITTER_PORT")]
-    (parse-int p)
-    default-port))
+            [clinvar-submitter.variant :as variant :refer [process-input]]
+            [clinvar-submitter.env :as env]))
 
 ;; Return REST response to POST request.
 ;; Response is a JSON array of objects,
@@ -68,6 +57,7 @@
     (handler (assoc request :options options))))
 
 (defn run-service
-  [options]
-  (println "Running VCI Submitter as web service on " (port-num))
-  (run-jetty (wrap-options route-handler options) {:port (port-num)}))
+  ([] (run-service {}))
+  ([options]
+   (println "Running VCI Submitter as web service " env/environment)
+   (run-jetty (wrap-options route-handler options) {:port env/port-num})))

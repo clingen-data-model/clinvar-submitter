@@ -4,7 +4,8 @@
             [clojure.string :as str]
             [clj-http.client :as client]
             [clojure.tools.logging.impl :as impl]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [clinvar-submitter.env :as env]))
 
 ;OMIM, MeSH, MedGen, UMLS, Orphanet, HPO
 (def auth-priority [[:Orphanet #"Orphanet:(.+)" "ORPHA"]
@@ -40,3 +41,11 @@
       {:preferred-name (:label mondo-node)})))
 
 (def find-prioritized-term-memo (memoize find-prioritized-term))
+
+(defn find-scv [local-key]
+  (let [body (str "{\"local_key\": \"" local-key "\"}")]
+    (client/put env/scv-service-url
+                {:body body
+                 :content-type :json
+                 :accept :json})))
+

@@ -15,8 +15,8 @@
 
 (defn construct-variant
   "Construct and return one row of variant table, with variant pathogenicity interpretation as root"
-  [sym-tbl interp-input interp-num opts scv-map]
-  (let [variant (form/get-variant sym-tbl interp-input interp-num scv-map)
+  [sym-tbl interp-input interp-num opts]
+  (let [variant (form/get-variant sym-tbl interp-input interp-num)
         interp (form/get-interpretation sym-tbl interp-input interp-num)
         condition (form/get-condition sym-tbl interp-input interp-num (:significance interp))
         evidence (form/get-met-evidence sym-tbl interp-input)
@@ -131,14 +131,12 @@
   [interp-path options]
   ;;(get options :jsonld-context) (get options :method) (get options :method-citation) (get)
   ;;context-path assertion-method method-citation]
-  (log/debug "Function: construct-variant-table- context and input Filename (construct-variant-table): " interp-path (:jsonld-context options))
+  (log/debug "Function: construct-variant-table- context and input Filename (construct-variant-table): " interp-path)
   (try
-    (let [clinvar-scv-file (:clinvar-scv-file options)
-          scv-map (if clinvar-scv-file (json/parse-string (slurp clinvar-scv-file) true))
-          sym-tbl (ld/generate-symbol-table interp-path (:jsonld-context options))
+    (let [sym-tbl (ld/generate-symbol-table interp-path)
           m (vals sym-tbl)
           interps ((prop= sym-tbl "variant pathogenicity interpretation" "type") m)
-          rows (map #(construct-variant sym-tbl %  (+ 1 (.indexOf interps %)) options scv-map) interps)]
+          rows (map #(construct-variant sym-tbl %  (+ 1 (.indexOf interps %)) options) interps)]
       rows)
     (catch Exception e
       (log/error (str "Exception in construct-variant-table: " e)))))
@@ -149,30 +147,12 @@
   "From the command line arguments, process and return appropriate output for input file"
   [input-rows options]
   (let [records (construct-variant-table input-rows options)
-        output-file (:output options)
-        report-file (:report options)
-        existing-files () ;; TODO TON - FIX - (remove nil? (map #(if (.exists (io/as-file %)) % nil) [output-file report-file]))
         schema (slurp schema-uri)
         validate (v/validator schema)]
     (if (nil? (validate input-rows))
       (do
         ;; Json vaidated
         (log/debug "Json input is valid")
-        
-        ;; if web service running, return the list of processed records
-        (if (:web-service options)
-          records ;; return the list of records 
+        records))))
+      
 
-          ;; Otherwise:
-          ;; if output or report file exists then check if there is a force option.
-          ;; If there is no force option the display an exception
-          ;; Otherwise create output and report file
-          (if (and (not (.isEmpty existing-files)) (not (get options :force)))
-            (println (str "**Error**"
-                               "\nThe file"
-                               (if (> (count existing-files) 1) "s " " ")
-                               (str/join " & " existing-files)
-                               " already exist in the output directory."
-                               "\nUse option‚ -f Force overwrite to overwrite existing file(s)."))
-            (report/write-files input-rows options records))))
-      (log/error "JSON input failed schema validation."))))
