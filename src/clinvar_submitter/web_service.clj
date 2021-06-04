@@ -5,7 +5,9 @@
             [ring.middleware.multipart-params :refer :all]
             [clinvar-submitter.report :as report :refer :all]
             [clinvar-submitter.variant :as variant :refer [process-input]]
-            [clinvar-submitter.env :as env]))
+            [clinvar-submitter.env :as env]
+            [clojure.tools.logging.impl :as impl]
+            [clojure.tools.logging :as log]))
 
 ;; Return REST response to POST request.
 ;; Response is a JSON array of objects,
@@ -34,11 +36,13 @@
         body {:status {:totalRecords (count records)
                        :successCount success_count
                        :errorCount (- (count records) success_count)}
-              :variants variants}]
+              :variants variants}
+        resp (json/generate-string body)]
+    (log/info "\nRequest: " req " \nResponse: " resp)
     {:status 200
      :headers {"Content-Type" "application/json"}
-     :body (json/generate-string body)}))
-
+     :body resp}))
+    
 ;; Routing handler
 (defn route-handler [request]
   ;; this is admittedly rudimentary routing
