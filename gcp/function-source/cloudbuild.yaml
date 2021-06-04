@@ -1,0 +1,9 @@
+# Cloud Build configuration for cloud function test & deployment
+#
+# Build copies the modified cloud function into place in production cluster
+# TODO: Testing strategy possible with pytest? And mock of BigQuery?
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['functions', 'deploy', 'ClinVarSCV', 'https://us-central1-clingen-dx.cloudfunctions.net/ClinVarSCV', '--runtime', 'python37', '--entry-point', 'findByLocalKey']
+  dir: 'gcp/function-source'
+  
