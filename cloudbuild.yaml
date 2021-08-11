@@ -6,6 +6,9 @@
 
 # Builds clinvar-submitter and tags for both stage and prod image repositories
 steps:
+- name: 'hadolint/hadolint'
+  entrypoint: '/bin/hadolint'
+  args: [ './Dockerfile']
 - name: 'gcr.io/cloud-builders/docker'
   args: [ 'build', '.', '-t', 'clinvar-submitter:$COMMIT_SHA']
 - name: 'gcr.io/cloud-builders/docker'
