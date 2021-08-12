@@ -14,7 +14,7 @@ RUN lein uberjar
 
 # Using image without lein for deployment.
 FROM openjdk:11
-MAINTAINER Clingen Developers <clingendevs@broadinstitute.org>
+LABEL maintainer="Clingen Developers <clingendevs@broadinstitute.org>"
 
 COPY --from=builder /usr/src/app/target/uberjar/app.jar /app/app.jar
 
