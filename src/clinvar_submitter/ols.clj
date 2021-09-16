@@ -44,8 +44,11 @@
 
 (defn find-scv [local-key]
   (let [body (str "{\"local_key\": \"" local-key "\"}")]
-    (client/put env/scv-service-url
-                {:body body
-                 :content-type :json
-                 :accept :json})))
+    (try
+      (client/post env/scv-service-url
+                   {:body body
+                    :content-type :json
+                    :accept :json})
+      (catch Exception e
+        (log/error (str "Exception in find-scv: " e))))))
 

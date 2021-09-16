@@ -83,4 +83,4 @@
   (try
     (construct-symbol-table (flatten-interpretation interp-rows))
    (catch Exception e
-     (log/error (str "Exception in generate-symbol-table: " (.getMessage e))))))
+     (log/error (str "Exception in generate-symbol-table: " e)))))
