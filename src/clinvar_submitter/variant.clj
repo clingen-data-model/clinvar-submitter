@@ -78,9 +78,9 @@
      ""
      ""
      ""
-     (str (:collection-method opts))
-     (str (:allele-origin opts))
-     (str (:affected-status opts))  ;; this is col#52 AZ
+     "curation" ;; AX - hardcoded per LB
+     "germline" ;; AY - hardcoded per LB
+     "unknown"  ;; this is col#52 AZ - hardcoded per LB
      ""
      ""
      ""
