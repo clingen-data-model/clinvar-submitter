@@ -29,7 +29,7 @@
      (:gene variant "") ; gene symbol - not provided since we are avoiding contextual allele representation.
      (:refseq variant) ;refseq
      (if (some? hgvs) hgvs "") ; hgvs - not providing since we are avoiding contextual allele representation
-     (:chromosome variant "")  ; chromosome - not providing since we are using the refseq field to denote the accession.
+     (if (nil? (:refseq variant) (:chromosome variant) "")  ; chromosome - only provide if the refseq field is nil - clinvar does not accept both fields.
      (if (nil? hgvs) (:start variant-coord) "") ; start + 1  (from 0-based to 1-based)
      (if (nil? hgvs) (:stop variant-coord) "")  ; stop + 1  (from 0-based to 1-based)
      (if (nil? hgvs) (:ref variant-coord) "")   ; ref
