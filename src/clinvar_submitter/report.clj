@@ -5,7 +5,6 @@
 
 (def exception-code-map
     {"*E-202" "Variant identifier not provided.",
-     "*E-203" "Could not find GRCh38, GRCh37 or preferred representation.",
      "*E-301" "Interpretations with Path or Lik Path outcomes require a condition disease code or name and none was provided.",
      "*E-401" "Interpretation id not provided.",
      "*E-402" "Interpretation significance not provided.",
@@ -58,3 +57,4 @@
         ws-results (map (fn [error-array] (if (empty? error-array) [] {:errorCode (get error-array 6)
                                                                        :errorMessage (get error-array 7)})) error-list)]
     ws-results))
+
