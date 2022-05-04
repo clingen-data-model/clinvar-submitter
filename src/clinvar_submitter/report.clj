@@ -58,3 +58,4 @@
         ws-results (map (fn [error-array] (if (empty? error-array) [] {:errorCode (get error-array 6)
                                                                        :errorMessage (get error-array 7)})) error-list)]
     ws-results))
+

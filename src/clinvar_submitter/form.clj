@@ -141,10 +141,8 @@
   [sym-tbl interp-input interp-num]
   (let [can-allele (ld1-> sym-tbl interp-input "is_about_allele")
         b38-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl "GRCh38" "reference genome build" "label"))
-        b37-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl "GRCh37" "reference genome build" "label"))
         pref-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl true "preferred"))
         b38-hgvs (ld1-> sym-tbl b38-ctx-allele "allele name" (prop= sym-tbl "hgvs" "name type") "name")
-        b37-hgvs (ld1-> sym-tbl b37-ctx-allele "allele name" (prop= sym-tbl "hgvs" "name type") "name")
         pref-hgvs (ld1-> sym-tbl pref-ctx-allele "allele name" (prop= sym-tbl "hgvs" "name type") "name")
         [refseq hgvs] (if-not (nil? b38-hgvs)
                         (str/split b38-hgvs #":")
@@ -160,11 +158,11 @@
     {:id (variant-identifier can-allele interp-num)
      :label (get can-allele "label")
      :scv (csv-colval (variant-scv (get interp-input "id")))
-     :chromosome  (csv-colval chr)
+     :chromosome  (csv-colval (ld1-> sym-tbl b38-ctx-allele "related chromosome" "label"))
      :gene (csv-colval (ld1-> sym-tbl pref-ctx-allele "related gene" "label"))
      :hgvs (csv-colval hgvs)
      :refseq (csv-colval refseq)
-     :coord coord
+     :coord (variant-coord sym-tbl b38-ctx-allele interp-num)
      :alt-designations (str/replace (get can-allele "label") #"(.*) \((p\..*)\)$" "$1|$2")}))
 
 (defn condition-moi

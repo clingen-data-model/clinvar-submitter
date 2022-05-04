@@ -45,22 +45,24 @@
      "" ; breakpoint 1 - non sequence var only
      "" ; breakpoint 2 - non sequence var only
      "" ; comment on variant - req'd if var type is complex
+     "" ; Trace or probe data - non sequence var only
      "" ; empty
      ;(get variant :variantIdentifier) ; Variation identifiers (http://reg.genome.network.org/allele = ABC ABC:CA123123123)
      "" ; ClinVar does not accept the CAR identifiers? (replacing above commented code)
      "" ; Location - N/A
      (:alt-designations variant)    ; Alternate designations
+     "" ; Official allele name  - N/A
      "" ; URL - bypassing for now, no set home for a public URL at this time
      "" ; empty
      ;;
      (:id-type condition "") ; Condition ID type (PURL)- assumes variantInterpretation.condition.disease.coding[0].code match of everything before the underscore.
      (:id-value condition "")   ; Condition ID value - assumes variantInterpretation.condition.disease.coding[0].code match of everything after the underscore.
      (if (and (:id-type condition) (:id-value condition)) "" (:preferred-name condition ""))  ; Preferred condition name
+     "" ; Condition category
      "" ; Condition uncertainty
      "" ; Condition comment
      "" ; empty
      (:significance interp) ; Clinical significance
-     "" ; Assertion score (new in March 2022 clinvar submission template)
      (:eval-date interp) ; Date last evaluated
      ;; the 2 following assertion fields may need more robust handling for non-vceps that don't have clinvar files submitted.
      "" ; assertion method
@@ -79,6 +81,8 @@
      "curation" ;; AX - hardcoded per LB
      "germline" ;; AY - hardcoded per LB
      "unknown"  ;; this is col#52 AZ - hardcoded per LB
+     ""
+     ""
      ""
      ""
      ""
@@ -151,3 +155,4 @@
         (log/debug "Json input is valid")
         records))))
       
+
