@@ -91,5 +91,3 @@ Not supported in this release
 #### (fixed) #22 Clinvar Submitter Service is returning 400 error
 Root cause: When calling the with variant that has no b38 or preferred name the clinvar-submitter service was throwing an uncaught exception
 Resolution: Added capability to grab the b37 hgvs and refseq accession if b38 and preferred name is not available. As well, as embedded a new ERROR code *E-203 to handle exceptional situations when neither b38, b37 or preferred names exist. The new error code will be embedded in the output that is pasted in the corresponding `hgvs` and `refseq` columns if this occurs.
-    
-    

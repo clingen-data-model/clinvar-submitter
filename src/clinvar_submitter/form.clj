@@ -132,11 +132,11 @@
    'variant' submission form.
      :id - clinvar or clingen ar id depending on the 'source'
      :label - preferred name
-     :chromosome - chromosome label only if no refseq is available
+     :chromosome - chromosome label only if no refseq is available and b38 context is available
      :gene - gene symbol if available
      :refseq - accession associated with the preferred related ctx
      :hgvs -  c., g., n. portion of full hgvs expression for pref allele
-     :coord - the ref, alt, start and stop of the hgvs expression, if no hgvs is available
+     :coord - the ref, alt, start and stop of the hgvs expression, if no hgvs is available and b38 context is available
      :alt-designations - the label"
   [sym-tbl interp-input interp-num]
   (let [can-allele (ld1-> sym-tbl interp-input "is_about_allele")
@@ -148,19 +148,15 @@
         pref-hgvs (ld1-> sym-tbl pref-ctx-allele "allele name" (prop= sym-tbl "hgvs" "name type") "name")
         [refseq hgvs] (if-not (nil? b38-hgvs)
                         (str/split b38-hgvs #":")
-                        (if-not (nil? b37-hgvs)
-                          (str/split b37-hgvs #":")
-                          (if-not (nil? pref-hgvs)
-                            (str/split pref-hgvs #":")
-                            (vec (repeat 2 (str "*E-203" ":" interp-num))))))
+                        (if-not (nil? pref-hgvs)
+                          (str/split pref-hgvs #":")
+                          (if-not (nil? b37-hgvs)
+                            (str/split b37-hgvs #":"
+                              (vec (repeat 2 (str "*E-203" ":" interp-num)))))))
         chr (if-not (nil? hgvs) 
-              (or
-                (ld1-> sym-tbl b38-ctx-allele "related chromosome" "label")
-                (ld1-> sym-tbl b37-ctx-allele "related chromosome" "label")))
+              (ld1-> sym-tbl b38-ctx-allele "related chromosome" "label"))
         coord (if-not (nil? hgvs)
-                (or
-                  (variant-coord sym-tbl b38-ctx-allele interp-num)
-                  (variant-coord sym-tbl b37-ctx-allele interp-num)))]
+                (variant-coord sym-tbl b38-ctx-allele interp-num))]
     {:id (variant-identifier can-allele interp-num)
      :label (get can-allele "label")
      :scv (csv-colval (variant-scv (get interp-input "id")))
