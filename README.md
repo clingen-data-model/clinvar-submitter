@@ -78,3 +78,18 @@ Not supported in this release
 4.	Assumes a two-term space separated value for strength.
 5.	No sorting of summarized met strength codes.
 6.  No support yet for multiple file or directory input.
+
+### 04.May.2022
+#### (fixed) #21 Modified the output to match March 2022 ClinVar submission excel file format column changes
+*these are the specific column changes*
+* (remove) Trace or probe data (V)
+* (remove) Official allele name (AA)
+* (remove) Condition category (AH)
+* (added) Assertion score  (between Clin Sig & Date Last Eval)
+* (remove) Number of chromosomes with variant (BQ)
+* (remove) Citations or URLs that cannot be represented in evidence citations column (CA)
+#### (fixed) #22 Clinvar Submitter Service is returning 400 error
+Root cause: When calling the with variant that has no b38 or preferred name the clinvar-submitter service was throwing an uncaught exception
+Resolution: Added capability to grab the b37 hgvs and refseq accession if b38 and preferred name is not available. As well, as embedded a new ERROR code *E-203 to handle exceptional situations when neither b38, b37 or preferred names exist. The new error code will be embedded in the output that is pasted in the corresponding `hgvs` and `refseq` columns if this occurs.
+    
+    
