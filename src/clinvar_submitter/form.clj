@@ -132,31 +132,43 @@
    'variant' submission form.
      :id - clinvar or clingen ar id depending on the 'source'
      :label - preferred name
-     :chromosome - chromosome label if available
+     :chromosome - chromosome label only if no refseq is available
      :gene - gene symbol if available
      :refseq - accession associated with the preferred related ctx
      :hgvs -  c., g., n. portion of full hgvs expression for pref allele
-     :coord - the ref, alt, start and stop of the hgvs expression, if available
+     :coord - the ref, alt, start and stop of the hgvs expression, if no hgvs is available
      :alt-designations - the label"
   [sym-tbl interp-input interp-num]
   (let [can-allele (ld1-> sym-tbl interp-input "is_about_allele")
         b38-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl "GRCh38" "reference genome build" "label"))
+        b37-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl "GRCh37" "reference genome build" "label"))
         pref-ctx-allele (ld1-> sym-tbl can-allele "related contextual allele" (prop= sym-tbl true "preferred"))
         b38-hgvs (ld1-> sym-tbl b38-ctx-allele "allele name" (prop= sym-tbl "hgvs" "name type") "name")
+        b37-hgvs (ld1-> sym-tbl b37-ctx-allele "allele name" (prop= sym-tbl "hgvs" "name type") "name")
         pref-hgvs (ld1-> sym-tbl pref-ctx-allele "allele name" (prop= sym-tbl "hgvs" "name type") "name")
         [refseq hgvs] (if-not (nil? b38-hgvs)
                         (str/split b38-hgvs #":")
-                        (if-not (nil? pref-hgvs)
-                          (str/split pref-hgvs #":")
-                          (throw (Exception. "Unknown allele - neither preferred or GRCh38 representation found."))))]
+                        (if-not (nil? b37-hgvs)
+                          (str/split b37-hgvs #":")
+                          (if-not (nil? pref-hgvs)
+                            (str/split pref-hgvs #":")
+                            (vec (repeat 2 (str "*E-203" ":" interp-num))))))
+        chr (if-not (nil? hgvs) 
+              (or
+                (ld1-> sym-tbl b38-ctx-allele "related chromosome" "label")
+                (ld1-> sym-tbl b37-ctx-allele "related chromosome" "label")))
+        coord (if-not (nil? hgvs)
+                (or
+                  (variant-coord sym-tbl b38-ctx-allele interp-num)
+                  (variant-coord sym-tbl b37-ctx-allele interp-num)))]
     {:id (variant-identifier can-allele interp-num)
      :label (get can-allele "label")
      :scv (csv-colval (variant-scv (get interp-input "id")))
-     :chromosome  (csv-colval (ld1-> sym-tbl b38-ctx-allele "related chromosome" "label"))
+     :chromosome  (csv-colval chr)
      :gene (csv-colval (ld1-> sym-tbl pref-ctx-allele "related gene" "label"))
      :hgvs (csv-colval hgvs)
      :refseq (csv-colval refseq)
-     :coord (variant-coord sym-tbl b38-ctx-allele interp-num)
+     :coord coord
      :alt-designations (str/replace (get can-allele "label") #"(.*) \((p\..*)\)$" "$1|$2")}))
 
 (defn condition-moi
