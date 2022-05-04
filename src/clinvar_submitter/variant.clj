@@ -14,7 +14,7 @@
   (:gen-class))
 
 (defn construct-variant
-  "Construct and return one row of variant table, with variant pathogenicity interpretation as root"
+  "Construct and return one row of variant table, with variant pathogenicity interpretation as root."
   [sym-tbl interp-input interp-num opts]
   (let [variant (form/get-variant sym-tbl interp-input interp-num)
         interp (form/get-interpretation sym-tbl interp-input interp-num)
