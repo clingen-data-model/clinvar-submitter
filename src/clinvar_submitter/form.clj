@@ -149,8 +149,8 @@
                         (if-not (nil? pref-hgvs)
                           (str/split pref-hgvs #":")
                           (if-not (nil? b37-hgvs)
-                            (str/split b37-hgvs #":"
-                              (vec (repeat 2 (str "*E-203" ":" interp-num)))))))
+                            (str/split b37-hgvs #":")
+                            (vec (repeat 2 (str "*E-203" ":" interp-num))))))
         chr (if-not (nil? hgvs) 
               (ld1-> sym-tbl b38-ctx-allele "related chromosome" "label"))
         coord (if-not (nil? hgvs)
