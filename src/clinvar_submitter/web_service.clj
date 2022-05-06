@@ -27,22 +27,27 @@
 ;; ]
 ;;
 (defn submitter-v1-handler [request]
-  (let [req (slurp (:body request))
-        options (:options request)
-        records (variant/process-input req options)
-        variants (into [] (map (fn [record] {:submission record
-                                             :errors (report/get-webservice-exception-data-for-row record options)}) records))
-        success_count (count (filter empty? (map #(:errors %) variants)))
-        body {:status {:totalRecords (count records)
-                       :successCount success_count
-                       :errorCount (- (count records) success_count)}
-              :variants variants}
-        resp (json/generate-string body)]
-    (log/info "clinvar-subitter service info:\nRequest: " req " \nResponse: " resp)
-    {:status 200
-     :headers {"Content-Type" "application/json"}
-     :body resp}))
-    
+  (try
+    (let [req (slurp (:body request))
+          options (:options request)
+          records (variant/process-input req options)
+          variants (into [] (map (fn [record] {:submission record
+                                               :errors (report/get-webservice-exception-data-for-row record options)}) records))
+          success_count (count (filter empty? (map #(:errors %) variants)))
+          body {:status {:totalRecords (count records)
+                         :successCount success_count
+                         :errorCount (- (count records) success_count)}
+                :variants variants}
+          resp (json/generate-string body)]
+      (if (some? req)
+        (log/debug "\nRequest: " req " \nResponse: " resp)
+        (log/debug "Request contained no 'body' element content."))
+      {:status 200
+       :headers {"Content-Type" "application/json"}
+       :body resp})
+    (catch Exception ex
+      (log/error "\nCaught Exception: " (.getMessage ex) "\nStackTrace: "(.printStackTrace ex)))))    
+
 ;; Routing handler
 (defn route-handler [request]
   ;; this is admittedly rudimentary routing
