@@ -176,7 +176,7 @@
      2. else return the <moiadj> term without any additional nested paranthesed 
         codes, that may exist."
   [sym-tbl c interp-num]
-  (let [full-moi (ld-> sym-tbl c "has disposition" "label")
+  (let [full-moi (ld1-> sym-tbl c "has disposition" "label")
         [moi moiadj] (re-seq #"\w[\w\s\-]*\w" full-moi)
         final-moi (if (and (some? moiadj) (= "Other" moi)) moiadj moi)]
     (csv-colval final-moi)))
