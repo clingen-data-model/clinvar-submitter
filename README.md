@@ -79,7 +79,7 @@ Not supported in this release
 5.	No sorting of summarized met strength codes.
 6.  No support yet for multiple file or directory input.
 
-### 04.May.2022
+### 06.May.2022
 #### (fixed) #21 Modified the output to match March 2022 ClinVar submission excel file format column changes
 *these are the specific column changes*
 * (remove) Trace or probe data (V)
@@ -91,3 +91,7 @@ Not supported in this release
 #### (fixed) #22 Clinvar Submitter Service is returning 400 error
 Root cause: When calling the with variant that has no b38 or preferred name the clinvar-submitter service was throwing an uncaught exception
 Resolution: Added capability to grab the b37 hgvs and refseq accession if b38 and preferred name is not available. As well, as embedded a new ERROR code *E-203 to handle exceptional situations when neither b38, b37 or preferred names exist. The new error code will be embedded in the output that is pasted in the corresponding `hgvs` and `refseq` columns if this occurs.
+#### (fixed) #24 Some mode of inheritance values not compatible with ClinVar format
+Root cause: in the VCI there is the option to choose inheritance pattern 'adjectives' which are currently added within parantheses at the end of the inheritance term selected. When an 'adjective' suffix is selected in VCI
+it breaks the format expected in the ClinVar submission. 
+Resolution: While there is not a perfect alignment between all of the VCI moi terms and clinvar's allowed terms, we can alleviate this issue by dropping the paranthesed 'adjective' selection when it exists on a MOI term other than 'Other'. When 'Other' is selecte with an moi 'adjective' we will use the 'adjective'. This will allow almost all combinations from VCI to work with ClinVar. For those that don't align there would need to be a request to change the VCI selections or ClinVar allowed terms or to define a finer mapping to be incorporated in this service's translation.
