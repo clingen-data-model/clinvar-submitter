@@ -168,8 +168,18 @@
      :alt-designations (str/replace (get can-allele "label") #"(.*) \((p\..*)\)$" "$1|$2")}))
 
 (defn condition-moi
+  "Process the moi term since it may contain a nested adjective in the 
+   form <moi (moi adj)>.
+   If the moi contains a paranthesed suffix then do the following:
+     1. if the <moi> term is anything other than 'Other' and the moiadj is not nil, 
+        remove the moiadj and paranthesed suffix altogether.
+     2. else return the <moiadj> term without any additional nested paranthesed 
+        codes, that may exist."
   [sym-tbl c interp-num]
-  (csv-colval (ld-> sym-tbl c "has disposition" "label")))
+  (let [full-moi (ld-> sym-tbl c "has disposition" "label")
+        [moi moiadj] (re-seq #"\w[\w\s\-]*\w", full-moi)
+        final-moi (if (and (some? moiadj) (= "Other" moi)) moiadj moi)]
+    (csv-colval final-moi)))
 
 (defn construct-phenotype-list
   " assume an HP:xxxx set of ids

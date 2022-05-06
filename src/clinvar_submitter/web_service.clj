@@ -38,7 +38,7 @@
                        :errorCount (- (count records) success_count)}
               :variants variants}
         resp (json/generate-string body)]
-    (log/info "\nRequest: " req " \nResponse: " resp)
+    (log/info "clinvar-subitter service info:\nRequest: " req " \nResponse: " resp)
     {:status 200
      :headers {"Content-Type" "application/json"}
      :body resp}))
