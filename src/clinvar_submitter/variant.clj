@@ -24,107 +24,104 @@
         approver (form/get-contribution sym-tbl interp-input "approver")
         variant-coord (:coord variant)
         hgvs (:hgvs variant)]
-    [(:id interp "") ; local id
-     (:id interp "") ; linking id - only needed if providing case data or func evidence tabs
-     (:gene variant "") ; gene symbol - not provided since we are avoiding contextual allele representation.
-     (:refseq variant) ;refseq
-     (if (some? hgvs) hgvs "") ; hgvs - not providing since we are avoiding contextual allele representation
-     (if (nil? (:refseq variant)) (:chromosome variant) "")  ; chromosome - only provide if the refseq field is nil - clinvar does not accept both fields.
-     (if (nil? hgvs) (:start variant-coord) "") ; start + 1  (from 0-based to 1-based)
-     (if (nil? hgvs) (:stop variant-coord) "")  ; stop + 1  (from 0-based to 1-based)
-     (if (nil? hgvs) (:ref variant-coord) "")   ; ref
-     (if (nil? hgvs) (:alt variant-coord) "")   ; alt
-     "" ; variant type - non sequence var only
-     "" ; outer start - non sequence var only
-     "" ; inner start - non sequence var only
-     "" ; inner stop - non sequence var only
-     "" ; outer stop - non sequence var only
-     "" ; variant length - non sequence var only
-     "" ; copy number - non sequence var only
-     "" ; ref copy number - non sequence var only
-     "" ; breakpoint 1 - non sequence var only
-     "" ; breakpoint 2 - non sequence var only
-     "" ; comment on variant - req'd if var type is complex
-     "" ; Trace or probe data - non sequence var only
-     "" ; empty
-     ;(get variant :variantIdentifier) ; Variation identifiers (http://reg.genome.network.org/allele = ABC ABC:CA123123123)
-     "" ; ClinVar does not accept the CAR identifiers? (replacing above commented code)
-     "" ; Location - N/A
-     (:alt-designations variant)    ; Alternate designations
-     "" ; Official allele name  - N/A
-     "" ; URL - bypassing for now, no set home for a public URL at this time
-     "" ; empty
+    [(:id interp "") ; (A) local id
+     (:id interp "") ; (B) linking id - only needed if providing case data or func evidence tabs
+     (:gene variant "")        ; (C) gene symbol - not provided since we are avoiding contextual allele representation.
+     (:refseq variant)         ; (D) refseq
+     (if (some? hgvs) hgvs "") ; (E) hgvs - not providing since we are avoiding contextual allele representation
+     (if (nil? (:refseq variant)) (:chromosome variant) "")  ; (F) chromosome - only provide if the refseq field is nil - clinvar does not accept both fields.
+     (if (nil? hgvs) (:start variant-coord) "") ; (G) start + 1  (from 0-based to 1-based)
+     (if (nil? hgvs) (:stop variant-coord) "")  ; (H) stop + 1  (from 0-based to 1-based)
+     (if (nil? hgvs) (:ref variant-coord) "")   ; (I) ref
+     (if (nil? hgvs) (:alt variant-coord) "")   ; (J) alt
+     "" ; (K) variant type - non sequence var only
+     "" ; (L) outer start - non sequence var only
+     "" ; (M) inner start - non sequence var only
+     "" ; (N) inner stop - non sequence var only
+     "" ; (O) outer stop - non sequence var only
+     "" ; (P) variant length - non sequence var only
+     "" ; (Q) copy number - non sequence var only
+     "" ; (R) ref copy number - non sequence var only
+     "" ; (S) breakpoint 1 - non sequence var only
+     "" ; (T) breakpoint 2 - non sequence var only
+     "" ; (U) comment on variant - req'd if var type is complex
+     "" ; (V) empty
+    ;; (get variant :variantIdentifier) ; Variation identifiers (http://reg.genome.network.org/allele = ABC ABC:CA123123123)
+     "" ; (W) ClinVar does not accept the CAR identifiers? (replacing above commented code)
+     "" ; (X) Location - N/A
+     (:alt-designations variant)    ; (Y) Alternate designations
+     "" ; (Z) URL - bypassing for now, no set home for a public URL at this time
+     "" ; (AA) empty
      ;;
-     (:id-type condition "") ; Condition ID type (PURL)- assumes variantInterpretation.condition.disease.coding[0].code match of everything before the underscore.
-     (:id-value condition "")   ; Condition ID value - assumes variantInterpretation.condition.disease.coding[0].code match of everything after the underscore.
-     (if (and (:id-type condition) (:id-value condition)) "" (:preferred-name condition ""))  ; Preferred condition name
-     "" ; Condition category
-     "" ; Condition uncertainty
-     "" ; Condition comment
-     "" ; empty
-     (:significance interp) ; Clinical significance
-     (:eval-date interp) ; Date last evaluated
+     (:id-type condition "")    ; (AB) Condition ID type (PURL)- assumes variantInterpretation.condition.disease.coding[0].code match of everything before the underscore.
+     (:id-value condition "")   ; (AC) Condition ID value - assumes variantInterpretation.condition.disease.coding[0].code match of everything after the underscore.
+     (if (and (:id-type condition) (:id-value condition)) "" (:preferred-name condition ""))  ; (AD) Preferred condition name
+     "" ; (AE) Condition uncertainty
+     "" ; (AF) Condition comment
+     "" ; (AG) empty
+     (:significance interp) ; (AH) Clinical significance
+     "" ; Assertion score
+     (:eval-date interp)    ; (AJ) Date last evaluated
      ;; the 2 following assertion fields may need more robust handling for non-vceps that don't have clinvar files submitted.
-     "" ; assertion method
-     (:file-name method ""); assertion method citations
-     (:moi condition "") ; Mode of Inheritance
+     ""                     ; (AK) assertion method
+     (:file-name method "") ; (AL)assertion method citations
+     (:moi condition "")    ; (AM) Mode of Inheritance
      (form/get-pmid-list evidence) ; significance citations
-     (str "https://erepo.clinicalgenome.org/evrepo/ui/interpretation/" (:id interp)) ; Citations or URLs for clinical significance
+     (str "https://erepo.clinicalgenome.org/evrepo/ui/interpretation/" (:id interp)) ; (AO) Citations or URLs for clinical significance
      (if (some? (:description interp))
        (:description interp)
        (form/summary-string evidence interp variant condition method approver)) ; comment on clinical significance
      "" ; explanation if clinsig is other or drug
-     ""
-     ""
-     ""
-     ""
-     "curation" ;; AX - hardcoded per LB
-     "germline" ;; AY - hardcoded per LB
-     "unknown"  ;; this is col#52 AZ - hardcoded per LB
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     ""
-     (:id variant "")  ; clinvar or clingen ar variant id
-     (first (str/split (:scv variant "") #"\.+"))  ; scv if it was able to find a match, without version info
-     (if (str/blank? (:scv variant)) "" "Update")]))  ; Novel or Update .. always update if prior column is not empty.
+     "" ; drug response condition
+     "" ; functional consequence
+     "" ; comment on functional consequence
+     "" ; empty
+     "curation" ;; (AV) - hardcoded per LB
+     "germline" ;; (AW) - hardcoded per LB
+     "unknown"  ;; (AX) - hardcoded per LB
+     "" ; structural variant method/analysis type
+     "" ; clinical features
+     "" ; comment on clinical features
+     "" ; (BB) date phenotype was evaluated
+     "" ; tissue
+     "" ; sex
+     "" ; age range
+     "" ; population group/ethnicity
+     "" ; geographic origin 
+     "" ; family history
+     "" ; indication
+     "" ; total number of individuals tested
+     "" ; (BK) number of families tested
+     "" ; empty
+     "" ; number of individuals with variant
+     "" ; number of families with variant
+     "" ; number of families with segregation observed
+     "" ; (BP) secondary finding
+     "" ; mosaicism
+     "" ; number of homozygotes
+     "" ; number of single heterozygotes
+     "" ; number of compound heterozygotes
+     "" ; number of hemizygotes
+     "" ; evidence citations
+     "" ; comment on evidence
+     "" ; empty
+     "" ; (BY) test name or type
+     "" ; platform type
+     "" ; platform name
+     "" ; method
+     "" ; method purpose
+     "" ; method citations
+     "" ; software name and version
+     "" ; software purpose
+     "" ; (CG) testing laboratory
+     "" ; date variant was reported by submitter
+     "" ; testing laboratory interpretation
+     "" ; empty
+     "" ; comment
+     (:id variant "")                              ; (CL) private comment - post clinvar or clingen ar variant id here for users
+     (first (str/split (:scv variant "") #"\.+"))  ; (CM) scv if it was able to find a match, without version info
+     (if (str/blank? (:scv variant)) "" "Update")  ; (CN) Novel or Update .. always update if prior column is not empty.
+     ""])) ; replaces ClinVarAccessions
 
 (defn construct-variant-table
   "Construct and return variant table"
@@ -155,4 +152,3 @@
         (log/debug "Json input is valid")
         records))))
       
-
