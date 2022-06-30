@@ -15,7 +15,7 @@ def findByLocalKey(request):
     client = bigquery.Client()
 
     # Perform a query.
-    QUERY = (f"SELECT scv_id  FROM `clingen-dx.clinvar_qa.scv_lookup` WHERE scv.prefix_key = '{local_key}'")
+    QUERY = (f"SELECT scv_id  FROM `clingen-dx.clinvar_qa.scv_lookup` WHERE prefix_key = '{local_key}'")
 
     print(QUERY)
 
