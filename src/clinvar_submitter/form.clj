@@ -175,9 +175,8 @@
         remove the moiadj and paranthesed suffix altogether.
      2. else return the <moiadj> term without any additional nested paranthesed 
         codes, that may exist."
-  [sym-tbl c interp-num]
-  (let [full-moi (ld1-> sym-tbl c "has disposition" "label")
-        [moi moiadj] (re-seq #"\w[\w\s\-]*\w" full-moi)
+  [full-moi]
+  (let [[moi moiadj] (if (some? full-moi) (re-seq #"\w[\w\s\-]*\w" full-moi) [nil nil])
         final-moi (if (and (some? moiadj) (= "Other" moi)) moiadj moi)]
     (csv-colval final-moi)))
 
@@ -218,7 +217,7 @@
   (let [cond (ld-> sym-tbl interp-input "is_about_condition")
         disease (ld1-> sym-tbl cond "is_about_disease")
         phenotype (ld1-> sym-tbl cond "is_about_phenotype")
-        moi (condition-moi sym-tbl cond interp-num)]
+        moi (condition-moi (ld1-> sym-tbl cond "has disposition" "label"))]
     (if disease
       ;; test for free form or mondo version of disease
       (let [disease-id (get disease "id")]
