@@ -15,7 +15,7 @@ def findByLocalKey(request):
     client = bigquery.Client()
 
     # Perform a query.
-    QUERY = (f"SELECT scv_id  FROM `clingen-dx.clinvar_qa.vci_localkey_scv_map` WHERE vci_interp_id = '{local_key}'")
+    QUERY = (f"SELECT scv_id  FROM `clingen-dx.clinvar_qa.scv_lookup` WHERE scv.prefix_key = '{local_key}'")
 
     print(QUERY)
 
@@ -31,5 +31,3 @@ def serialize_bq_row_iterator(row_iterator:bigquery.table.RowIterator):
     df = row_iterator.to_dataframe()
     j = df.to_json(orient="records")
     return json.loads(j)
-
-
