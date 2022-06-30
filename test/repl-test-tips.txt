@@ -2,37 +2,28 @@
 (ns clinvar-submitter.core)
 (require '[clinvar-submitter.ld :as ld :refer [ld-> ld1-> prop=]])
 (require '[clinvar-submitter.variant :as variant])
+(require '[clinvar-submitter.form :as form])
 
 ;; the input file (can contain single or multiple interps)
 
 ;; single path interp with pmid evidence on PP4 assertion.
-(def input-file "data/interp_hl-path-PP4-met-evidence.json")
-
-;; multi interps
-;;(def input-file "data/allinput.json")
+(def input-file "data/dfc8-submitter-source.json")
 
 (def input-rows (slurp input-file))
 
 ;; the sepio_context file (check versions if it changes)
 (def sepio-context "data/sepio_context.jsonld")
 
-;; the HL nov '18 clinvar scv file
-(def clinvar-scv-file "data/scv-files/HEARING-LOSS-SCV-2018-12-19.json")
-
-(def options {:jsonld-context sepio-context
-              :clinvar-scv-file clinvar-scv-file})
-
-(def scv-map (if clinvar-scv-file (json/parse-string (slurp clinvar-scv-file) true)))
+(def options {:jsonld-context sepio-context})
 
 ;; the symbol table for the input file and sepio_context
-(def sym-tbl (ld/generate-symbol-table input-rows sepio-context))
+(def sym-tbl (ld/generate-symbol-table input-rows))
 
 ;; the map of values from the symbol table
 (def m (vals sym-tbl))
 
 ;; all of the interp objects
 (def interp-seq ((prop= sym-tbl "variant pathogenicity interpretation" "type") m))
-
 
 ;; to grab the first interp
 (def interp-input (first interp-seq))
@@ -45,16 +36,15 @@
 ;; to get condition
 (ld-> sym-tbl interp-input "is_about_condition")
 
-(def variant (form/get-variant sym-tbl interp-input 1 scv-map))
 (def can-allele (ld1-> sym-tbl interp-input "is_about_allele"))
 
 (def i (form/get-interpretation sym-tbl interp-input 1))
 (def condition (form/get-condition sym-tbl interp-input 1 (:significance i)))
-
+(def moi (form/condition-moi (ld1-> sym-tbl condition "has disposition" "label")))
 ;; extras
-(def input-file "data/sepio-wout-coords.json")
+(def input-file "data/dfc8-submitter-source.json")
 (def input-rows (slurp input-file))
-(def sym-tbl (ld/generate-symbol-table input-rows sepio-context))
+(def sym-tbl (ld/generate-symbol-table input-rows))
 (def m (vals sym-tbl))
 (def interp-seq ((prop= sym-tbl "variant pathogenicity interpretation" "type") m))
 (def interp-input (first interp-seq))

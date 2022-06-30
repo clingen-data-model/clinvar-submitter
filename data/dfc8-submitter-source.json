@@ -1,0 +1,666 @@
+{
+  "@context": "http://dataexchange.clinicalgenome.org/interpretation/json/context",
+  "assertionMethod":
+  {
+    "label": "ClinGen Rett and Angelman-like Disorders Expert Panel Specifications to the ACMG/AMP Variant Interpretation Guidelines Version 1",
+    "type": "VariantPathogenicityInterpretationGuideline",
+    "url": "https://www.clinicalgenome.org/affiliation/50022/docs/assertion-criteria"
+  },
+  "condition": [
+  {
+    "disease": [
+    {
+      "id": "MONDO:0010726",
+      "label": "Rett syndrome"
+    }],
+    "type": "GeneticCondition"
+  }],
+  "contribution": [
+  {
+    "agent":
+    {
+      "id": "http://curation.clinicalgenome.org/affiliation/50022",
+      "label": "Rett and Angelman-like Disorders VCEP",
+      "type": "Agent"
+    },
+    "contributionDate": "2022-02-19T02:29:48.190Z",
+    "contributionRole":
+    {
+      "id": "SEPIO:0000155",
+      "label": "approver"
+    },
+    "type": "Contribution"
+  },
+  {
+    "agent": "http://curation.clinicalgenome.org/affiliation/50022",
+    "contributionDate": "2022-06-28T13:47:41.344732",
+    "contributionRole":
+    {
+      "id": "SEPIO-CG:97010",
+      "label": "publisher"
+    },
+    "type": "Contribution"
+  }],
+  "description": "The allele frequency of the p.Thr311Met variant in MECP2 (NM_004992.3) is 0.022% and 0.01% in \"Other\" and South Asian sub population in gnomAD, which is high enough to meet the BS1 criteria based on thresholds defined by the ClinGen Rett/Angelman-like Expert Panel for Rett/AS-like conditions (BS1). The p.Thr311Met variant is observed in at least 2 unaffected individuals (GeneDx internal database) (BS2) and found in 2 patients with an alternate molecular basis of disease (Baylor Genetics internal database, Invitae internal database) (BP5). Computational prediction analysis tools suggests a deleterious impact; however, this information does not predict clinical significance on its own (PP3). As this variant meets 2 strong and 1 supporting benign criteria it can be classified as benign even though in silico predictions meet PP3. In summary, the p.Thr311Met variant in MECP2 is classified as benign for Rett syndrome based on the ACMG/AMP criteria (BS1, BS2, BP5).",
+  "evidenceLine": [
+  {
+    "evidenceItem": [
+    {
+      "criterion":
+      {
+        "defaultStrength":
+        {
+          "id": "SEPIO:0000328",
+          "label": "Benign Strong"
+        },
+        "id": "SEPIO-CG:99039",
+        "label": "BS1",
+        "type": "VariantPathogenicityInterpretationCriterion"
+      },
+      "description": "The allele frequency of the p.Thr311Met variant in MECP2 is 0.022% and 0.01% in \"Other\" and South Asian sub population in gnomAD, which is high enough to be classified as likely benign based on thresholds defined by the ClinGen Rett/Angelman-like Expert Panel for Rett/AS-like conditions.",
+      "id": "6cabc899-5ec9-4ac4-8e37-345429d8fc6b",
+      "statementOutcome":
+      {
+        "id": "SEPIO:0000223",
+        "label": "Met"
+      },
+      "type": "CriterionAssessment",
+      "variant":
+      {
+        "id": "ClinVar:36496",
+        "label": "NM_001110792.2(MECP2):c.968C>T (p.Thr323Met)",
+        "relatedContextualAllele": [
+        {
+          "alleleName": [
+          {
+            "name": "NC_000023.11:g.154030896G>A",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "genomic",
+          "referenceCoordinate":
+          {
+            "end":
+            {
+              "index": 154030896
+            },
+            "refState": "G",
+            "referenceSequence":
+            {
+              "label": "NC_000023.11"
+            },
+            "start":
+            {
+              "index": 154030895
+            }
+          },
+          "referenceGenome":
+          {
+            "id": "SEPIO-CG:98203",
+            "label": "GRCh38"
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "relatedChromosome":
+          {
+            "id": "SEPIO-CG:98123",
+            "label": "X"
+          },
+          "state": "A",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NC_000023.10:g.153296347G>A",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "genomic",
+          "referenceCoordinate":
+          {
+            "end":
+            {
+              "index": 153296347
+            },
+            "refState": "G",
+            "referenceSequence":
+            {
+              "label": "NC_000023.10"
+            },
+            "start":
+            {
+              "index": 153296346
+            }
+          },
+          "referenceGenome":
+          {
+            "id": "SEPIO-CG:98202",
+            "label": "GRCh37"
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "relatedChromosome":
+          {
+            "id": "SEPIO-CG:98123",
+            "label": "X"
+          },
+          "state": "A",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NM_001110792.2:c.968C>T",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "transcript",
+          "preferred": true,
+          "referenceCoordinate":
+          {
+            "end":
+            {
+              "index": 1020
+            },
+            "refState": "C",
+            "referenceSequence":
+            {
+              "label": "NM_001110792.2"
+            },
+            "start":
+            {
+              "index": 1019
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "relatedGene":
+          {
+            "id": "NCBIGene:4204",
+            "label": "MECP2"
+          },
+          "state": "T",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NP_001104262.1:p.Thr323Met",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "protein",
+          "referenceCoordinate":
+          {
+            "referenceSequence":
+            {
+              "label": "NP_001104262.1"
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NM_001316337.2:c.653C>T",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "transcript",
+          "referenceCoordinate":
+          {
+            "end":
+            {
+              "index": 1312
+            },
+            "refState": "C",
+            "referenceSequence":
+            {
+              "label": "NM_001316337.2"
+            },
+            "start":
+            {
+              "index": 1311
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "relatedGene":
+          {
+            "id": "NCBIGene:4204",
+            "label": "MECP2"
+          },
+          "state": "T",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NP_001303266.1:p.Thr218Met",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "protein",
+          "referenceCoordinate":
+          {
+            "referenceSequence":
+            {
+              "label": "NP_001303266.1"
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NM_001369391.2:c.653C>T",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "transcript",
+          "referenceCoordinate":
+          {
+            "end":
+            {
+              "index": 1607
+            },
+            "refState": "C",
+            "referenceSequence":
+            {
+              "label": "NM_001369391.2"
+            },
+            "start":
+            {
+              "index": 1606
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "relatedGene":
+          {
+            "id": "NCBIGene:4204",
+            "label": "MECP2"
+          },
+          "state": "T",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NP_001356320.1:p.Thr218Met",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "protein",
+          "referenceCoordinate":
+          {
+            "referenceSequence":
+            {
+              "label": "NP_001356320.1"
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NM_001369392.2:c.653C>T",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "transcript",
+          "referenceCoordinate":
+          {
+            "end":
+            {
+              "index": 1256
+            },
+            "refState": "C",
+            "referenceSequence":
+            {
+              "label": "NM_001369392.2"
+            },
+            "start":
+            {
+              "index": 1255
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "relatedGene":
+          {
+            "id": "NCBIGene:4204",
+            "label": "MECP2"
+          },
+          "state": "T",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NP_001356321.1:p.Thr218Met",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "protein",
+          "referenceCoordinate":
+          {
+            "referenceSequence":
+            {
+              "label": "NP_001356321.1"
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NM_001369393.2:c.653C>T",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "transcript",
+          "referenceCoordinate":
+          {
+            "end":
+            {
+              "index": 1132
+            },
+            "refState": "C",
+            "referenceSequence":
+            {
+              "label": "NM_001369393.2"
+            },
+            "start":
+            {
+              "index": 1131
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "relatedGene":
+          {
+            "id": "NCBIGene:4204",
+            "label": "MECP2"
+          },
+          "state": "T",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NP_001356322.1:p.Thr218Met",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "protein",
+          "referenceCoordinate":
+          {
+            "referenceSequence":
+            {
+              "label": "NP_001356322.1"
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NM_001369394.1:c.653C>T",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "transcript",
+          "referenceCoordinate":
+          {
+            "end":
+            {
+              "index": 1063
+            },
+            "refState": "C",
+            "referenceSequence":
+            {
+              "label": "NM_001369394.1"
+            },
+            "start":
+            {
+              "index": 1062
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "relatedGene":
+          {
+            "id": "NCBIGene:4204",
+            "label": "MECP2"
+          },
+          "state": "T",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NP_001356323.1:p.Thr218Met",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "protein",
+          "referenceCoordinate":
+          {
+            "referenceSequence":
+            {
+              "label": "NP_001356323.1"
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NM_004992.3:c.932C>T",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "transcript",
+          "referenceCoordinate":
+          {
+            "end":
+            {
+              "index": 1158
+            },
+            "refState": "C",
+            "referenceSequence":
+            {
+              "label": "NM_004992.3"
+            },
+            "start":
+            {
+              "index": 1157
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "relatedGene":
+          {
+            "id": "NCBIGene:4204",
+            "label": "MECP2"
+          },
+          "state": "T",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NP_004983.1:p.Thr311Met",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "protein",
+          "referenceCoordinate":
+          {
+            "referenceSequence":
+            {
+              "label": "NP_004983.1"
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "AJ132917.1:c.932C>T",
+            "nameType": "hgvs"
+          }],
+          "referenceCoordinate":
+          {},
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "LRG_764t1:c.968C>T",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "transcript",
+          "referenceCoordinate":
+          {
+            "referenceSequence":
+            {
+              "label": "LRG_764t1"
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "LRG_764p1:p.Thr323Met",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "protein",
+          "referenceCoordinate":
+          {
+            "referenceSequence":
+            {
+              "label": "LRG_764p1"
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "type": "ContextualAllele"
+        },
+        {
+          "alleleName": [
+          {
+            "name": "NG_007107.2:g.111232C>T",
+            "nameType": "hgvs"
+          }],
+          "contextualAlleleType": "genomic",
+          "referenceCoordinate":
+          {
+            "end":
+            {
+              "index": 111232
+            },
+            "refState": "C",
+            "referenceSequence":
+            {
+              "label": "NG_007107.2"
+            },
+            "start":
+            {
+              "index": 111231
+            }
+          },
+          "relatedCanonicalAllele": "ClinVar:36496",
+          "state": "T",
+          "type": "ContextualAllele"
+        }],
+        "relatedIdentifier": [
+        {
+          "id": "http://reg.genome.network/allele/CA170409",
+          "label": "NM_001110792.2(MECP2):c.968C>T (p.Thr323Met)"
+        },
+        {
+          "id": "dbSNP:61751445"
+        }],
+        "type": "CanonicalAllele"
+      }
+    }],
+    "evidenceStrength": "SEPIO:0000328",
+    "type": "EvidenceLine"
+  },
+  {
+    "evidenceItem": [
+    {
+      "criterion":
+      {
+        "defaultStrength":
+        {
+          "id": "SEPIO:0000329",
+          "label": "Pathogenic Supporting"
+        },
+        "id": "SEPIO-CG:99035",
+        "label": "PP3",
+        "type": "VariantPathogenicityInterpretationCriterion"
+      },
+      "description": "Computational prediction analysis tools suggests a deleterious impact; however, this information does not predict clinical significance on its own.",
+      "id": "01ecffd3-134b-4990-97a7-b2b650a43db8",
+      "statementOutcome":
+      {
+        "id": "SEPIO:0000223",
+        "label": "Met"
+      },
+      "type": "CriterionAssessment",
+      "variant": "ClinVar:36496"
+    }],
+    "evidenceStrength": "SEPIO:0000329",
+    "type": "EvidenceLine"
+  },
+  {
+    "evidenceItem": [
+    {
+      "criterion":
+      {
+        "defaultStrength":
+        {
+          "id": "SEPIO:0000328",
+          "label": "Benign Strong"
+        },
+        "id": "SEPIO-CG:99040",
+        "label": "BS2",
+        "type": "VariantPathogenicityInterpretationCriterion"
+      },
+      "description": "The p.Thr311Met variant is observed in at least 2 unaffected individual (GeneDx internal database).",
+      "id": "ddc08808-3774-4d05-b776-836576614bcf",
+      "statementOutcome":
+      {
+        "id": "SEPIO:0000223",
+        "label": "Met"
+      },
+      "type": "CriterionAssessment",
+      "variant": "ClinVar:36496"
+    }],
+    "evidenceStrength": "SEPIO:0000328",
+    "type": "EvidenceLine"
+  },
+  {
+    "evidenceItem": [
+    {
+      "criterion":
+      {
+        "defaultStrength":
+        {
+          "id": "SEPIO:0000327",
+          "label": "Benign Supporting"
+        },
+        "id": "SEPIO-CG:99047",
+        "label": "BP5",
+        "type": "VariantPathogenicityInterpretationCriterion"
+      },
+      "description": "The p.Thr311Met variant in MECP2 is found in 2 patients with an alternate molecular basis of disease (Baylor Genetics internal database, Invitae internal database).",
+      "id": "aca9ec46-fa1d-4c04-bf05-9a88aab2ae0e",
+      "statementOutcome":
+      {
+        "id": "SEPIO:0000223",
+        "label": "Met"
+      },
+      "type": "CriterionAssessment",
+      "variant": "ClinVar:36496"
+    }],
+    "evidenceStrength": "SEPIO:0000327",
+    "type": "EvidenceLine"
+  }],
+  "id": "cf504ba2-3f8d-472c-88e2-1bf8fcf65ee5",
+  "statementOutcome":
+  {
+    "id": "LOINC:LA6675-8",
+    "label": "Benign"
+  },
+  "type": "VariantPathogenicityInterpretation",
+  "variant": "ClinVar:36496"
+}
