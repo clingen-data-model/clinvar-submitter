@@ -15,7 +15,7 @@ def findByLocalKey(request):
     client = bigquery.Client()
 
     # Perform a query.
-    QUERY = (f"SELECT scv_id  FROM `clingen-dx.clinvar_qa.scv_lookup` WHERE prefix_key = '{local_key}'")
+    QUERY = (f"SELECT id  FROM `clingen-dx.clinvar_qa.scv_lookup` WHERE prefix_key = '{local_key}'")
 
     print(QUERY)
 
@@ -25,7 +25,7 @@ def findByLocalKey(request):
     if rows.total_rows != 1:
         return ("no exact match found for local_key",400)
   
-    return serialize_bq_row_iterator(rows)[0]['scv_id']
+    return serialize_bq_row_iterator(rows)[0]['id']
 
 def serialize_bq_row_iterator(row_iterator:bigquery.table.RowIterator): 
     df = row_iterator.to_dataframe()
