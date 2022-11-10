@@ -79,6 +79,12 @@ Not supported in this release
 5.	No sorting of summarized met strength codes.
 6.  No support yet for multiple file or directory input.
 
+### 10.Nov.2022
+#### (fixed) #43 Remove 2 assertion method columns to match Nov 2022 ClinVar submission file changes.
+*these are the specific column changes*
+* (remove) Assertion method (AK)
+* (remove) Assertion method citation (AL)
+
 ### 06.May.2022
 #### (fixed) #21 Modified the output to match March 2022 ClinVar submission excel file format column changes
 *these are the specific column changes*
