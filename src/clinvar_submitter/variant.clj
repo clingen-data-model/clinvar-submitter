@@ -62,27 +62,24 @@
      (:significance interp) ; (AH) Clinical significance
      "" ; Assertion score
      (:eval-date interp)    ; (AJ) Date last evaluated
-     ;; the 2 following assertion fields may need more robust handling for non-vceps that don't have clinvar files submitted.
-     ""                     ; (AK) assertion method
-     (:file-name method "") ; (AL)assertion method citations
-     (:moi condition "")    ; (AM) Mode of Inheritance
-     (form/get-pmid-list evidence) ; significance citations
-     (str "https://erepo.clinicalgenome.org/evrepo/ui/interpretation/" (:id interp)) ; (AO) Citations or URLs for clinical significance
+     (:moi condition "")    ; (AK) Mode of Inheritance
+     (form/get-pmid-list evidence) ; (AL) significance citations
+     (str "https://erepo.clinicalgenome.org/evrepo/ui/interpretation/" (:id interp)) ; (AM) Citations or URLs for clinical significance
      (if (some? (:description interp))
        (:description interp)
-       (form/summary-string evidence interp variant condition method approver)) ; comment on clinical significance
+       (form/summary-string evidence interp variant condition method approver)) ; (AN) comment on clinical significance
      "" ; explanation if clinsig is other or drug
      "" ; drug response condition
      "" ; functional consequence
      "" ; comment on functional consequence
      "" ; empty
-     "curation" ;; (AV) - hardcoded per LB
-     "germline" ;; (AW) - hardcoded per LB
-     "unknown"  ;; (AX) - hardcoded per LB
+     "curation" ;; (AT) - hardcoded per LB
+     "germline" ;; (AU) - hardcoded per LB
+     "unknown"  ;; (AV) - hardcoded per LB
      "" ; structural variant method/analysis type
      "" ; clinical features
      "" ; comment on clinical features
-     "" ; (BB) date phenotype was evaluated
+     "" ; (AZ) date phenotype was evaluated
      "" ; tissue
      "" ; sex
      "" ; age range
@@ -91,12 +88,12 @@
      "" ; family history
      "" ; indication
      "" ; total number of individuals tested
-     "" ; (BK) number of families tested
+     "" ; (BI) number of families tested
      "" ; empty
      "" ; number of individuals with variant
      "" ; number of families with variant
      "" ; number of families with segregation observed
-     "" ; (BP) secondary finding
+     "" ; (BN) secondary finding
      "" ; mosaicism
      "" ; number of homozygotes
      "" ; number of single heterozygotes
@@ -105,7 +102,7 @@
      "" ; evidence citations
      "" ; comment on evidence
      "" ; empty
-     "" ; (BY) test name or type
+     "" ; (BW) test name or type
      "" ; platform type
      "" ; platform name
      "" ; method
@@ -113,14 +110,14 @@
      "" ; method citations
      "" ; software name and version
      "" ; software purpose
-     "" ; (CG) testing laboratory
+     "" ; (CE) testing laboratory
      "" ; date variant was reported by submitter
      "" ; testing laboratory interpretation
      "" ; empty
      "" ; comment
-     (:id variant "")                              ; (CL) private comment - post clinvar or clingen ar variant id here for users
-     (first (str/split (:scv variant "") #"\.+"))  ; (CM) scv if it was able to find a match, without version info
-     (if (str/blank? (:scv variant)) "" "Update")  ; (CN) Novel or Update .. always update if prior column is not empty.
+     (:id variant "")                              ; (CJ) private comment - post clinvar or clingen ar variant id here for users
+     (first (str/split (:scv variant "") #"\.+"))  ; (CK) scv if it was able to find a match, without version info
+     (if (str/blank? (:scv variant)) "" "Update")  ; (CL) Novel or Update .. always update if prior column is not empty.
      ""])) ; replaces ClinVarAccessions
 
 (defn construct-variant-table
