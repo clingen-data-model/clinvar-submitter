@@ -4,6 +4,6 @@
 # TODO: Testing strategy possible with pytest? And mock of BigQuery?
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['functions', 'deploy', 'ClinVarSCV', '--trigger-http', '--memory', '512MB', '--min-instances', '1', '--runtime', 'python37', '--min-instances', '--entry-point', 'findByLocalKey']
+  args: ['functions', 'deploy', 'ClinVarSCV', '--trigger-http', '--memory=512MB', '--min-instances=1', '--runtime', 'python37', '--min-instances', '--entry-point', 'findByLocalKey']
   dir: 'gcp/function-source'
   
