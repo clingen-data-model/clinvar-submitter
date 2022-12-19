@@ -10,6 +10,7 @@ steps:
         "deploy",
         "clinvarscv",
         "--trigger-http",
+        "--allow-unauthenticated",
         "--gen2",
         "--region=us-central1",
         "--timeout=60s",
