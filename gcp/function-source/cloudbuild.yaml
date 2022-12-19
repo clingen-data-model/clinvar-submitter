@@ -11,6 +11,7 @@ steps:
         "clinvarscv",
         "--trigger-http",
         "--gen2",
+        "--region=us-central1",
         "--timeout=60s",
         "--memory=512MB",
         "--min-instances=1",
