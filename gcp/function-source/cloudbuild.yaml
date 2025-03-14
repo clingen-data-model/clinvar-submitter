@@ -17,7 +17,7 @@ steps:
         "--memory=512MB",
         "--min-instances=1",
         "--runtime",
-        "python38",
+        "python312",
         "--entry-point",
         "findByLocalKey",
       ]
