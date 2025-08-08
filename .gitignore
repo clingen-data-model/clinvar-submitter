@@ -12,3 +12,8 @@ pom.xml.asc
 /bin/
 log
 TAGS
+/.calva
+/.clj-kondo
+
+.lsp/.cache/db.transit.json
+.claude/settings.local.json
