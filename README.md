@@ -79,6 +79,13 @@ Not supported in this release
 5.	No sorting of summarized met strength codes.
 6.  No support yet for multiple file or directory input.
 
+### 08.Aug.2025
+#### (fixed) Remove functional consequence columns to match current ClinVar submission template format
+*these are the specific column changes*
+* (remove) Functional consequence (AQ)
+* (remove) Comment on functional consequence (AR)
+* All subsequent columns shifted left by 2 positions to align with updated SubmissionTemplate.xlsx
+
 ### 10.Nov.2022
 #### (fixed) #43 Remove 2 assertion method columns to match Nov 2022 ClinVar submission file changes.
 *these are the specific column changes*

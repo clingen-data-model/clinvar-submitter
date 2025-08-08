@@ -70,16 +70,14 @@
        (form/summary-string evidence interp variant condition method approver)) ; (AN) comment on clinical significance
      "" ; explanation if clinsig is other or drug
      "" ; drug response condition
-     "" ; functional consequence
-     "" ; comment on functional consequence
      "" ; empty
-     "curation" ;; (AT) - hardcoded per LB
-     "germline" ;; (AU) - hardcoded per LB
-     "unknown"  ;; (AV) - hardcoded per LB
+     "curation" ;; (AR) - hardcoded per LB
+     "germline" ;; (AS) - hardcoded per LB
+     "unknown"  ;; (AT) - hardcoded per LB
      "" ; structural variant method/analysis type
      "" ; clinical features
      "" ; comment on clinical features
-     "" ; (AZ) date phenotype was evaluated
+     "" ; (AX) date phenotype was evaluated
      "" ; tissue
      "" ; sex
      "" ; age range
@@ -88,12 +86,12 @@
      "" ; family history
      "" ; indication
      "" ; total number of individuals tested
-     "" ; (BI) number of families tested
+     "" ; (BG) number of families tested
      "" ; empty
      "" ; number of individuals with variant
      "" ; number of families with variant
      "" ; number of families with segregation observed
-     "" ; (BN) secondary finding
+     "" ; (BL) secondary finding
      "" ; mosaicism
      "" ; number of homozygotes
      "" ; number of single heterozygotes
@@ -102,7 +100,7 @@
      "" ; evidence citations
      "" ; comment on evidence
      "" ; empty
-     "" ; (BW) test name or type
+     "" ; (BU) test name or type
      "" ; platform type
      "" ; platform name
      "" ; method
@@ -110,14 +108,14 @@
      "" ; method citations
      "" ; software name and version
      "" ; software purpose
-     "" ; (CE) testing laboratory
+     "" ; (CC) testing laboratory
      "" ; date variant was reported by submitter
      "" ; testing laboratory interpretation
      "" ; empty
      "" ; comment
-     (:id variant "")                              ; (CJ) private comment - post clinvar or clingen ar variant id here for users
-     (first (str/split (:scv variant "") #"\.+"))  ; (CK) scv if it was able to find a match, without version info
-     (if (str/blank? (:scv variant)) "" "Update")  ; (CL) Novel or Update .. always update if prior column is not empty.
+     (:id variant "")                              ; (CH) private comment - post clinvar or clingen ar variant id here for users
+     (first (str/split (:scv variant "") #"\.+"))  ; (CI) scv if it was able to find a match, without version info
+     (if (str/blank? (:scv variant)) "" "Update")  ; (CJ) Novel or Update .. always update if prior column is not empty.
      ""])) ; replaces ClinVarAccessions
 
 (defn construct-variant-table
