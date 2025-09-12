@@ -62,12 +62,12 @@
      (:significance interp) ; (AH) Clinical significance
      "" ; Assertion score
      (:eval-date interp)    ; (AJ) Date last evaluated
-     (:moi condition "")    ; (AK) Mode of Inheritance
-     (form/get-pmid-list evidence) ; (AL) significance citations
-     (str "https://erepo.clinicalgenome.org/evrepo/ui/interpretation/" (:id interp)) ; (AM) Citations or URLs for clinical significance
      (if (some? (:description interp))
        (:description interp)
-       (form/summary-string evidence interp variant condition method approver)) ; (AN) comment on clinical significance
+       (form/summary-string evidence interp variant condition method approver)) ; (AK) comment on clinical significance
+     (:moi condition "")    ; (AL) Mode of Inheritance
+     (form/get-pmid-list evidence) ; (AM) significance citations
+     (str "https://erepo.clinicalgenome.org/evrepo/ui/interpretation/" (:id interp)) ; (AN) Citations or URLs for clinical significance
      "" ; explanation if clinsig is other or drug
      "" ; drug response condition
      "" ; empty

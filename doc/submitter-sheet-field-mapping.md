@@ -31,6 +31,7 @@ Shortcut notations for mapping.
 | Date last evaluated (AL) | Interp.contribution.contributionDate | if the Interp.contribution.contributionDate does not found an E-403 exception will be raised. The final format will be yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX if no time portion is available then just the yyyy-MM-dd will be produced. |
 | Assertion method (AM) | <assertion method provided by caller> | Not pulled from the Interp record since it is unavailable, a value can be specified but the default will be "ACMG Guidelines, 2015".  |
 | Assertion method citation (AN) | <method citation provided by caller> | Like the Assertion method the method citation is not available, so a value can be specified for all records, it defaults to "PMID:25741868". |
-| Mode of inheritance (AO) | (get condition :moi) | |
-| Clinical significance citations (AP) | (get evidence :pmid-citations) | |
-| Comment on clinical significance (AR) | (get evidence :summary) | |
+| Comment on clinical significance (AK) | (get evidence :summary) | |
+| Mode of inheritance (AL) | (get condition :moi) | |
+| Clinical significance citations (AM) | (get evidence :pmid-citations) | |
+| Citations or URLs for clinical significance (AN) | | |
