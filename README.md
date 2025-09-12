@@ -79,6 +79,14 @@ Not supported in this release
 5.	No sorting of summarized met strength codes.
 6.  No support yet for multiple file or directory input.
 
+### 11.Sep.2025
+#### (fixed) Update ClinVar template column mappings to match current template
+*these are the specific column changes*
+* Mode of inheritance: AK → AL
+* Classification citations: AL → AM  
+* Citations or URLs for classification: AM → AN
+* Comment on classification: AN → AK
+
 ### 08.Aug.2025
 #### (fixed) Remove functional consequence columns to match current ClinVar submission template format
 *these are the specific column changes*
