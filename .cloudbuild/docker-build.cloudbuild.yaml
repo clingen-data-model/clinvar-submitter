@@ -1,10 +1,10 @@
 # Cloud Build configuration for clinvar-submitter
 #
 # Command line test usage:
-# gcloud builds submit --project=clingen-dx --config ./cloudbuild.yaml \
-#  --substitutions=COMMIT_SHA="kyle-local" .
+# gcloud builds submit --project=clingen-dx --config ./cloudbuild.yaml --substitutions=COMMIT_SHA="testbuild",SHORT_SHA="testbuild" .
 
-# Builds clinvar-submitter for multiple architectures (AMD64 and ARM64) and pushes to prod GCR
+# Builds clinvar-submitter for multiple architectures (AMD64 and ARM64)
+# and pushes to prod Artifact Registry
 steps:
 # Set up Docker Buildx for multi-architecture builds
 - name: 'gcr.io/cloud-builders/docker'
