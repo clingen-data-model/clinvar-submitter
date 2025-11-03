@@ -1,26 +1,41 @@
 # Cloud Build configuration for clinvar-submitter
 #
 # Command line test usage:
-# gcloud builds submit --project=clingen-stage --config ./cloudbuild.yaml \
-#  --substitutions=COMMIT_SHA="testbuild" .
+# gcloud builds submit --project=clingen-dx --config ./cloudbuild.yaml --substitutions=COMMIT_SHA="testbuild",SHORT_SHA="testbuild" .
 
-# Builds clinvar-submitter and tags for both stage and prod image repositories
+# Builds clinvar-submitter for multiple architectures (AMD64 and ARM64)
+# and pushes to prod Artifact Registry
 steps:
+# Set up Docker Buildx for multi-architecture builds
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '.', '-t', 'clinvar-submitter:$COMMIT_SHA']
+  args:
+    - 'buildx'
+    - 'create'
+    - '--name'
+    - 'multiarch-builder'
+    - '--driver'
+    - 'docker-container'
+    - '--use'
+    - '--bootstrap'
+# Build and push multi-architecture image using buildx
 - name: 'gcr.io/cloud-builders/docker'
-  args: [ 'tag', 'clinvar-submitter:$COMMIT_SHA', 'gcr.io/clingen-stage/clinvar-submitter:$COMMIT_SHA']
-- name: 'gcr.io/cloud-builders/docker'
-  args: [ 'tag', 'clinvar-submitter:$COMMIT_SHA', 'gcr.io/clingen-dx/clinvar-submitter:$COMMIT_SHA']
-- name: 'gcr.io/clingen-stage/git-image-updater'
+  args:
+    - 'buildx'
+    - 'build'
+    - '--platform'
+    - 'linux/amd64,linux/arm64'
+    - '-t'
+    - 'gcr.io/clingen-dx/clinvar-submitter:$COMMIT_SHA'
+    - '--push'
+    - '.'
+- name: 'gcr.io/clingen-dx/git-image-updater'
   secretEnv: ["GITHUB_TOKEN"]
-  args: 
+  args:
     - '-c'
     - |
       git clone https://clingen-ci:$$GITHUB_TOKEN@github.com/clingen-data-model/architecture \
       && cd architecture \
       && git checkout -b image-update-$SHORT_SHA \
-      && /usr/bin/yq eval -i '.image.tag = "$COMMIT_SHA"' ./helm/values/clinvar-submitter/values-stage.yaml \
       && /usr/bin/yq eval -i '.image.tag = "$COMMIT_SHA"' ./helm/values/clinvar-submitter/values-prod.yaml \
       && git add -u \
       && git -c user.name="Clingen CI Automation" -c user.email="clingendevs@broadinstitute.org" commit -m "bumping docker image for clinvar-submitter" \
@@ -29,12 +44,11 @@ steps:
 
 availableSecrets:
   secretManager:
-    - versionName: projects/clingen-stage/secrets/clingen-ci-github-token/versions/2
+    - versionName: projects/clingen-dx/secrets/clingen-ci-github-token/versions/1
       env: GITHUB_TOKEN
 
-images:
-  - 'gcr.io/clingen-stage/clinvar-submitter:$COMMIT_SHA'
-  - 'gcr.io/clingen-dx/clinvar-submitter:$COMMIT_SHA'
+# Note: The 'images' section is not needed because buildx --push handles the push
+# Multi-arch images are pushed directly during the build step
 
-# timeout if not complete in 30 minutes
-timeout: 1800s
+# timeout if not complete in 90 minutes
+timeout: 5400s
