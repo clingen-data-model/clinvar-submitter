@@ -50,5 +50,5 @@ availableSecrets:
 # Note: The 'images' section is not needed because buildx --push handles the push
 # Multi-arch images are pushed directly during the build step
 
-# timeout if not complete in 30 minutes
-timeout: 1800s
+# timeout if not complete in 90 minutes
+timeout: 5400s
